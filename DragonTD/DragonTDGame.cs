@@ -18,6 +18,9 @@ namespace DragonTD
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            this.IsMouseVisible = true;
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
         }
 
         /// <summary>
@@ -79,10 +82,8 @@ namespace DragonTD
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            //Draw Level
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
+            //Draw Level BEGIN AND END IN LEVEL.DRAW
             level.Draw(gameTime);
-            spriteBatch.End();
             //Then Draw UI
 
             base.Draw(gameTime);

@@ -10,9 +10,12 @@ namespace DragonTD
 
         int Width, Height;
 
+        SpriteBatch spriteBatch;
+
         public Level(Game game) : base(game)
         {
-            Texture2D testHex = game.Content.Load<Texture2D>("texture/testhex");
+            spriteBatch = game.Services.GetService<SpriteBatch>();
+            Texture2D testHex = game.Content.Load<Texture2D>("textures/testhex");
             Width = 8;
             Height = 8;
             //create empty map.
@@ -26,5 +29,22 @@ namespace DragonTD
                 }
             }
         }
+
+        public override void Update(GameTime gameTime)
+        {
+            
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            //for now, draw at 0.5 scale.
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Matrix.CreateScale(0.5f));
+            foreach (HexEntity h in Map)
+            {
+                h.Draw(gameTime);
+            }
+            spriteBatch.End();
+        }
+
     }
 }

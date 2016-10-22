@@ -65,7 +65,7 @@ namespace DragonTD
         public static Vector2 CalculateScreenPosition(Point position)
         {
             //the tip of the next row is inset, so to avoid math I just subract it here
-            Vector2 sPosition = position.ToVector2() * new Vector2(128, 112);
+            Vector2 sPosition = position.ToVector2() * new Vector2(128, 111);
 
             if (position.Y % 2 == 0) //if row is even, offset
                 sPosition.X += 64;
