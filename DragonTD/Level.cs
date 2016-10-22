@@ -25,6 +25,17 @@ namespace DragonTD
                     Map[y, x] = new HexEntity(game, this, new Point(x, y), testHex, true);
                 }
             }
+            PlaceHexEntity(new Obstacle(game, this, Point.Zero, game.Content.Load<Texture2D>("textures/wall")));
+        }
+
+        public bool PlaceHexEntity(HexEntity hex)
+        {
+            //if out of bounds, return false;
+            if ((hex.Position.Y < 0 && hex.Position.Y >= Height) && (hex.Position.X < 0 && hex.Position.X >= Width))
+                return false;
+            else
+                Map[hex.Position.Y, hex.Position.X] = hex;
+            return true;
         }
 
         public override void Update(GameTime gameTime)
