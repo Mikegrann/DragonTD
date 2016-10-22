@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace DragonTD
@@ -8,7 +10,9 @@ namespace DragonTD
         //REMEMBER! Y,X
         public HexEntity[,] Map;
 
-        int Width, Height;
+        public int Width, Height;
+
+        public List<Enemy> EnemyList;
 
         SpriteBatch spriteBatch;
 

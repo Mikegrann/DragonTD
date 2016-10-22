@@ -43,5 +43,10 @@ namespace DragonTD
                 // TODO: Enemy reaches end - decrease treasure resource
             }
         }
+
+        public float GetProgress()
+        {
+            return PathIndex + PathProgress;
+        }
     }
 }

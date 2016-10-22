@@ -152,10 +152,5 @@ namespace DragonTD
 
             return NewCoords;
         }
-
-        public struct Point3D
-        {
-            public int X, Y, Z;
-        }
     }
 }

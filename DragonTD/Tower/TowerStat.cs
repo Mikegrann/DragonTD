@@ -13,6 +13,7 @@ namespace DragonTD.Tower
         public int PiercingDamage { get; private set; }
         public int PoisonDamage { get; private set; }
         public float PoisonDuration { get; private set; }
+        public int FireRate { get; private set; }
 
         /// <summary>
         /// Stats for all towers.
@@ -22,13 +23,15 @@ namespace DragonTD.Tower
         /// <param name="piercingDamage">One time damage. Ignores armor.</param>
         /// <param name="poisonDamage">Ticking Damage. Ignores armor.</param>
         /// <param name="poisonDuration">Duration of Poision in seconds.</param>
-        public TowerStats(float range, int basicDamage = 0, int piercingDamage = 0, int poisonDamage = 0, float poisonDuration = 0f)
+        /// <param name="fireRate">Frames between attacks.</param>
+        public TowerStats(float range, int basicDamage = 0, int piercingDamage = 0, int poisonDamage = 0, float poisonDuration = 0f, int fireRate = 0)
         {
             Range = range;
             BasicDamage = basicDamage;
             PiercingDamage = piercingDamage;
             PoisonDamage = poisonDamage;
             PoisonDuration = poisonDuration;
+            FireRate = fireRate;
         }
     }
 }
