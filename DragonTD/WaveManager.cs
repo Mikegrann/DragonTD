@@ -9,15 +9,24 @@ namespace DragonTD
     class WaveManager : GameComponent
     {
         public int WaveNumber { get; private set; }
+        public List<Wave> Waves { get; private set; }
 
-        WaveManager(Game game) : base(game)
+        public WaveManager(Game game) : base(game)
         {
             WaveNumber = 0;
+
+            // TODO: Restructure waves to read from files?
+            Wave tempWave = new Wave(game);
+            tempWave.addWave(5, Enemy.EnemyType.Basic);
         }
 
-        public void StartWave(HexEntity[][] EntityArray)
+        /// <summary>
+        /// Starts the spawns of the current wave's enemies with a known path
+        /// </summary>
+        /// <param name="EntityArray"></param>
+        public void StartWave(Spawn start, Treasure goal, HexEntity[][] EntityArray)
         {
-
+            List<HexEntity> Path = CreatePath(start, goal, EntityArray);
         }
 
         /// <summary>

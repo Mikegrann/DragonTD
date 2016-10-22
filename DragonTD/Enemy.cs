@@ -15,6 +15,8 @@ namespace DragonTD
         public EnemyStats Stats;
         public Vector2 ScreenPosition { get; private set; }
 
+        public enum EnemyType { Trash, Basic, Flying, Fast, Mid, Heavy, Buff };
+
         public Enemy(Game game, List<HexEntity> Path, EnemyStats Stats, Vector2 ScreenPosition) : base(game)
         {
             this.Path = Path;
