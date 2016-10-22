@@ -34,7 +34,10 @@ namespace DragonTD
             Stats = stats;
             Position = position;
             Target = target;
-            Velocity = (target - position) * stats.ProjectileSpeed;
+
+            Vector2 direction = target - position;
+            direction.Normalize();
+            Velocity = direction * stats.ProjectileSpeed;
             spriteBatch = game.Services.GetService<SpriteBatch>();
         }
 

@@ -22,6 +22,8 @@ namespace DragonTD.Tower
         {
             UpgradeLevel = 0;
             TargetType = TargetingMode.Default;
+
+            Rotation = (float)Math.PI;
         }
 
         /// <summary>
@@ -32,9 +34,11 @@ namespace DragonTD.Tower
         public override void Update(GameTime gameTime)
         {
             Enemy target = FindEnemy(Level.EnemyList);
+
+            float RotationTarget;
             if (target != null)
             {
-                float RotationTarget = (float)Math.PI / 2f + 
+                RotationTarget = (float)Math.PI / 2f + 
                     (float)System.Math.Atan2(target.ScreenPosition.Y - ScreenPosition.Y, 
                     target.ScreenPosition.X - ScreenPosition.X);
 
@@ -42,10 +46,12 @@ namespace DragonTD.Tower
                 if (RotationAmount > Math.PI) { RotationAmount -= 2f * (float)Math.PI; }
                 if (RotationAmount < -Math.PI) { RotationAmount += 2f * (float)Math.PI; }
 
-                // Clamp to 2deg rotations
-                float deg = (float)Math.PI / 180f;
-                if (RotationAmount > 2f * deg) { RotationAmount = 2f * deg; }
-                if (RotationAmount < -2f * deg) { RotationAmount = -2f * deg; }
+                RotationAmount /= 8.0f;
+
+                // Clamp to no more than 30deg at any given time
+                float maxRot = (float)Math.PI / 180f * 30f;
+                if (RotationAmount > maxRot) { RotationAmount = maxRot; }
+                if (RotationAmount < -maxRot) { RotationAmount = -maxRot; }
 
                 Rotation += RotationAmount;
             }
