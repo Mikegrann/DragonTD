@@ -24,7 +24,7 @@ namespace DragonTD
         /// Starts the spawns of the current wave's enemies with a known path
         /// </summary>
         /// <param name="EntityArray"></param>
-        public void StartWave(Spawn start, Treasure goal, HexEntity[][] EntityArray)
+        public void StartWave(Spawn start, Treasure goal, HexEntity[,] EntityArray)
         {
             List<HexEntity> Path = CreatePath(start, goal, EntityArray);
         }
@@ -37,7 +37,7 @@ namespace DragonTD
         /// <param name="goal">hex to end on</param>
         /// <param name="EntityArray">array of all hexes</param>
         /// <returns>list leading with "steps" from start to goal</returns>
-        public static List<HexEntity> CreatePath(HexEntity start, HexEntity goal, HexEntity[][] EntityArray)
+        public static List<HexEntity> CreatePath(HexEntity start, HexEntity goal, HexEntity[,] EntityArray)
         {
             // Store list of farthest extents of explored region
             SortedList<int, HexEntity> frontier = new SortedList<int, HexEntity>();
