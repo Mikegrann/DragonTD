@@ -12,6 +12,8 @@ namespace DragonTD
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Level level;
+
         public DragonTDGame()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -42,7 +44,7 @@ namespace DragonTD
             //adds spritebatch to the service list, so that it can be used anywhere.
             this.Services.AddService<SpriteBatch>(spriteBatch);
 
-            // TODO: use this.Content to load your game content here
+            level = new Level(this);
         }
 
         /// <summary>
@@ -64,7 +66,7 @@ namespace DragonTD
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            level.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -77,7 +79,11 @@ namespace DragonTD
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            //Draw Level
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
+            level.Draw(gameTime);
+            spriteBatch.End();
+            //Then Draw UI
 
             base.Draw(gameTime);
         }

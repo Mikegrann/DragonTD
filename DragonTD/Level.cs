@@ -12,6 +12,7 @@ namespace DragonTD
 
         public Level(Game game) : base(game)
         {
+            Texture2D testHex = game.Content.Load<Texture2D>("texture/testhex");
             Width = 8;
             Height = 8;
             //create empty map.
@@ -21,7 +22,7 @@ namespace DragonTD
                 for(int x = 0; x < Width; x++)
                 {
                     //fill in map with passable null hexes
-                    Map[y, x] = new HexEntity(game, new Point(x, y), null, true);
+                    Map[y, x] = new HexEntity(game, new Point(x, y), testHex, true);
                 }
             }
         }
