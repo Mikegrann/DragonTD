@@ -7,8 +7,6 @@ namespace DragonTD.Tower
 {
     abstract class ProjectileTower : Tower
     {
-        Projectile Bullet;
-
         /// <summary>
         /// Default = fire at first target found in list
         /// Closest = fire at nearest target to tower

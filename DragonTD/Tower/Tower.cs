@@ -20,10 +20,10 @@ namespace DragonTD.Tower
         public List<TowerStats> LevelStats { get; protected set; }
 
         /// <summary>
-        /// Number of frames until you can fire
+        /// Number of seconds until you can fire
         /// (0 = can fire now)
         /// </summary>
-        public int FiringCooldown = 0;
+        public float FiringCooldown = 0;
 
         public Tower(Game game, Level level, Point position, Texture2D texture) : base(game, level, position, texture, false)
         {
