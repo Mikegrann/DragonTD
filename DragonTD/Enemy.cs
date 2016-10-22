@@ -75,6 +75,10 @@ namespace DragonTD
                 {
                     ScreenPosition = Path[PathIndex].ScreenPosition + (Path[PathIndex + 1].ScreenPosition - Path[PathIndex].ScreenPosition) * PathProgress;
 
+                    Rotation = (float)Math.PI / 2 + 
+                        (float)Math.Atan2(Path[PathIndex + 1].ScreenPosition.Y - Path[PathIndex].ScreenPosition.Y,
+                        Path[PathIndex + 1].ScreenPosition.X - Path[PathIndex].ScreenPosition.X);
+
                     PathProgress += Stats.Speed * 0.01f;
                     if (PathProgress > 1.0f)
                     {
