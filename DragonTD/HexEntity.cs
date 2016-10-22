@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DragonTD
 {
-    abstract class HexEntity : DrawableGameComponent
+    class HexEntity : DrawableGameComponent
     {
         /// <summary>
         ///2D position in array for pathfinding
@@ -45,7 +45,8 @@ namespace DragonTD
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Draw(Texture, ScreenPosition, Color.White);
+            if (Texture != null)
+                spriteBatch.Draw(Texture, ScreenPosition, Color.White);
         }
 
 
@@ -92,9 +93,10 @@ namespace DragonTD
 
                     // Avoid out-of-bounds
                     if (ndx.Y >= 0 && ndx.Y < EntityArray.Length &&
-                        ndx.X >= 0 && ndx.X < EntityArray[ndx.Y].Length)
+                        ndx.X >= 0 && ndx.X < EntityArray[ndx.Y].Length &&
+                        EntityArray[ndx.Y][ndx.X].Passable)
                     {
-                        neighbors.Add(EntityArray[ndx.X][ndx.Y]);
+                        neighbors.Add(EntityArray[ndx.Y][ndx.X]);
                     }
                 }
             }
@@ -106,9 +108,10 @@ namespace DragonTD
 
                     // Avoid out-of-bounds
                     if (ndx.Y >= 0 && ndx.Y < EntityArray.Length &&
-                        ndx.X >= 0 && ndx.X < EntityArray[ndx.Y].Length)
+                        ndx.X >= 0 && ndx.X < EntityArray[ndx.Y].Length &&
+                        EntityArray[ndx.Y][ndx.X].Passable)
                     {
-                        neighbors.Add(EntityArray[ndx.X][ndx.Y]);
+                        neighbors.Add(EntityArray[ndx.Y][ndx.X]);
                     }
                 }
             }
