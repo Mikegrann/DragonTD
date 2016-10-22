@@ -13,6 +13,11 @@ namespace DragonTD
         public Point Position;
 
         /// <summary>
+        /// Rotation in radians
+        /// </summary>
+        public float Rotation;
+
+        /// <summary>
         ///2D position of entity on screen for drawing
         /// </summary>
         public Vector2 ScreenPosition;
@@ -27,10 +32,12 @@ namespace DragonTD
         /// </summary>
         public Texture2D Texture;
 
+        public Color Color = Color.White;
+
         /// <summary>
         /// The level on which the Hex exists
         /// </summary>
-        public Level level;
+        public Level Level;
 
         SpriteBatch spriteBatch;
 
@@ -41,17 +48,19 @@ namespace DragonTD
             Texture = texture;
             Passable = passable;
             spriteBatch = game.Services.GetService<SpriteBatch>();
+            Level = level;
         }
 
         /// <summary>
         /// Draw method for all Hex Entities. Can be Overridden if entity needs to be rotated, or treated specially.
         /// Assumes spriteBatch.Begin has already been called!!!!!
+        /// Origin moved to middle of texture to make rotating tower sprites easier.
         /// </summary>
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
             if (Texture != null)
-                spriteBatch.Draw(Texture, ScreenPosition, Color.White);
+                spriteBatch.Draw(Texture, ScreenPosition, null, Color, Rotation, new Vector2(64, 74), 1f, SpriteEffects.None, 0f);
         }
 
 

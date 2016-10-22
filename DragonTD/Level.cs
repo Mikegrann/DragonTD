@@ -14,11 +14,8 @@ namespace DragonTD
 
         public List<Enemy> EnemyList;
 
-        SpriteBatch spriteBatch;
-
         public Level(Game game) : base(game)
         {
-            spriteBatch = game.Services.GetService<SpriteBatch>();
             Texture2D testHex = game.Content.Load<Texture2D>("textures/testhex");
             Width = 8;
             Height = 8;
@@ -41,13 +38,10 @@ namespace DragonTD
 
         public override void Draw(GameTime gameTime)
         {
-            //for now, draw at 0.5 scale.
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Matrix.CreateScale(0.5f));
             foreach (HexEntity h in Map)
             {
                 h.Draw(gameTime);
             }
-            spriteBatch.End();
         }
 
     }
