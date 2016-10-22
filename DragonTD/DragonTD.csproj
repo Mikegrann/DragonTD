@@ -42,6 +42,7 @@
     <Compile Include="Enemy.cs" />
     <Compile Include="EnemyStats.cs" />
     <Compile Include="HexEntity.cs" />
+    <Compile Include="Level.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Tower\BasicTower.cs" />

@@ -16,5 +16,15 @@ namespace DragonTD.Tower
         {
             
         }
+
+        public override void Update(GameTime gameTime)
+        {
+            
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            
+        }
     }
 }
