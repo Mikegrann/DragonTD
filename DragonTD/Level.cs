@@ -113,6 +113,32 @@ namespace DragonTD
             foreach (Projectile p in ProjectileList)
             {
                 p.Update(gameTime);
+
+                foreach (Enemy e in EnemyList)
+                {
+                    // TODO: Implement variable bounding boxes
+                    if (Util.Distance(p.Position, e.ScreenPosition) < 16f)
+                    {
+                        p.ApplyEffect(e);
+
+                        // Apply also to nearby enemies
+                        if (p.Stats.SplashRadius > 0.0f)
+                        {
+                            foreach (Enemy e2 in EnemyList)
+                            {
+                                if (Util.Distance(e.ScreenPosition, e2.ScreenPosition) < p.Stats.SplashRadius && !e.Equals(e2))
+                                {
+                                    p.ApplyEffect(e);
+                                }
+                            }
+                        }
+
+                        if (--p.Stats.MultiHit == 0)
+                        {
+                            ProjectileList.Remove(p);
+                        }
+                    }
+                }
             }
         }
 

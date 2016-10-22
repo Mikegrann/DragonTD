@@ -21,6 +21,9 @@ namespace DragonTD
         public EnemyStats Stats;
         public Vector2 ScreenPosition { get; private set; }
 
+        private int PoisonDamage;
+        private float PoisonTimer;
+
         public enum EnemyType { Trash, Basic, Flying, Fast, Mid, Heavy, Buff };
 
         public float FreezeTime;
@@ -35,6 +38,7 @@ namespace DragonTD
             spriteBatch = game.Services.GetService<SpriteBatch>();
 
             PathProgress = PathIndex = 0;
+            PoisonTimer = PoisonDamage = 0;
         }
 
         // TODO: Set EnemyStats (maybe implement reads from config files?)
@@ -97,11 +101,24 @@ namespace DragonTD
                     FreezeTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
             }
+
+            // Apply Poison DoT
+            if (PoisonTimer > 0.0)
+            {
+                Stats.Health -= (int)(PoisonDamage * gameTime.ElapsedGameTime.TotalSeconds);
+                PoisonTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
         }
 
         public float GetProgress()
         {
             return PathIndex + PathProgress;
+        }
+
+        public void ApplyPoison(int dps, float duration)
+        {
+            PoisonDamage = dps;
+            PoisonTimer = duration;
         }
     }
 }
