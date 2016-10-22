@@ -45,7 +45,7 @@ namespace DragonTD
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Draw(Texture, Position, null, Color.White, GetRotation(Velocity), Vector2.Zero, 1f, SpriteEffects.None, 0);
+            spriteBatch.Draw(Texture, Position, null, Color.White, GetRotation(Velocity), new Vector2(Texture.Width / 2, Texture.Height / 2), 1f, SpriteEffects.None, 0);
         }
 
         public static float GetRotation(Vector2 velocity)

@@ -31,9 +31,27 @@ namespace DragonTD.Tower
         /// <param name="gameTime">dt argument for update loop</param>
         public override void Update(GameTime gameTime)
         {
+            Enemy target = FindEnemy(Level.EnemyList);
+            if (target != null)
+            {
+                float RotationTarget = (float)Math.PI / 2f + 
+                    (float)System.Math.Atan2(target.ScreenPosition.Y - ScreenPosition.Y, 
+                    target.ScreenPosition.X - ScreenPosition.X);
+
+                float RotationAmount = (RotationTarget - Rotation);
+                if (RotationAmount > Math.PI) { RotationAmount -= 2f * (float)Math.PI; }
+                if (RotationAmount < -Math.PI) { RotationAmount += 2f * (float)Math.PI; }
+
+                // Clamp to 2deg rotations
+                float deg = (float)Math.PI / 180f;
+                if (RotationAmount > 2f * deg) { RotationAmount = 2f * deg; }
+                if (RotationAmount < -2f * deg) { RotationAmount = -2f * deg; }
+
+                Rotation += RotationAmount;
+            }
+
             if (FiringCooldown <= 0)
             {
-                Enemy target = FindEnemy(Level.EnemyList);
                 if (target != null)
                 {
                     CreateProjectile(target);
@@ -101,7 +119,8 @@ namespace DragonTD.Tower
 
         public void CreateProjectile(Enemy target)
         {
-            Level.AddProjectile(new Projectile(Game, Game.Content.Load<Texture2D>("textures/projectiles/basic"), null, LevelStats[UpgradeLevel], ScreenPosition, target.ScreenPosition));
+            Level.AddProjectile(new Projectile(Game, Game.Content.Load<Texture2D>("textures/projectiles/basic"), null, LevelStats[UpgradeLevel], 
+                ScreenPosition + 60f * new Vector2((float)Math.Cos(Rotation - Math.PI / 2.0), (float)Math.Sin(Rotation - Math.PI / 2.0)), target.ScreenPosition));
         }
     }
 }
