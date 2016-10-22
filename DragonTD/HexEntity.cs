@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace DragonTD
@@ -63,6 +65,89 @@ namespace DragonTD
                 sPosition.X += 64;
 
             return sPosition;
+        }
+
+        /// <summary>
+        /// Creates a list of all neighboring HexEntities
+        /// where entities off the edges are not included.
+        /// </summary>
+        /// <param name="ThisHex">hex to find its neighbors</param>
+        /// <param name="EntityArray">array of all hexes</param>
+        /// <returns>list of neighbors</returns>
+        public static List<HexEntity> GetNeighbors(HexEntity ThisHex, HexEntity[][] EntityArray)
+        {
+            // Differs based on row count due to even-r coordinates
+            Point[] offsetsOdd = { new Point(1, 0), new Point(1, -1), new Point(0, -1),
+                new Point(-1, 0), new Point(0, 1), new Point(1, 1) };
+            Point[] offsetsEven = { new Point(1, 0), new Point(0, -1), new Point(-1, -1),
+                new Point(-1, 0), new Point(-1, 1), new Point(0, 1) };
+
+            List<HexEntity> neighbors = new List<HexEntity>();
+
+            if (ThisHex.Position.Y % 2 == 0) // Even row
+            {
+                foreach (Point p in offsetsEven)
+                {
+                    Point ndx = p + ThisHex.Position;
+
+                    // Avoid out-of-bounds
+                    if (ndx.Y >= 0 && ndx.Y < EntityArray.Length &&
+                        ndx.X >= 0 && ndx.X < EntityArray[ndx.Y].Length)
+                    {
+                        neighbors.Add(EntityArray[ndx.X][ndx.Y]);
+                    }
+                }
+            }
+            else // Odd row
+            {
+                foreach (Point p in offsetsOdd)
+                {
+                    Point ndx = p + ThisHex.Position;
+
+                    // Avoid out-of-bounds
+                    if (ndx.Y >= 0 && ndx.Y < EntityArray.Length &&
+                        ndx.X >= 0 && ndx.X < EntityArray[ndx.Y].Length)
+                    {
+                        neighbors.Add(EntityArray[ndx.X][ndx.Y]);
+                    }
+                }
+            }
+
+            return neighbors;
+        }
+
+        /// <summary>
+        /// Calculates the "Manhattan" distance
+        /// </summary>
+        /// <param name="start">hex1</param>
+        /// <param name="goal">hex2</param>
+        /// <returns>Integer number of "steps"</returns>
+        public static int Distance(HexEntity start, HexEntity goal)
+        {
+            Point3D a = CubeCoords(start.Position);
+            Point3D b = CubeCoords(goal.Position);
+
+            return (Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y) + Math.Abs(a.Z - b.Z)) / 2;
+        }
+
+        /// <summary>
+        /// Converts to Cube-based coordinates
+        /// </summary>
+        /// <param name="OffsetCoords">Offset-based coordinates</param>
+        /// <returns>Cube-based coordinates</returns>
+        public static Point3D CubeCoords(Point OffsetCoords)
+        {
+            Point3D NewCoords = new Point3D();
+            NewCoords.X = OffsetCoords.X - (OffsetCoords.Y + (OffsetCoords.Y % 2)) / 2;
+            NewCoords.Z = OffsetCoords.Y;
+            NewCoords.Y = -NewCoords.X - NewCoords.Z;
+
+            return NewCoords;
+        }
+
+        public struct Point3D
+        {
+            public int X, Y, Z;
         }
     }
 }

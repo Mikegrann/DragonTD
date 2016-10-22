@@ -39,10 +39,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DragonTDGame.cs" />
+    <Compile Include="Enemy.cs" />
+    <Compile Include="EnemyStats.cs" />
     <Compile Include="HexEntity.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Spawn.cs" />
+    <Compile Include="WaveManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
