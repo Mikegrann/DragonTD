@@ -13,14 +13,14 @@ namespace DragonTD.Tower
         /// <summary>
         /// Level of the tower
         /// </summary>
-        public int Level = 0;
+        public int UpgradeLevel = 0;
 
         ///<summary>
         ///Range in ScreenPosition
         ///</summary>
         public float Range;
 
-        public Tower(Game game, Point position, Texture2D texture) : base(game, position, texture, false)
+        public Tower(Game game, Level level, Point position, Texture2D texture) : base(game, level, position, texture, false)
         {
 
         }

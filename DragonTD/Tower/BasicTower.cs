@@ -10,7 +10,7 @@ namespace DragonTD.Tower
         TowerStats L2Stats = new TowerStats(192f, 10);
         TowerStats L3Stats = new TowerStats(256f, 20);
 
-        public BasicTower(Game game, Point position, Texture2D towerTexture, Texture2D projectileTexture) : base(game, position, towerTexture)
+        public BasicTower(Game game, Level level, Point position, Texture2D towerTexture, Texture2D projectileTexture) : base(game, level, position, towerTexture)
         {
             
         }
