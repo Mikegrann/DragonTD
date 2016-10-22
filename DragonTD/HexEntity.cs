@@ -27,9 +27,14 @@ namespace DragonTD
         /// </summary>
         public Texture2D Texture;
 
+        /// <summary>
+        /// The level on which the Hex exists
+        /// </summary>
+        public Level level;
+
         SpriteBatch spriteBatch;
 
-        public HexEntity(Game game, Point position, Texture2D texture, bool passable) : base(game)
+        public HexEntity(Game game, Level level, Point position, Texture2D texture, bool passable) : base(game)
         {
             Position = position;
             ScreenPosition = CalculateScreenPosition(Position);

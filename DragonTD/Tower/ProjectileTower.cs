@@ -7,9 +7,9 @@ namespace DragonTD.Tower
     {
         Projectile Bullet;
 
-        public ProjectileTower(Game game, Point position, Texture2D texture) : base(game, position, texture)
+        public ProjectileTower(Game game, Level level, Point position, Texture2D texture) : base(game, level, position, texture)
         {
-            Level = 0;
+            UpgradeLevel = 0;
         }
     }
 }

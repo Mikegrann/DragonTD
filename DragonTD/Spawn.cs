@@ -10,7 +10,7 @@ namespace DragonTD
     {
         private List<HexEntity> RecentPath;
 
-        public Spawn(Game game, Point position, Texture2D texture) : base(game, position, texture, true)
+        public Spawn(Game game, Level level, Point position, Texture2D texture) : base(game, level, position, texture, true)
         {
 
         }
