@@ -22,10 +22,8 @@ namespace DragonTD
         /// <param name="texture">Texture of projectile</param>
         /// <param name="color">Color of projectile. If null - draws white</param>
         /// <param name="position">ScreenPosition</param>
-        /// <param name="velocity">Velocity in Pixels per Second</param>
-        /// <param name="basicDamage">Basic Damage</param>
-        /// <param name="poisonDamage">Ticking poison damage</param>
-        /// <param name="poisonDuration">Duration of poison in seconds</param>
+        /// <param name="velocity">Velocity of projectile in pixels per second.</param>
+        /// <param name="stats">stats of the tower. includes damage values.</param>
         public Projectile(Game game, Texture2D texture, Nullable<Color> color, Tower.TowerStats stats, Vector2 position, Vector2 velocity) : base(game)
         {
             if (color.HasValue)
