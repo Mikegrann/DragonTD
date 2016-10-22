@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
 
 namespace DragonTD
 {
@@ -17,6 +13,12 @@ namespace DragonTD
         public HexEntity(Game game) : base(game)
         {
 
+        }
+
+        //TODO: implement
+        public static Vector2 CalculateScreenPosition()
+        {
+            return Vector2.Zero;
         }
         
     }
