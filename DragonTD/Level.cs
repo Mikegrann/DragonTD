@@ -110,8 +110,9 @@ namespace DragonTD
                 e.Update(gameTime);
             }
 
-            foreach (Projectile p in ProjectileList)
+            for (int i = ProjectileList.Count - 1; i >= 0; i--)
             {
+                Projectile p = ProjectileList[i];
                 p.Update(gameTime);
 
                 foreach (Enemy e in EnemyList)
@@ -133,9 +134,10 @@ namespace DragonTD
                             }
                         }
 
-                        if (--p.Stats.MultiHit == 0)
+                        if (--p.MultiHit == 0)
                         {
-                            ProjectileList.Remove(p);
+                            ProjectileList.RemoveAt(i);
+                            break;
                         }
                     }
                 }

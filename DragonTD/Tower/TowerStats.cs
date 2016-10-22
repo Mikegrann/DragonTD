@@ -15,7 +15,7 @@ namespace DragonTD.Tower
         public float PoisonDuration { get; private set; }
         public float FireRate { get; private set; }
         public float ProjectileSpeed { get; private set; }
-        public int MultiHit;
+        public int MultiHit { get; private set; }
         public float SplashRadius { get; private set; }
 
         /// <summary>

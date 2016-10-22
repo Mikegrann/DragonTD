@@ -8,11 +8,13 @@ namespace DragonTD
     class Projectile : DrawableGameComponent
     {
         public Tower.TowerStats Stats;
+        public int MultiHit;
+
         // Velocity in pixels per second
         Vector2 Velocity;
-
         public Vector2 Position;
         Vector2 Target;
+
         Texture2D Texture;
         Color Color;
 
@@ -33,8 +35,11 @@ namespace DragonTD
                 Color = color.Value;
             else
                 Color = Color.White;
+
             Texture = texture;
             Stats = stats;
+            MultiHit = Stats.MultiHit;
+
             Position = position;
             Target = target;
 
