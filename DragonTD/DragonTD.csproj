@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="DragonTDGame.cs" />
     <Compile Include="HexEntity.cs" />
+    <Compile Include="Obstacle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -39,6 +39,8 @@ namespace DragonTD
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            //adds spritebatch to the service list, so that it can be used anywhere.
+            this.Services.AddService<SpriteBatch>(spriteBatch);
 
             // TODO: use this.Content to load your game content here
         }
