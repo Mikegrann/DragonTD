@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 namespace DragonTD
 {
     /// <summary>
-    /// This is the main type for your game.
+    /// This is the main type for your game. HELLO WORLD
     /// </summary>
     public class DragonTDGame : Game
     {
