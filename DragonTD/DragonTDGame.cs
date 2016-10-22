@@ -82,8 +82,11 @@ namespace DragonTD
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            //Draw Level BEGIN AND END IN LEVEL.DRAW
+            //Draw Level
+            //for now, draw at 0.5 scale.
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Matrix.CreateTranslation(new Vector3(200, 200, 0)) * Matrix.CreateScale(0.5f));
             level.Draw(gameTime);
+            spriteBatch.End();
             //Then Draw UI
 
             base.Draw(gameTime);
