@@ -51,6 +51,11 @@ namespace DragonTD
             Level = level;
         }
 
+        public override string ToString()
+        {
+            return this.GetType().Name + " " + this.Position.X + ", " + this.Position.Y;
+        }
+
         /// <summary>
         /// Draw method for all Hex Entities. Can be Overridden if entity needs to be rotated, or treated specially.
         /// Assumes spriteBatch.Begin has already been called!!!!!
@@ -92,9 +97,9 @@ namespace DragonTD
         public static List<HexEntity> GetNeighbors(HexEntity ThisHex, HexEntity[,] EntityArray)
         {
             // Differs based on row count due to even-r coordinates
-            Point[] offsetsOdd = { new Point(1, 0), new Point(1, -1), new Point(0, -1),
+            Point[] offsetsEven = { new Point(1, 0), new Point(1, -1), new Point(0, -1),
                 new Point(-1, 0), new Point(0, 1), new Point(1, 1) };
-            Point[] offsetsEven = { new Point(1, 0), new Point(0, -1), new Point(-1, -1),
+            Point[] offsetsOdd = { new Point(1, 0), new Point(0, -1), new Point(-1, -1),
                 new Point(-1, 0), new Point(-1, 1), new Point(0, 1) };
 
             List<HexEntity> neighbors = new List<HexEntity>();
@@ -106,8 +111,8 @@ namespace DragonTD
                     Point ndx = p + ThisHex.Position;
 
                     // Avoid out-of-bounds
-                    if (ndx.Y >= 0 && ndx.Y < EntityArray.GetUpperBound(1) &&
-                        ndx.X >= 0 && ndx.X < EntityArray.GetUpperBound(2) &&
+                    if (ndx.Y >= 0 && ndx.Y < EntityArray.GetUpperBound(0) &&
+                        ndx.X >= 0 && ndx.X < EntityArray.GetUpperBound(1) &&
                         EntityArray[ndx.Y, ndx.X].Passable)
                     {
                         neighbors.Add(EntityArray[ndx.Y, ndx.X]);
@@ -121,8 +126,8 @@ namespace DragonTD
                     Point ndx = p + ThisHex.Position;
 
                     // Avoid out-of-bounds
-                    if (ndx.Y >= 0 && ndx.Y < EntityArray.GetUpperBound(1) &&
-                        ndx.X >= 0 && ndx.X < EntityArray.GetUpperBound(2) &&
+                    if (ndx.Y >= 0 && ndx.Y < EntityArray.GetUpperBound(0) &&
+                        ndx.X >= 0 && ndx.X < EntityArray.GetUpperBound(1) &&
                         EntityArray[ndx.Y, ndx.X].Passable)
                     {
                         neighbors.Add(EntityArray[ndx.Y, ndx.X]);

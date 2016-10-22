@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -40,8 +41,8 @@ namespace DragonTD
         public static List<HexEntity> CreatePath(HexEntity start, HexEntity goal, HexEntity[,] EntityArray)
         {
             // Store list of farthest extents of explored region
-            SortedList<int, HexEntity> frontier = new SortedList<int, HexEntity>();
-            frontier.Add(0, start);
+            SortedSet<Tuple<HexEntity, int>> frontier = new SortedSet<Tuple<HexEntity, int>>(new HexTupleCompare());
+            frontier.Add(new Tuple<HexEntity, int>(start, 0));
 
             // Store details of known distances
             Dictionary<Point, HexEntity> came_from = new Dictionary<Point, HexEntity>();
@@ -53,7 +54,8 @@ namespace DragonTD
             while (frontier.Count > 0)
             {
                 // Grab the minimal-distance known hex
-                HexEntity current = frontier.GetEnumerator().Current.Value;
+                HexEntity current = frontier.Min.Item1;
+                frontier.Remove(frontier.Min);
 
                 if (current.Position == goal.Position) break;
 
@@ -65,7 +67,7 @@ namespace DragonTD
                     {
                         cost_to[next.Position] = cost_here; // Update to new path for this location
                         int priority = cost_here + HexEntity.Distance(next, goal);
-                        frontier.Add(priority, next);
+                        frontier.Add(new Tuple<HexEntity, int>(next, priority));
                         came_from[next.Position] = current;
                     }
                 }
@@ -79,6 +81,24 @@ namespace DragonTD
             }
 
             return Path;
+        }
+    }
+
+    class HexTupleCompare : IComparer<Tuple<HexEntity, int>>
+    {
+        public int Compare(Tuple<HexEntity, int> v1, Tuple<HexEntity, int> v2)
+        {
+            if (v1.Item2 != v2.Item2)
+            {
+                return v1.Item2 - v2.Item2;
+            }
+            else if (v1.Item1 == v2.Item1)
+            {
+                return 0;
+            }
+            else {
+                return -1;
+            }
         }
     }
 }
