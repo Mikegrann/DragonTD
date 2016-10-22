@@ -31,7 +31,7 @@ namespace DragonTD.Tower
         /// <param name="gameTime">dt argument for update loop</param>
         public override void Update(GameTime gameTime)
         {
-            if (FiringCooldown == 0)
+            if (FiringCooldown <= 0)
             {
                 Enemy target = FindEnemy(Level.EnemyList);
                 if (target != null)
@@ -42,7 +42,7 @@ namespace DragonTD.Tower
             }
             else
             {
-                FiringCooldown--;
+                FiringCooldown -= gameTime.ElapsedGameTime.Milliseconds / 1000f;
             }
         }
 

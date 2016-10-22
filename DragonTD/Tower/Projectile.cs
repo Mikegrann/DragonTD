@@ -39,7 +39,7 @@ namespace DragonTD
 
         public override void Update(GameTime gameTime)
         {
-            Position += (float)gameTime.ElapsedGameTime.TotalSeconds * Velocity;
+            Position += (float)gameTime.ElapsedGameTime.Milliseconds / 1000f * Velocity;
         }
 
         public override void Draw(GameTime gameTime)
