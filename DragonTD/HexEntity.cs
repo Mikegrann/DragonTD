@@ -89,7 +89,7 @@ namespace DragonTD
         /// <param name="ThisHex">hex to find its neighbors</param>
         /// <param name="EntityArray">array of all hexes</param>
         /// <returns>list of neighbors</returns>
-        public static List<HexEntity> GetNeighbors(HexEntity ThisHex, HexEntity[][] EntityArray)
+        public static List<HexEntity> GetNeighbors(HexEntity ThisHex, HexEntity[,] EntityArray)
         {
             // Differs based on row count due to even-r coordinates
             Point[] offsetsOdd = { new Point(1, 0), new Point(1, -1), new Point(0, -1),
@@ -106,11 +106,11 @@ namespace DragonTD
                     Point ndx = p + ThisHex.Position;
 
                     // Avoid out-of-bounds
-                    if (ndx.Y >= 0 && ndx.Y < EntityArray.Length &&
-                        ndx.X >= 0 && ndx.X < EntityArray[ndx.Y].Length &&
-                        EntityArray[ndx.Y][ndx.X].Passable)
+                    if (ndx.Y >= 0 && ndx.Y < EntityArray.GetUpperBound(1) &&
+                        ndx.X >= 0 && ndx.X < EntityArray.GetUpperBound(2) &&
+                        EntityArray[ndx.Y, ndx.X].Passable)
                     {
-                        neighbors.Add(EntityArray[ndx.Y][ndx.X]);
+                        neighbors.Add(EntityArray[ndx.Y, ndx.X]);
                     }
                 }
             }
@@ -121,11 +121,11 @@ namespace DragonTD
                     Point ndx = p + ThisHex.Position;
 
                     // Avoid out-of-bounds
-                    if (ndx.Y >= 0 && ndx.Y < EntityArray.Length &&
-                        ndx.X >= 0 && ndx.X < EntityArray[ndx.Y].Length &&
-                        EntityArray[ndx.Y][ndx.X].Passable)
+                    if (ndx.Y >= 0 && ndx.Y < EntityArray.GetUpperBound(1) &&
+                        ndx.X >= 0 && ndx.X < EntityArray.GetUpperBound(2) &&
+                        EntityArray[ndx.Y, ndx.X].Passable)
                     {
-                        neighbors.Add(EntityArray[ndx.Y][ndx.X]);
+                        neighbors.Add(EntityArray[ndx.Y, ndx.X]);
                     }
                 }
             }
