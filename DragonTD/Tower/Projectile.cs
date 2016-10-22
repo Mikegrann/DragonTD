@@ -1,15 +1,20 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace DragonTD
 {
     class Projectile : DrawableGameComponent
     {
-        Tower.TowerStats Stats;
+        public Tower.TowerStats Stats;
+        public int MultiHit;
+
         // Velocity in pixels per second
         Vector2 Velocity;
-        Vector2 Position, Target;
+        public Vector2 Position;
+        Vector2 Target;
+
         Texture2D Texture;
         Color Color;
 
@@ -30,11 +35,17 @@ namespace DragonTD
                 Color = color.Value;
             else
                 Color = Color.White;
+
             Texture = texture;
             Stats = stats;
+            MultiHit = Stats.MultiHit;
+
             Position = position;
             Target = target;
-            Velocity = (target - position) * stats.ProjectileSpeed;
+
+            Vector2 direction = target - position;
+            direction.Normalize();
+            Velocity = direction * stats.ProjectileSpeed;
             spriteBatch = game.Services.GetService<SpriteBatch>();
         }
 
@@ -45,7 +56,7 @@ namespace DragonTD
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Draw(Texture, Position, null, Color.White, GetRotation(Velocity), Vector2.Zero, 1f, SpriteEffects.None, 0);
+            spriteBatch.Draw(Texture, Position, null, Color.White, GetRotation(Velocity), new Vector2(Texture.Width / 2, Texture.Height / 2), 1f, SpriteEffects.None, 0);
         }
 
         public static float GetRotation(Vector2 velocity)
@@ -53,7 +64,24 @@ namespace DragonTD
             return (float)Math.PI / 2f + (float)System.Math.Atan2(velocity.Y, velocity.X);
         }
 
-        
+        public void ApplyEffect(Enemy Other)
+        {
+            // Apply Basic
+            if (Other.Stats.Shields > 0)
+            {
+                Other.Stats.Shields -= Stats.BasicDamage;
+            }
+            else
+            {
+                Other.Stats.Health -= Stats.BasicDamage;
+            }
+
+            // Piercing Ignores Shields
+            Other.Stats.Health -= Stats.PiercingDamage;
+
+            // Set up a Poison DoT
+            Other.ApplyPoison(Stats.PoisonDamage, Stats.PoisonDuration);
+        }
     }
 
     

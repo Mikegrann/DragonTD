@@ -22,6 +22,8 @@ namespace DragonTD.Tower
         {
             UpgradeLevel = 0;
             TargetType = TargetingMode.Default;
+
+            Rotation = (float)Math.PI;
         }
 
         /// <summary>
@@ -31,9 +33,31 @@ namespace DragonTD.Tower
         /// <param name="gameTime">dt argument for update loop</param>
         public override void Update(GameTime gameTime)
         {
+            Enemy target = FindEnemy(Level.EnemyList);
+
+            float RotationTarget;
+            if (target != null)
+            {
+                RotationTarget = (float)Math.PI / 2f + 
+                    (float)System.Math.Atan2(target.ScreenPosition.Y - ScreenPosition.Y, 
+                    target.ScreenPosition.X - ScreenPosition.X);
+
+                float RotationAmount = (RotationTarget - Rotation);
+                if (RotationAmount > Math.PI) { RotationAmount -= 2f * (float)Math.PI; }
+                if (RotationAmount < -Math.PI) { RotationAmount += 2f * (float)Math.PI; }
+
+                RotationAmount /= 8.0f;
+
+                // Clamp to no more than 30deg at any given time
+                float maxRot = (float)Math.PI / 180f * 30f;
+                if (RotationAmount > maxRot) { RotationAmount = maxRot; }
+                if (RotationAmount < -maxRot) { RotationAmount = -maxRot; }
+
+                Rotation += RotationAmount;
+            }
+
             if (FiringCooldown <= 0)
             {
-                Enemy target = FindEnemy(Level.EnemyList);
                 if (target != null)
                 {
                     CreateProjectile(target);
@@ -101,7 +125,8 @@ namespace DragonTD.Tower
 
         public void CreateProjectile(Enemy target)
         {
-            Level.AddProjectile(new Projectile(Game, Game.Content.Load<Texture2D>("textures/projectiles/basic"), null, LevelStats[UpgradeLevel], ScreenPosition, target.ScreenPosition));
+            Level.AddProjectile(new Projectile(Game, Game.Content.Load<Texture2D>("textures/projectiles/basic"), null, LevelStats[UpgradeLevel], 
+                ScreenPosition + 60f * new Vector2((float)Math.Cos(Rotation - Math.PI / 2.0), (float)Math.Sin(Rotation - Math.PI / 2.0)), target.ScreenPosition));
         }
     }
 }

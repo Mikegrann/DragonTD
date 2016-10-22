@@ -15,6 +15,8 @@ namespace DragonTD.Tower
         public float PoisonDuration { get; private set; }
         public float FireRate { get; private set; }
         public float ProjectileSpeed { get; private set; }
+        public int MultiHit { get; private set; }
+        public float SplashRadius { get; private set; }
 
         /// <summary>
         /// Stats for all towers.
@@ -25,8 +27,11 @@ namespace DragonTD.Tower
         /// <param name="poisonDamage">Ticking Damage. Ignores armor.</param>
         /// <param name="poisonDuration">Duration of Poision in seconds.</param>
         /// <param name="fireRate">Seconds between attacks</param>
-        /// <param name="projectileSpeed">speed of projectile in pixels per second.</param>
-        public TowerStats(float range, float fireRate, float projectileSpeed, int basicDamage = 0, int piercingDamage = 0, int poisonDamage = 0, float poisonDuration = 0f)
+        /// <param name="projectileSpeed">Speed of projectile in pixels per second.</param>
+        /// <param name="multi">Number of targets the projectile can hit.</param>
+        public TowerStats(float range, float fireRate, float projectileSpeed, 
+            int basicDamage = 0, int piercingDamage = 0, int poisonDamage = 0, float poisonDuration = 0f,
+            int multi = 1, float splash = 0f)
         {
             Range = range;
             BasicDamage = basicDamage;
@@ -35,6 +40,8 @@ namespace DragonTD.Tower
             PoisonDuration = poisonDuration;
             FireRate = fireRate;
             ProjectileSpeed = projectileSpeed;
+            MultiHit = multi;
+            SplashRadius = splash;
         }
     }
 }
