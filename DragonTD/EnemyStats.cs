@@ -6,9 +6,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DragonTD
 {
-    struct EnemyStats
+    class EnemyStats
     {
         public int Health, Shields;
         public float Speed;
+
+        public EnemyStats(int health, int shields, int speed)
+        {
+            Health = health;
+            Shields = shields;
+            Speed = speed;
+        }
     }
 }

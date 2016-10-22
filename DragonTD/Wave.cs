@@ -8,16 +8,16 @@ namespace DragonTD
 {
     class Wave : GameComponent
     {
-        List<Tuple<int, Enemy.EnemyType>> enemyDepictions;
+        public List<Tuple<int, Enemy.EnemyType>> EnemyDepictions;
 
         public Wave(Game game) : base(game)
         {
-
+            EnemyDepictions = new List<Tuple<int, Enemy.EnemyType>>();
         }
 
-        public void addWave(int EnemyCount, Enemy.EnemyType EnemyType)
+        public void AddEnemies(int EnemyCount, Enemy.EnemyType EnemyType)
         {
-            enemyDepictions.Add(new Tuple<int, Enemy.EnemyType>(EnemyCount, EnemyType));
+            EnemyDepictions.Add(new Tuple<int, Enemy.EnemyType>(EnemyCount, EnemyType));
         }
     }
 }

@@ -16,17 +16,17 @@ namespace DragonTD
         }
 
         // Uses the most recently created Path (saved)
-        public Enemy CreateEnemy(EnemyStats Stats)
+        public Enemy CreateEnemy(Enemy.EnemyType Type)
         {
-            return new Enemy(this.Game, RecentPath, Stats, this.ScreenPosition);
+            return new Enemy(this.Game, RecentPath, Enemy.GetEnemyStats(Type), this.ScreenPosition, Enemy.GetEnemyTexture(Game, Type));
         }
 
         // Creates a new Path for this and subsequent calls
-        public Enemy CreateEnemy(List<HexEntity> Path, EnemyStats Stats)
+        public Enemy CreateEnemy(List<HexEntity> Path, Enemy.EnemyType Type)
         {
             RecentPath = Path;
 
-            return new Enemy(this.Game, Path, Stats, this.ScreenPosition);
+            return new Enemy(this.Game, Path, Enemy.GetEnemyStats(Type), this.ScreenPosition, Enemy.GetEnemyTexture(Game, Type));
         }
     }
 }

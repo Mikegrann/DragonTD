@@ -12,13 +12,19 @@ namespace DragonTD
         public int WaveNumber { get; private set; }
         public List<Wave> Waves { get; private set; }
 
-        public WaveManager(Game game) : base(game)
+        public Level Level;
+
+        public WaveManager(Game game, Level level) : base(game)
         {
+            this.Level = level;
+
             WaveNumber = 0;
+            Waves = new List<Wave>();
 
             // TODO: Restructure waves to read from files?
             Wave tempWave = new Wave(game);
-            tempWave.addWave(5, Enemy.EnemyType.Basic);
+            tempWave.AddEnemies(5, Enemy.EnemyType.Basic);
+            Waves.Add(tempWave);
         }
 
         /// <summary>
@@ -28,6 +34,16 @@ namespace DragonTD
         public void StartWave(Spawn start, Treasure goal, HexEntity[,] EntityArray)
         {
             List<HexEntity> Path = CreatePath(start, goal, EntityArray);
+
+            foreach (Tuple<int, Enemy.EnemyType> desc in Waves[WaveNumber].EnemyDepictions)
+            {
+                for (int i = 0; i < desc.Item1; i++)
+                {
+                    Enemy tmpEnemy = new Enemy(Game, Path, Enemy.GetEnemyStats(desc.Item2), start.ScreenPosition, Enemy.GetEnemyTexture(Game, desc.Item2));
+                    tmpEnemy.FreezeTime = 0.1f * i;
+                    Level.EnemyList.Add(tmpEnemy);
+                }
+            }
         }
 
         /// <summary>
