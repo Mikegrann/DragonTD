@@ -50,6 +50,8 @@
     <Compile Include="Tower\ProjectileTower.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spawn.cs" />
+    <Compile Include="Treasure.cs" />
+    <Compile Include="Wave.cs" />
     <Compile Include="WaveManager.cs" />
     <Compile Include="Tower\Tower.cs" />
   </ItemGroup>
