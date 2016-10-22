@@ -15,10 +15,19 @@ namespace DragonTD
 
         }
 
-        //TODO: implement
-        public static Vector2 CalculateScreenPosition()
+        ///Calculate screen position of hex enity based on 2d array coordinate grid.
+        ///using even-r horizontal layout, offset coordinates
+        ///assumes 128px x 148px hex tile
+        ///http://www.redblobgames.com/grids/hexagons/#coordinates
+        public static Vector2 CalculateScreenPosition(Point position)
         {
-            return Vector2.Zero;
+            //the tip of the next row is inset, so to avoid math I just subract it here
+            Vector2 sPosition = position.ToVector2() * new Vector2(128, 112);
+
+            if (position.Y % 2 == 0) //if row is even, offset
+                sPosition.X += 64;
+
+            return sPosition;
         }
         
     }
