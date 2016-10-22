@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using DragonTD.Tower;
 
 namespace DragonTD
 {
@@ -13,6 +14,7 @@ namespace DragonTD
         public int Width, Height;
 
         public List<Enemy> EnemyList;
+        public List<Projectile> ProjectileList;
 
         public Level(Game game) : base(game)
         {
@@ -21,6 +23,7 @@ namespace DragonTD
             Height = 8;
 
             EnemyList = new List<Enemy>();
+            ProjectileList = new List<Projectile>();
 
             //create empty map.
             Map = new HexEntity[Height, Width];
@@ -72,8 +75,10 @@ namespace DragonTD
             PlaceHexEntity(new Obstacle(game, this, new Point(4, 3), game.Content.Load<Texture2D>("textures/wall")));
             PlaceHexEntity(new Obstacle(game, this, new Point(3, 4), game.Content.Load<Texture2D>("textures/wall")));
 
-            Map[1, 3] = new Spawn(game, this, new Point(3, 1), testHex);
-            Map[3, 6] = new Treasure(game, this, new Point(6, 3), testHex);
+            PlaceHexEntity(new BasicTower(game, this, new Point(2, 4), game.Content.Load<Texture2D>("textures/towers/basic"), game.Content.Load<Texture2D>("textures/projectiles/basic")));
+            PlaceHexEntity(new Spawn(game, this, new Point(3, 1), testHex));
+            PlaceHexEntity(new Treasure(game, this, new Point(6, 3), testHex));
+
             WaveManager wm = new WaveManager(game, this);
             wm.StartWave((Spawn)Map[1, 3], (Treasure)Map[3, 6], Map);
         }
@@ -88,11 +93,26 @@ namespace DragonTD
             return true;
         }
 
+        public void AddProjectile(Projectile p)
+        {
+            ProjectileList.Add(p);
+        }
+
         public override void Update(GameTime gameTime)
         {
+            foreach (HexEntity h in Map)
+            {
+                h.Update(gameTime);
+            }
+
             foreach (Enemy e in EnemyList)
             {
                 e.Update(gameTime);
+            }
+
+            foreach (Projectile p in ProjectileList)
+            {
+                p.Update(gameTime);
             }
         }
 
@@ -106,6 +126,11 @@ namespace DragonTD
             foreach (Enemy e in EnemyList)
             {
                 e.Draw(gameTime);
+            }
+
+            foreach (Projectile p in ProjectileList)
+            {
+                p.Draw(gameTime);
             }
         }
 

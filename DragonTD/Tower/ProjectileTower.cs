@@ -101,7 +101,7 @@ namespace DragonTD.Tower
 
         public void CreateProjectile(Enemy target)
         {
-            // TODO: construct projectile based on tower stats/type (maybe make subclasses implement?)
+            Level.AddProjectile(new Projectile(Game, Game.Content.Load<Texture2D>("textures/projectiles/basic"), null, LevelStats[UpgradeLevel], ScreenPosition, target.ScreenPosition));
         }
     }
 }

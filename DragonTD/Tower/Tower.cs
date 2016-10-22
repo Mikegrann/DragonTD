@@ -27,7 +27,7 @@ namespace DragonTD.Tower
 
         public Tower(Game game, Level level, Point position, Texture2D texture) : base(game, level, position, texture, false)
         {
-            
+            LevelStats = new List<TowerStats>();
         }
     }
     

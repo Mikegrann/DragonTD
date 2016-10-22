@@ -56,7 +56,7 @@ namespace DragonTD
             {
                 default:
                 case EnemyType.Basic:
-                    return game.Content.Load<Texture2D>("textures/basic");
+                    return game.Content.Load<Texture2D>("textures/enemies/basic");
                     break;
             }
         }
