@@ -35,7 +35,7 @@ namespace DragonTD.Tower
         {
             if (FiringCooldown == 0)
             {
-                Enemy target = FindEnemy(level.EnemyList);
+                Enemy target = FindEnemy(Level.EnemyList);
                 if (target != null)
                 {
                     CreateProjectile(target);

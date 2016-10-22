@@ -30,7 +30,7 @@ namespace DragonTD
         {
             ScreenPosition = (Path[PathIndex + 1].ScreenPosition - Path[PathIndex].ScreenPosition) * PathProgress;
 
-            PathProgress += Stats.speed;
+            PathProgress += Stats.Speed;
             if (PathProgress > 1.0f)
             {
                 PathProgress -= 1.0f;
