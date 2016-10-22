@@ -8,7 +8,7 @@ namespace DragonTD
 {
     struct EnemyStats
     {
-        public int health, shields;
-        public float speed;
+        public int Health, Shields;
+        public float Speed;
     }
 }

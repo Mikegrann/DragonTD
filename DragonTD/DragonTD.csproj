@@ -52,6 +52,7 @@
     <Compile Include="Spawn.cs" />
     <Compile Include="Tower\TowerStat.cs" />
     <Compile Include="Treasure.cs" />
+    <Compile Include="Util.cs" />
     <Compile Include="Wave.cs" />
     <Compile Include="WaveManager.cs" />
     <Compile Include="Tower\Tower.cs" />
