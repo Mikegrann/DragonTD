@@ -42,7 +42,7 @@ namespace DragonTD.Tower
             }
             else
             {
-                FiringCooldown -= gameTime.ElapsedGameTime.Milliseconds / 1000f;
+                FiringCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
 

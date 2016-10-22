@@ -94,7 +94,7 @@ namespace DragonTD
                 }
                 else
                 {
-                    FreezeTime -= gameTime.ElapsedGameTime.Milliseconds / 1000f;
+                    FreezeTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
             }
         }
