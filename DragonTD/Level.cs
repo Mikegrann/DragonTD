@@ -22,7 +22,7 @@ namespace DragonTD
                 for(int x = 0; x < Width; x++)
                 {
                     //fill in map with passable null hexes
-                    Map[y, x] = new HexEntity(game, this, new Point(x, y), null, true);
+                    Map[y, x] = new HexEntity(game, this, new Point(x, y), testHex, true);
                 }
             }
         }
