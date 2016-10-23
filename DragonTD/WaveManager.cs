@@ -40,7 +40,7 @@ namespace DragonTD
             {
                 for (int i = 0; i < desc.Count; i++)
                 {
-                    Enemy tmpEnemy = start.CreateEnemy(desc.Type, goal, Path);
+                    Enemy.Enemy tmpEnemy = start.CreateEnemy(desc.Type, goal, Path);
                     tmpEnemy.FreezeTime = desc.Delay + desc.Separation * i;
                     Level.EnemyList.Add(tmpEnemy);
                 }

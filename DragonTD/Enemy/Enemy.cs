@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace DragonTD
+namespace DragonTD.Enemy
 {
+    public enum EnemyType { Trash, Basic, Flying, Fast, Mid, Heavy, Buff };
+
     abstract class Enemy : DrawableGameComponent
     {
         public Texture2D Texture;
@@ -22,7 +24,6 @@ namespace DragonTD
         private int PoisonDamage;
         private float PoisonTimer;
 
-        public enum EnemyType { Trash, Basic, Flying, Fast, Mid, Heavy, Buff };
 
         public float FreezeTime;
 

@@ -301,9 +301,9 @@ namespace DragonTD
             {
                 Console.WriteLine("button click " + sender.Name);
                 if (sender.Name == "basicTower")
-                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.Tower.TowerType.Basic);
+                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.TowerType.Basic);
                 else if(sender.Name == "freezeTower")
-                    ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, Point.Zero, Tower.Tower.TowerType.Freeze);
+                    ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, Point.Zero, Tower.TowerType.Freeze);
                 else if(sender.Name == "wall")
                 { }
 

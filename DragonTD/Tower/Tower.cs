@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DragonTD.Tower
 {
+    public enum TowerType { Basic = 0, Freeze = 1, Lightning = 2, Poison = 3, Piercing = 4, Sniper = 5, Explosive = 6 };
     abstract class Tower : HexEntity
     {
         /// <summary>
@@ -18,7 +19,6 @@ namespace DragonTD.Tower
         /// </summary>
         public float FiringCooldown = 0;
         
-        public enum TowerType { Basic = 0, Freeze = 1, Lightning = 2, Poison = 3, Piercing = 4, Sniper = 5, Explosive = 6 };
 
         public TowerType TType;
 

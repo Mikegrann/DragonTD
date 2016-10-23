@@ -75,7 +75,7 @@ namespace DragonTD
             return (float)Math.PI / 2f + (float)System.Math.Atan2(velocity.Y, velocity.X);
         }
 
-        public void ApplyEffect(Enemy Other)
+        public void ApplyEffect(Enemy.Enemy Other)
         {
             // Apply Basic
             if (Other.Stats.Shields > 0)

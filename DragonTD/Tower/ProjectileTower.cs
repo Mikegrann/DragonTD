@@ -35,7 +35,7 @@ namespace DragonTD.Tower
         /// <param name="gameTime">dt argument for update loop</param>
         public override void Update(GameTime gameTime)
         {
-            Enemy target = FindEnemy(Level.EnemyList);
+            Enemy.Enemy target = FindEnemy(Level.EnemyList);
 
             float RotationTarget;
             if (target != null)
@@ -78,11 +78,11 @@ namespace DragonTD.Tower
         /// </summary>
         /// <param name="EnemyList">All enemies on the map</param>
         /// <returns>Target Enemy (null if none)</returns>
-        public Enemy FindEnemy(List<Enemy> EnemyList)
+        public Enemy.Enemy FindEnemy(List<Enemy.Enemy> EnemyList)
         {
-            Enemy candidate = null;
+            Enemy.Enemy candidate = null;
 
-            foreach(Enemy e in EnemyList)
+            foreach(Enemy.Enemy e in EnemyList)
             {
                 float dist = Util.Distance(ScreenPosition, e.ScreenPosition);
 
@@ -95,7 +95,7 @@ namespace DragonTD.Tower
                         case TargetingMode.Default:
                             return e;
                         case TargetingMode.Flying:
-                            if (e.GetType() == typeof(FlyingEnemy))
+                            if (e.GetType() == typeof(Enemy.FlyingEnemy))
                             {
                                 return e;
                             }
@@ -131,7 +131,7 @@ namespace DragonTD.Tower
             return candidate;
         }
 
-        public void CreateProjectile(Enemy target)
+        public void CreateProjectile(Enemy.Enemy target)
         {
             Level.AddProjectile(new Projectile(Game, ProjectileTexture, null, (ProjectileTowerStats)GetTowerStats(TType, UpgradeLevel), 
                 ScreenPosition + 60f * new Vector2((float)Math.Cos(Rotation - Math.PI / 2.0), (float)Math.Sin(Rotation - Math.PI / 2.0)), target.ScreenPosition));

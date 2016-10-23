@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using DragonTD.Tower;
+using DragonTD.Enemy;
 
 namespace DragonTD
 {
@@ -15,7 +16,7 @@ namespace DragonTD
 
         public int Width, Height;
 
-        public List<Enemy> EnemyList;
+        public List<Enemy.Enemy> EnemyList;
         public List<Projectile> ProjectileList;
 
         public int Money;
@@ -29,7 +30,7 @@ namespace DragonTD
             Width = 16;
             Height = 9;
 
-            EnemyList = new List<Enemy>();
+            EnemyList = new List<Enemy.Enemy>();
             ProjectileList = new List<Projectile>();
             WaveManager wm = new WaveManager(game, this);
 
@@ -44,7 +45,7 @@ namespace DragonTD
             AddWall(new Point(4, 3));
             AddWall(new Point(3, 4));
             AddWall(new Point(2, 2));
-            PlaceHexEntity(new ProjectileTower(game, this, new Point(2, 4), Tower.Tower.TowerType.Basic));
+            PlaceHexEntity(new ProjectileTower(game, this, new Point(2, 4), Tower.TowerType.Basic));
             wm.StartWave(Start, Goal, Map);
             /* End Temporary Setup */
         }
@@ -167,7 +168,7 @@ namespace DragonTD
 
             for (int i = EnemyList.Count - 1; i >= 0; i--)
             {
-                Enemy e = EnemyList[i];
+                Enemy.Enemy e = EnemyList[i];
                 e.Update(gameTime);
 
                 if (e.Dead)
@@ -193,7 +194,7 @@ namespace DragonTD
                 Projectile p = ProjectileList[i];
                 p.Update(gameTime);
 
-                foreach (Enemy e in EnemyList)
+                foreach (Enemy.Enemy e in EnemyList)
                 {
                     // TODO: Implement variable bounding boxes
                     if (Util.Distance(p.Position, e.ScreenPosition) < 16f)
@@ -203,7 +204,7 @@ namespace DragonTD
                         // Apply also to nearby enemies
                         if (p.Stats.SplashRadius > 0.0f)
                         {
-                            foreach (Enemy e2 in EnemyList)
+                            foreach (Enemy.Enemy e2 in EnemyList)
                             {
                                 if (Util.Distance(e.ScreenPosition, e2.ScreenPosition) < p.Stats.SplashRadius && !e.Equals(e2))
                                 {
@@ -236,7 +237,7 @@ namespace DragonTD
 
             DrawPath();
 
-            foreach (Enemy e in EnemyList)
+            foreach (Enemy.Enemy e in EnemyList)
             {
                 e.Draw(gameTime);
             }

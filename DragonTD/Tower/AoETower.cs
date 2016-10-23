@@ -22,7 +22,7 @@ namespace DragonTD.Tower
         /// <param name="gameTime">dt argument for update loop</param>
         public override void Update(GameTime gameTime)
         {
-            List<Enemy> targets = FindEnemy(Level.EnemyList);
+            List<Enemy.Enemy> targets = FindEnemy(Level.EnemyList);
 
             float RotationTarget;
             if (targets.Count > 0)
@@ -49,7 +49,7 @@ namespace DragonTD.Tower
             {
                 if (targets.Count > 0)
                 {
-                    foreach(Enemy e in targets)
+                    foreach(Enemy.Enemy e in targets)
                     {
                         ApplyEffect(e);
                     }
@@ -68,10 +68,10 @@ namespace DragonTD.Tower
         /// </summary>
         /// <param name="EnemyList">All enemies on the map</param>
         /// <returns>Target Enemy (null if none)</returns>
-        public List<Enemy> FindEnemy(List<Enemy> EnemyList)
+        public List<Enemy.Enemy> FindEnemy(List<Enemy.Enemy> EnemyList)
         {
-            List<Enemy> candidates = new List<Enemy>();
-            foreach (Enemy e in EnemyList)
+            List<Enemy.Enemy> candidates = new List<Enemy.Enemy>();
+            foreach (Enemy.Enemy e in EnemyList)
             {
                 float dist = Util.Distance(ScreenPosition, e.ScreenPosition);
 
@@ -83,7 +83,7 @@ namespace DragonTD.Tower
             return candidates;
         }
 
-        public void ApplyEffect(Enemy Other)
+        public void ApplyEffect(Enemy.Enemy Other)
         {
             // Apply Basic
             Other.Stats.Health -= ((AoETowerStats)GetTowerStats()).Damage;

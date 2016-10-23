@@ -40,9 +40,9 @@
   <ItemGroup>
     <Compile Include="AnimatedSprite.cs" />
     <Compile Include="DragonTDGame.cs" />
-    <Compile Include="Enemy.cs" />
-    <Compile Include="EnemyStats.cs" />
-    <Compile Include="FlyingEnemy.cs" />
+    <Compile Include="Enemy\Enemy.cs" />
+    <Compile Include="Enemy\EnemyStats.cs" />
+    <Compile Include="Enemy\FlyingEnemy.cs" />
     <Compile Include="HexEntity.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Obstacle.cs" />
@@ -57,7 +57,7 @@
     <Compile Include="Treasure.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="WalkingEnemy.cs" />
+    <Compile Include="Enemy\WalkingEnemy.cs" />
     <Compile Include="Wave.cs" />
     <Compile Include="WaveManager.cs" />
     <Compile Include="Tower\Tower.cs" />

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace DragonTD
+namespace DragonTD.Enemy
 {
     class WalkingEnemy : Enemy {
         private List<HexEntity> Path;
