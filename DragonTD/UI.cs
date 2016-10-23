@@ -65,6 +65,7 @@ namespace DragonTD
 
         class UIComponent : DrawableGameComponent
         {
+            public string Name { get; private set; }
             internal SpriteBatch spriteBatch;
             public Texture2D Texture { get; private set; }
             private Rectangle bounds;
@@ -72,8 +73,9 @@ namespace DragonTD
             public Color Color { get; set; }
             internal Window parentWindow;
 
-            public UIComponent(Game game, Window parent, Texture2D texture, Rectangle bounds, Color? color) : base(game)
+            public UIComponent(string name, Game game, Window parent, Texture2D texture, Rectangle bounds, Color? color) : base(game)
             {
+                Name = name;
                 parentWindow = parent;
                 spriteBatch = game.Services.GetService<SpriteBatch>();
                 Texture = texture;
@@ -96,14 +98,14 @@ namespace DragonTD
             enum UIButtonState { Default, Hover, Click }
             UIButtonState currentState = UIButtonState.Default;
 
-            public delegate void ButtonClickedEventHandler(object sender);
+            public delegate void ButtonClickedEventHandler(Button sender);
             public event ButtonClickedEventHandler OnClick;
-            public delegate void ButtonHoveredEventHandler(object sender);
+            public delegate void ButtonHoveredEventHandler(Button sender);
             public event ButtonHoveredEventHandler OnHover;
-            public delegate void ButtonLeftEventHandler(object sender);
+            public delegate void ButtonLeftEventHandler(Button sender);
             public event ButtonLeftEventHandler OnLeave;
 
-            public Button(Game game, Window parent, Texture2D texture, Texture2D hoverTexture, Texture2D clickTexture, Rectangle bounds, Color? color) : base(game, parent, texture, bounds, color)
+            public Button(string name, Game game, Window parent, Texture2D texture, Texture2D hoverTexture, Texture2D clickTexture, Rectangle bounds, Color? color) : base(name, game, parent, texture, bounds, color)
             {
                 HoverTexture = hoverTexture;
                 ClickTexture = clickTexture;
@@ -187,26 +189,31 @@ namespace DragonTD
         {
             public BuildWindow(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
-                Button RedTowerButton = new Button(game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), new Rectangle(64, 0, 80, 80), null);
-                RedTowerButton.OnHover += RedTowerButton_OnHover;
-                RedTowerButton.OnClick += RedTowerButton_OnClick;
-                RedTowerButton.OnLeave += RedTowerButton_OnLeave;
+                Button RedTowerButton = new Button("Red Tower", game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), new Rectangle(64, 0, 80, 80), null);
+                Button WhiteTowerButton = new Button("White Tower", game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), new Rectangle(180, 0, 80, 80), null);
+                RedTowerButton.OnHover += TowerButton_OnHover;
+                RedTowerButton.OnClick += TowerButton_OnClick;
+                RedTowerButton.OnLeave += TowerButton_OnLeave;
+                WhiteTowerButton.OnHover += TowerButton_OnHover;
+                WhiteTowerButton.OnClick += TowerButton_OnClick;
+                WhiteTowerButton.OnLeave += TowerButton_OnLeave;
                 components.Add(RedTowerButton);
+                components.Add(WhiteTowerButton);
             }
 
-            private void RedTowerButton_OnLeave(object sender)
+            private void TowerButton_OnLeave(Button sender)
             {
-                Console.WriteLine("button leave");
+                Console.WriteLine("button leave " + sender.Name);
             }
 
-            private void RedTowerButton_OnClick(object sender)
+            private void TowerButton_OnClick(Button sender)
             {
-                Console.WriteLine("button click");
+                Console.WriteLine("button click " + sender.Name);
             }
 
-            private void RedTowerButton_OnHover(object sender)
+            private void TowerButton_OnHover(Button sender)
             {
-                Console.WriteLine("buton hobver");
+                Console.WriteLine("buton hobver " + sender.Name);
             }
         }
 
