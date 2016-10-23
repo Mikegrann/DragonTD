@@ -12,26 +12,38 @@ namespace DragonTD
 
         SpriteBatch spriteBatch;
         Level level;
-        Vector2 screenSize;
-        Vector2 centerScreen;
-        InputStates inputStates;
+        Point screenSize;
+        Point centerScreen;
+        InputStates inputStates = new InputStates();
+
+        BuildWindow buildWindow;
+        UpNextWindow upNextWindow;
+        TreasureWindow treasureWindow;
 
         public UI(Game game, Level level) : base(game)
         {
-            screenSize = game.GraphicsDevice.Viewport.Bounds.Size.ToVector2();
-            centerScreen = screenSize / 2;
+            screenSize = game.GraphicsDevice.Viewport.Bounds.Size;
+            centerScreen = new Point(screenSize.X / 2, screenSize.Y / 2);
             spriteBatch = game.Services.GetService<SpriteBatch>();
             this.level = level;
+            buildWindow = new BuildWindow(game, this, new Rectangle(0, screenSize.Y-96, screenSize.X, 96));
+            upNextWindow = new UpNextWindow(game, this, new Rectangle(centerScreen.X-250, 0, 500, 150));
+            treasureWindow = new TreasureWindow(game, this, new Rectangle(screenSize.X-260, screenSize.Y-96, 260, 96));
         }
 
         public override void Update(GameTime gameTime)
         {
             inputStates.Update();
+            buildWindow.Update(gameTime);
+            upNextWindow.Update(gameTime);
+            treasureWindow.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-
+            buildWindow.Draw(gameTime);
+            upNextWindow.Draw(gameTime);
+            treasureWindow.Draw(gameTime);
         }
 
         class InputStates
@@ -53,15 +65,18 @@ namespace DragonTD
 
         class UIComponent : DrawableGameComponent
         {
-            SpriteBatch spriteBatch;
+            public string Name { get; private set; }
+            internal SpriteBatch spriteBatch;
             public Texture2D Texture { get; private set; }
-            public Rectangle Bounds { get; private set; }
+            private Rectangle bounds;
+            public Rectangle Bounds { get { return new Rectangle(bounds.Location + parentWindow.Bounds.Location, bounds.Size); } private set { bounds = value; } }
             public Color Color { get; set; }
-            internal UI ui;
+            internal Window parentWindow;
 
-            public UIComponent(Game game, UI parent, Texture2D texture, Rectangle bounds, Color? color) : base(game)
+            public UIComponent(string name, Game game, Window parent, Texture2D texture, Rectangle bounds, Color? color) : base(game)
             {
-                ui = parent;
+                Name = name;
+                parentWindow = parent;
                 spriteBatch = game.Services.GetService<SpriteBatch>();
                 Texture = texture;
                 Bounds = bounds;
@@ -78,35 +93,49 @@ namespace DragonTD
 
         class Button : UIComponent
         {
-            SpriteBatch spriteBatch;
-            public Texture2D HoverTexture { get; private set; }
-            public Texture2D ClickTexture { get; private set; }
+            Texture2D HoverTexture;
+            Texture2D ClickTexture;
             enum UIButtonState { Default, Hover, Click }
             UIButtonState currentState = UIButtonState.Default;
 
-            public delegate void ButtonClickedEventHandler(object sender);
+            public delegate void ButtonClickedEventHandler(Button sender);
             public event ButtonClickedEventHandler OnClick;
+            public delegate void ButtonHoveredEventHandler(Button sender);
+            public event ButtonHoveredEventHandler OnHover;
+            public delegate void ButtonLeftEventHandler(Button sender);
+            public event ButtonLeftEventHandler OnLeave;
 
-            public Button(Game game, UI parent, Texture2D texture, Texture2D hoverTexture, Texture2D clickTexture, Rectangle bounds, Color? color) : base(game, parent, texture, bounds, color)
+            public Button(string name, Game game, Window parent, Texture2D texture, Texture2D hoverTexture, Texture2D clickTexture, Rectangle bounds, Color? color) : base(name, game, parent, texture, bounds, color)
             {
+                HoverTexture = hoverTexture;
+                ClickTexture = clickTexture;
             }
 
             public override void Update(GameTime gameTime)
             {
                 //if moues is inside button
-                if(Bounds.Contains(ui.inputStates.CurrentMouse.Position))
+                if(Bounds.Contains(parentWindow.ui.inputStates.CurrentMouse.Position))
                 {
+                    //if the mouse wasn't inside the button last frame, it is now hovering.
+                    if(!Bounds.Contains(parentWindow.ui.inputStates.LastMouse.Position))
+                        OnHover?.Invoke(this);
+
                     currentState = UIButtonState.Hover;
                     //if mouse pressed on current state, use clicked texture
-                    if (ui.inputStates.CurrentMouse.LeftButton == ButtonState.Pressed)
+                    if (parentWindow.ui.inputStates.CurrentMouse.LeftButton == ButtonState.Pressed)
                     {
                         currentState = UIButtonState.Click;
                     }
                     //if mouse is not pressed, but it was last frame, fire click event.
-                    else if (ui.inputStates.LastMouse.LeftButton == ButtonState.Pressed)
+                    else if (parentWindow.ui.inputStates.LastMouse.LeftButton == ButtonState.Pressed)
                     {
                         OnClick?.Invoke(this);
                     }
+                }
+                else if(Bounds.Contains(parentWindow.ui.inputStates.LastMouse.Position))
+                {
+                    currentState = UIButtonState.Default;
+                    OnLeave?.Invoke(this);
                 }
             }
 
@@ -130,11 +159,13 @@ namespace DragonTD
         class Window : DrawableGameComponent
         {
             internal UI ui;
-            List<UIComponent> components = new List<UIComponent>();
+            internal List<UIComponent> components = new List<UIComponent>();
+            public Rectangle Bounds;
 
-            public Window(Game game, UI parent) : base(game)
+            public Window(Game game, UI parent, Rectangle bounds) : base(game)
             {
                 ui = parent;
+                Bounds = bounds;
             }
 
             public override void Update(GameTime gameTime)
@@ -156,15 +187,39 @@ namespace DragonTD
 
         class BuildWindow : Window
         {
-            public BuildWindow(Game game, UI parent) : base(game, parent)
+            public BuildWindow(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
+                Button RedTowerButton = new Button("Red Tower", game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), new Rectangle(64, 0, 80, 80), null);
+                Button WhiteTowerButton = new Button("White Tower", game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), new Rectangle(180, 0, 80, 80), null);
+                RedTowerButton.OnHover += TowerButton_OnHover;
+                RedTowerButton.OnClick += TowerButton_OnClick;
+                RedTowerButton.OnLeave += TowerButton_OnLeave;
+                WhiteTowerButton.OnHover += TowerButton_OnHover;
+                WhiteTowerButton.OnClick += TowerButton_OnClick;
+                WhiteTowerButton.OnLeave += TowerButton_OnLeave;
+                components.Add(RedTowerButton);
+                components.Add(WhiteTowerButton);
+            }
 
+            private void TowerButton_OnLeave(Button sender)
+            {
+                Console.WriteLine("button leave " + sender.Name);
+            }
+
+            private void TowerButton_OnClick(Button sender)
+            {
+                Console.WriteLine("button click " + sender.Name);
+            }
+
+            private void TowerButton_OnHover(Button sender)
+            {
+                Console.WriteLine("buton hobver " + sender.Name);
             }
         }
 
         class UpNextWindow : Window
         {
-            public UpNextWindow(Game game, UI parent) : base(game, parent)
+            public UpNextWindow(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
 
             }
@@ -172,7 +227,7 @@ namespace DragonTD
 
         class TreasureWindow : Window
         {
-            public TreasureWindow(Game game, UI parent) : base(game, parent)
+            public TreasureWindow(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
 
             }
@@ -180,7 +235,7 @@ namespace DragonTD
 
         class TowerContextMenu : Window
         {
-            public TowerContextMenu (Game game, UI parent) : base(game, parent)
+            public TowerContextMenu (Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
 
             }

@@ -13,6 +13,7 @@ namespace DragonTD
         SpriteBatch spriteBatch;
 
         Level level;
+        UI ui;
 
         public DragonTDGame()
         {
@@ -48,6 +49,7 @@ namespace DragonTD
             this.Services.AddService<SpriteBatch>(spriteBatch);
 
             level = new Level(this);
+            ui = new UI(this, level);
         }
 
         /// <summary>
@@ -67,7 +69,7 @@ namespace DragonTD
         protected override void Update(GameTime gameTime)
         {
             level.Update(gameTime);
-
+            ui.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -85,6 +87,9 @@ namespace DragonTD
             level.Draw(gameTime);
             spriteBatch.End();
             //Then Draw UI
+            spriteBatch.Begin();
+            ui.Draw(gameTime);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
