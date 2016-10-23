@@ -23,8 +23,8 @@ namespace DragonTD
 
             // TODO: Restructure waves to read from files?
             Wave tempWave = new Wave(game);
-            tempWave.AddEnemies(5, Enemy.EnemyType.Basic, 0.5f);
-            tempWave.AddEnemies(2, Enemy.EnemyType.Flying, 0.8f);
+            tempWave.AddEnemies(5, Enemy.EnemyType.Basic, 0.0f, 0.5f);
+            tempWave.AddEnemies(2, Enemy.EnemyType.Flying, 0.5f, 0.8f);
             Waves.Add(tempWave);
         }
 
@@ -41,7 +41,7 @@ namespace DragonTD
                 for (int i = 0; i < desc.Count; i++)
                 {
                     Enemy tmpEnemy = start.CreateEnemy(desc.Type, goal, Path);
-                    tmpEnemy.FreezeTime = desc.Delay * i;
+                    tmpEnemy.FreezeTime = desc.Delay + desc.Separation * i;
                     Level.EnemyList.Add(tmpEnemy);
                 }
             }
