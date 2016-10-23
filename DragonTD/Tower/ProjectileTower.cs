@@ -18,7 +18,9 @@ namespace DragonTD.Tower
 
         public TargetingMode TargetType;
 
-        public ProjectileTower(Game game, Level level, Point position, Texture2D texture) : base(game, level, position, texture)
+        public Texture2D ProjectileTexture;
+
+        public ProjectileTower(Game game, Level level, Point position) : base(game, level, position, null)
         {
             UpgradeLevel = 0;
             TargetType = TargetingMode.Default;
@@ -125,7 +127,7 @@ namespace DragonTD.Tower
 
         public void CreateProjectile(Enemy target)
         {
-            Level.AddProjectile(new Projectile(Game, Game.Content.Load<Texture2D>("textures/projectiles/basic"), null, LevelStats[UpgradeLevel], 
+            Level.AddProjectile(new Projectile(Game, ProjectileTexture, null, LevelStats[UpgradeLevel], 
                 ScreenPosition + 60f * new Vector2((float)Math.Cos(Rotation - Math.PI / 2.0), (float)Math.Sin(Rotation - Math.PI / 2.0)), target.ScreenPosition));
         }
     }

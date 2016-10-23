@@ -20,6 +20,8 @@ namespace DragonTD
         UpNextWindow upNextWindow;
         TreasureWindow treasureWindow;
 
+        Tower.Tower building;
+
         public UI(Game game, Level level) : base(game)
         {
             screenSize = game.GraphicsDevice.Viewport.Bounds.Size;
@@ -37,6 +39,10 @@ namespace DragonTD
             buildWindow.Update(gameTime);
             upNextWindow.Update(gameTime);
             treasureWindow.Update(gameTime);
+
+            if (inputStates.CurrentKey.IsKeyUp(Keys.Q) && inputStates.LastKey.IsKeyDown(Keys.Q))
+                buildWindow.Enabled = !buildWindow.Enabled;
+
         }
 
         public override void Draw(GameTime gameTime)
@@ -87,7 +93,8 @@ namespace DragonTD
 
             public override void Draw(GameTime gameTime)
             {
-                spriteBatch.Draw(Texture, Bounds, Color);
+                if(Visible)
+                    spriteBatch.Draw(Texture, Bounds, Color);
             }
         }
 
@@ -95,6 +102,7 @@ namespace DragonTD
         {
             Texture2D HoverTexture;
             Texture2D ClickTexture;
+            Texture2D DisabledTexture;
             enum UIButtonState { Default, Hover, Click }
             UIButtonState currentState = UIButtonState.Default;
 
@@ -105,53 +113,63 @@ namespace DragonTD
             public delegate void ButtonLeftEventHandler(Button sender);
             public event ButtonLeftEventHandler OnLeave;
 
-            public Button(string name, Game game, Window parent, Texture2D texture, Texture2D hoverTexture, Texture2D clickTexture, Rectangle bounds, Color? color) : base(name, game, parent, texture, bounds, color)
+            public Button(string name, Game game, Window parent, Texture2D texture, Texture2D hoverTexture, Texture2D clickTexture, Texture2D disabledTexture, Rectangle bounds, Color? color) : base(name, game, parent, texture, bounds, color)
             {
                 HoverTexture = hoverTexture;
                 ClickTexture = clickTexture;
+                DisabledTexture = disabledTexture;
             }
 
             public override void Update(GameTime gameTime)
             {
-                //if moues is inside button
-                if(Bounds.Contains(parentWindow.ui.inputStates.CurrentMouse.Position))
+                if (Enabled)
                 {
-                    //if the mouse wasn't inside the button last frame, it is now hovering.
-                    if(!Bounds.Contains(parentWindow.ui.inputStates.LastMouse.Position))
-                        OnHover?.Invoke(this);
+                    //if moues is inside button
+                    if (Bounds.Contains(parentWindow.ui.inputStates.CurrentMouse.Position))
+                    {
+                        //if the mouse wasn't inside the button last frame, it is now hovering.
+                        if (!Bounds.Contains(parentWindow.ui.inputStates.LastMouse.Position))
+                            OnHover?.Invoke(this);
 
-                    currentState = UIButtonState.Hover;
-                    //if mouse pressed on current state, use clicked texture
-                    if (parentWindow.ui.inputStates.CurrentMouse.LeftButton == ButtonState.Pressed)
-                    {
-                        currentState = UIButtonState.Click;
+                        currentState = UIButtonState.Hover;
+                        //if mouse pressed on current state, use clicked texture
+                        if (parentWindow.ui.inputStates.CurrentMouse.LeftButton == ButtonState.Pressed)
+                        {
+                            currentState = UIButtonState.Click;
+                        }
+                        //if mouse is not pressed, but it was last frame, fire click event.
+                        else if (parentWindow.ui.inputStates.LastMouse.LeftButton == ButtonState.Pressed)
+                        {
+                            OnClick?.Invoke(this);
+                        }
                     }
-                    //if mouse is not pressed, but it was last frame, fire click event.
-                    else if (parentWindow.ui.inputStates.LastMouse.LeftButton == ButtonState.Pressed)
+                    else if (Bounds.Contains(parentWindow.ui.inputStates.LastMouse.Position))
                     {
-                        OnClick?.Invoke(this);
+                        currentState = UIButtonState.Default;
+                        OnLeave?.Invoke(this);
                     }
-                }
-                else if(Bounds.Contains(parentWindow.ui.inputStates.LastMouse.Position))
-                {
-                    currentState = UIButtonState.Default;
-                    OnLeave?.Invoke(this);
                 }
             }
 
             public override void Draw(GameTime gameTime)
             {
-                switch(currentState)
+                if (Visible)
                 {
-                    default:
-                        spriteBatch.Draw(Texture, Bounds, Color);
-                        break;
-                    case UIButtonState.Hover:
-                        spriteBatch.Draw(HoverTexture, Bounds, Color);
-                        break;
-                    case UIButtonState.Click:
-                        spriteBatch.Draw(ClickTexture, Bounds, Color);
-                        break;
+                    if(!Enabled)
+                        spriteBatch.Draw(DisabledTexture, Bounds, Color);
+                    else
+                        switch (currentState)
+                        {
+                            default:
+                                spriteBatch.Draw(Texture, Bounds, Color);
+                                break;
+                            case UIButtonState.Hover:
+                                spriteBatch.Draw(HoverTexture, Bounds, Color);
+                                break;
+                            case UIButtonState.Click:
+                                spriteBatch.Draw(ClickTexture, Bounds, Color);
+                                break;
+                        }
                 }
             }
         }
@@ -160,7 +178,9 @@ namespace DragonTD
         {
             internal UI ui;
             internal List<UIComponent> components = new List<UIComponent>();
-            public Rectangle Bounds;
+            internal Vector2 offsetLocation = Vector2.Zero;
+            internal Rectangle bounds;
+            public Rectangle Bounds { get { return new Rectangle(bounds.Location + offsetLocation.ToPoint(), bounds.Size); } set { bounds = value; } }
 
             public Window(Game game, UI parent, Rectangle bounds) : base(game)
             {
@@ -170,36 +190,62 @@ namespace DragonTD
 
             public override void Update(GameTime gameTime)
             {
-                foreach(UIComponent c in components)
-                {
-                    c.Update(gameTime);
-                }
+                if(Enabled)
+                    foreach(UIComponent c in components)
+                    {
+                        c.Update(gameTime);
+                    }
             }
 
             public override void Draw(GameTime gameTime)
             {
-                foreach (UIComponent c in components)
-                {
-                    c.Draw(gameTime);
-                }
+                if(Visible)
+                    foreach (UIComponent c in components)
+                    {
+                        c.Draw(gameTime);
+                    }
             }
         }
 
         class BuildWindow : Window
         {
+            //pixels per second
+            float ScrollOffscreenSpeed = 128f;
+
             public BuildWindow(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
-                Button RedTowerButton = new Button("Red Tower", game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), new Rectangle(64, 0, 80, 80), null);
-                Button WhiteTowerButton = new Button("White Tower", game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), new Rectangle(180, 0, 80, 80), null);
+                Button RedTowerButton = new Button("Red Tower", game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), game.Content.Load<Texture2D>("textures/ui/buttons/testdisabled"), new Rectangle(64, 0, 80, 80), null);
+                Button WhiteTowerButton = new Button("White Tower", game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), game.Content.Load<Texture2D>("textures/ui/buttons/testdisabled"), new Rectangle(180, 0, 80, 80), null);
                 RedTowerButton.OnHover += TowerButton_OnHover;
                 RedTowerButton.OnClick += TowerButton_OnClick;
                 RedTowerButton.OnLeave += TowerButton_OnLeave;
                 WhiteTowerButton.OnHover += TowerButton_OnHover;
                 WhiteTowerButton.OnClick += TowerButton_OnClick;
                 WhiteTowerButton.OnLeave += TowerButton_OnLeave;
+                WhiteTowerButton.Enabled = false;
                 components.Add(RedTowerButton);
                 components.Add(WhiteTowerButton);
             }
+
+            public override void Update(GameTime gameTime)
+            {
+                if(Enabled)
+                {
+                    if(offsetLocation.Y > 0)
+                        offsetLocation.Y -= ScrollOffscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (offsetLocation.Y < 0)
+                        offsetLocation.Y = 0;
+                    base.Update(gameTime);
+                }
+                else
+                {
+                    if (offsetLocation.Y < bounds.Height)
+                        offsetLocation.Y += ScrollOffscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (offsetLocation.Y > bounds.Height)
+                        offsetLocation.Y = bounds.Height;
+                }
+            }
+            
 
             private void TowerButton_OnLeave(Button sender)
             {
@@ -209,6 +255,7 @@ namespace DragonTD
             private void TowerButton_OnClick(Button sender)
             {
                 Console.WriteLine("button click " + sender.Name);
+                ui.building = new Tower.BasicTower(Game, ui.level, Point.Zero);
             }
 
             private void TowerButton_OnHover(Button sender)
