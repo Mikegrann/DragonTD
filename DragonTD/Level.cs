@@ -142,16 +142,15 @@ namespace DragonTD
 
                         if (--p.MultiHit <= 0)
                         {
-                            ProjectileList.RemoveAt(i);
+                            p.Dead = true;
                             break;
                         }
                     }
                 }
                 
-                if (p.MultiHit <= 0)
+                if (p.Dead)
                 {
                     ProjectileList.RemoveAt(i);
-                    break;
                 }
             }
         }

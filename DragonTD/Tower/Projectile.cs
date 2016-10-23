@@ -16,6 +16,8 @@ namespace DragonTD
         Vector2 StartPosition;
         Vector2 Target;
 
+        public bool Dead;
+
         Texture2D Texture;
         Color Color;
 
@@ -44,6 +46,8 @@ namespace DragonTD
             StartPosition = Position = position;
             Target = target;
 
+            Dead = false;
+
             Vector2 direction = target - position;
             direction.Normalize();
             Velocity = direction * stats.ProjectileSpeed;
@@ -57,7 +61,7 @@ namespace DragonTD
             // Signal death
             if (Util.Distance(StartPosition, Position) > Stats.Range)
             {
-                MultiHit = 0;
+                Dead = true;
             }
         }
 
