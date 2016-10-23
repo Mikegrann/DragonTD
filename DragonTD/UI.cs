@@ -251,16 +251,25 @@ namespace DragonTD
 
             public BuildWindow(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
-                Button RedTowerButton = new Button("basicTower", game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), game.Content.Load<Texture2D>("textures/ui/buttons/testdisabled"), new Rectangle(64, 0, 80, 80), null);
-                Button WhiteTowerButton = new Button("frostTower", game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), game.Content.Load<Texture2D>("textures/ui/buttons/testdisabled"), new Rectangle(180, 0, 80, 80), null);
-                RedTowerButton.OnHover += TowerButton_OnHover;
-                RedTowerButton.OnClick += TowerButton_OnClick;
-                RedTowerButton.OnLeave += TowerButton_OnLeave;
-                WhiteTowerButton.OnHover += TowerButton_OnHover;
-                WhiteTowerButton.OnClick += TowerButton_OnClick;
-                WhiteTowerButton.OnLeave += TowerButton_OnLeave;
-                components.Add(RedTowerButton);
-                components.Add(WhiteTowerButton);
+                Button BasicTowerButton = new Button("basicTower", game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), game.Content.Load<Texture2D>("textures/ui/buttons/testdisabled"), new Rectangle(64, 0, 80, 80), null);
+                Button FreezeTowerButton = new Button("freezeTower", game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), game.Content.Load<Texture2D>("textures/ui/buttons/testdisabled"), new Rectangle(180, 0, 80, 80), null);
+                Button WallButton = new Button("wall", game, this, game.Content.Load<Texture2D>("textures/ui/buttons/test"), game.Content.Load<Texture2D>("textures/ui/buttons/testhover"), game.Content.Load<Texture2D>("textures/ui/buttons/testclick"), game.Content.Load<Texture2D>("textures/ui/buttons/testdisabled"), new Rectangle(276, 0, 80, 80), null);
+
+                BasicTowerButton.OnHover += TowerButton_OnHover;
+                BasicTowerButton.OnClick += TowerButton_OnClick;
+                BasicTowerButton.OnLeave += TowerButton_OnLeave;
+
+                WallButton.OnHover += TowerButton_OnHover;
+                WallButton.OnClick += TowerButton_OnClick;
+                WallButton.OnLeave += TowerButton_OnLeave;
+
+                FreezeTowerButton.OnHover += TowerButton_OnHover;
+                FreezeTowerButton.OnClick += TowerButton_OnClick;
+                FreezeTowerButton.OnLeave += TowerButton_OnLeave;
+
+                components.Add(BasicTowerButton);
+                components.Add(FreezeTowerButton);
+                components.Add(WallButton);
             }
 
             public override void Update(GameTime gameTime)
@@ -293,8 +302,11 @@ namespace DragonTD
                 Console.WriteLine("button click " + sender.Name);
                 if (sender.Name == "basicTower")
                     ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.Tower.TowerType.Basic);
-                else
+                else if(sender.Name == "freezeTower")
                     ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, Point.Zero, Tower.Tower.TowerType.Freeze);
+                else if(sender.Name == "wall")
+                { }
+
             }
 
             private void TowerButton_OnHover(Button sender)
