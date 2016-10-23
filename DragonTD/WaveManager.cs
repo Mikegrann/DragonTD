@@ -54,7 +54,7 @@ namespace DragonTD
         /// <param name="start">hex to start from</param>
         /// <param name="goal">hex to end on</param>
         /// <param name="EntityArray">array of all hexes</param>
-        /// <returns>list leading with "steps" from start to goal (null if no such path)</returns>
+        /// <returns>list leading with "steps" from start to goal (empty if no such path)</returns>
         public static List<HexEntity> CreatePath(HexEntity start, HexEntity goal, HexEntity[,] EntityArray)
         {
             // Store list of farthest extents of explored region
@@ -90,14 +90,15 @@ namespace DragonTD
                 }
             }
 
+            // Use A* output to build back to the desired hex path
+            List<HexEntity> Path = new List<HexEntity>();
+
             // No Path found
             if (!came_from.ContainsKey(goal.Position))
             {
-                return null;
+                return Path;
             }
 
-            // Use A* output to build back to the desired hex path
-            List<HexEntity> Path = new List<HexEntity>();
             for (HexEntity temp = goal; temp != null; temp = came_from[temp.Position])
             {
                 Path.Insert(0, temp); // Insert at front
