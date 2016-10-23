@@ -32,6 +32,11 @@ namespace DragonTD
         /// </summary>
         public Texture2D Texture;
 
+        /// <summary>
+        /// How much the tile costs to place
+        /// </summary>
+        public int Cost = 0;
+
         public Color Color = Color.White;
 
         /// <summary>

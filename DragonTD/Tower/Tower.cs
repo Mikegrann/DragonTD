@@ -32,6 +32,7 @@ namespace DragonTD.Tower
         public Tower(Game game, Level level, Point position, TowerType type) : base(game, level, position, null, false)
         {
             TType = type;
+            this.Cost = GetTowerStats().Cost;
         }
 
         public TowerStats GetTowerStats()
