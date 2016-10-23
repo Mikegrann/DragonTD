@@ -111,8 +111,8 @@ namespace DragonTD
                     Point ndx = p + ThisHex.Position;
 
                     // Avoid out-of-bounds
-                    if (ndx.Y >= 0 && ndx.Y < EntityArray.GetUpperBound(0) &&
-                        ndx.X >= 0 && ndx.X < EntityArray.GetUpperBound(1) &&
+                    if (ndx.Y >= 0 && ndx.Y <= EntityArray.GetUpperBound(0) &&
+                        ndx.X >= 0 && ndx.X <= EntityArray.GetUpperBound(1) &&
                         EntityArray[ndx.Y, ndx.X].Passable)
                     {
                         neighbors.Add(EntityArray[ndx.Y, ndx.X]);
@@ -126,8 +126,8 @@ namespace DragonTD
                     Point ndx = p + ThisHex.Position;
 
                     // Avoid out-of-bounds
-                    if (ndx.Y >= 0 && ndx.Y < EntityArray.GetUpperBound(0) &&
-                        ndx.X >= 0 && ndx.X < EntityArray.GetUpperBound(1) &&
+                    if (ndx.Y >= 0 && ndx.Y <= EntityArray.GetUpperBound(0) &&
+                        ndx.X >= 0 && ndx.X <= EntityArray.GetUpperBound(1) &&
                         EntityArray[ndx.Y, ndx.X].Passable)
                     {
                         neighbors.Add(EntityArray[ndx.Y, ndx.X]);
