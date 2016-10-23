@@ -16,6 +16,8 @@ namespace DragonTD
         public List<Enemy> EnemyList;
         public List<Projectile> ProjectileList;
 
+        public int Money;
+
         public Level(Game game) : base(game)
         {
             Texture2D testHex = game.Content.Load<Texture2D>("textures/testhex");
@@ -36,44 +38,12 @@ namespace DragonTD
                 }
             }
 
-            PlaceHexEntity(new Obstacle(game, this, new Point(0, 0), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(1, 0), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(2, 0), game.Content.Load<Texture2D>("textures/wall")));
             PlaceHexEntity(new Obstacle(game, this, new Point(3, 0), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(4, 0), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(5, 0), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(6, 0), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(7, 0), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(0, 0), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(0, 1), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(0, 2), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(0, 3), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(0, 4), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(0, 5), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(0, 6), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(0, 7), game.Content.Load<Texture2D>("textures/wall")));
-
-            PlaceHexEntity(new Obstacle(game, this, new Point(0, 7), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(1, 7), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(2, 7), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(3, 7), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(4, 7), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(5, 7), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(6, 7), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(7, 7), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(7, 0), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(7, 1), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(7, 2), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(7, 3), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(7, 4), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(7, 5), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(7, 6), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(7, 7), game.Content.Load<Texture2D>("textures/wall")));
-
             PlaceHexEntity(new Obstacle(game, this, new Point(4, 1), game.Content.Load<Texture2D>("textures/wall")));
             PlaceHexEntity(new Obstacle(game, this, new Point(4, 2), game.Content.Load<Texture2D>("textures/wall")));
             PlaceHexEntity(new Obstacle(game, this, new Point(4, 3), game.Content.Load<Texture2D>("textures/wall")));
             PlaceHexEntity(new Obstacle(game, this, new Point(3, 4), game.Content.Load<Texture2D>("textures/wall")));
+            PlaceHexEntity(new Obstacle(game, this, new Point(2, 2), game.Content.Load<Texture2D>("textures/wall")));
 
             PlaceHexEntity(new ProjectileTower(game, this, new Point(2, 4), ProjectileTower.ProjectileTowerType.Basic));
             PlaceHexEntity(new Spawn(game, this, new Point(3, 1), testHex));
@@ -111,9 +81,23 @@ namespace DragonTD
                 h.Update(gameTime);
             }
 
-            foreach (Enemy e in EnemyList)
+            for (int i = EnemyList.Count - 1; i >= 0; i--)
             {
+                Enemy e = EnemyList[i];
                 e.Update(gameTime);
+
+                if (e.Dead)
+                {
+                    if (e.GetDistanceFromGoal() <= 0.0) // Reached end
+                    {
+                        Money -= e.Stats.TreasureStolen;
+                        if (Money < 0)
+                        {
+                            Money = 0;
+                        }
+                    }
+                    EnemyList.RemoveAt(i);
+                }
             }
 
             for (int i = ProjectileList.Count - 1; i >= 0; i--)

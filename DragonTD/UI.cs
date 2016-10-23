@@ -41,8 +41,6 @@ namespace DragonTD
             inputStates.Update();
             Vector2 pointer = (Vector2.Transform(inputStates.CurrentMouse.Position.ToVector2(), Matrix.Invert(ViewMatrix)));
 
-            level.EnemyList[0].ScreenPosition = pointer;
-
             if(building != null)
             {
                 //after pressing LMB, place building

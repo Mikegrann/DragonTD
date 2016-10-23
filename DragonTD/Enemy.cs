@@ -14,6 +14,8 @@ namespace DragonTD
         public Color Color = Color.White;
         public float Rotation;
 
+        public bool Dead;
+
         public EnemyStats Stats;
         public Vector2 ScreenPosition { get;  set; }
 
@@ -32,6 +34,7 @@ namespace DragonTD
             this.Texture = texture;
             spriteBatch = game.Services.GetService<SpriteBatch>();
 
+            Dead = false;
 
             PoisonTimer = PoisonDamage = 0;
         }
@@ -43,9 +46,9 @@ namespace DragonTD
             {
                 default:
                 case EnemyType.Basic:
-                    return new EnemyStats(20, 0, 100);
+                    return new EnemyStats(20, 0, 100, 20);
                 case EnemyType.Flying:
-                    return new EnemyStats(10, 0, 50);
+                    return new EnemyStats(10, 0, 50, 25);
             }
         }
 

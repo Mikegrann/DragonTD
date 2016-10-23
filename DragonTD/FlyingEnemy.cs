@@ -29,7 +29,7 @@ namespace DragonTD
                 if (GetDistanceFromGoal() < (float)gameTime.ElapsedGameTime.TotalSeconds * Velocity.Length())
                 {
                     ScreenPosition = Target.ScreenPosition;
-                    // TODO: Enemy reaches end - decrease treasure resource
+                    Dead = true;
                 }
                 else
                 {

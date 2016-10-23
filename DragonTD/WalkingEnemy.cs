@@ -37,9 +37,10 @@ namespace DragonTD
                     }
 
                     // Reached end of path
-                    if (PathIndex == Path.Count)
+                    if (PathIndex == Path.Count - 1)
                     {
-                        // TODO: Enemy reaches end - decrease treasure resource
+                        PathProgress = 0.0f;
+                        Dead = true;
                     }
                 }
                 else
@@ -53,7 +54,7 @@ namespace DragonTD
 
         public override float GetDistanceFromGoal()
         {
-            return Path.Count - (PathIndex + PathProgress);
+            return Path.Count - 1 - (PathIndex + PathProgress);
         }
     }
 }
