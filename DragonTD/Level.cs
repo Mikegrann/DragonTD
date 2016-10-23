@@ -18,6 +18,9 @@ namespace DragonTD
 
         public List<Enemy.Enemy> EnemyList;
         public List<Projectile> ProjectileList;
+        WaveManager WM;
+
+        public float SimSpeed;
 
         public int Money;
 
@@ -30,9 +33,11 @@ namespace DragonTD
             Width = 16;
             Height = 9;
 
+            SimSpeed = 1.0f;
+
             EnemyList = new List<Enemy.Enemy>();
             ProjectileList = new List<Projectile>();
-            WaveManager wm = new WaveManager(game, this);
+            WM = new WaveManager(game, this);
 
             rand = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
 
@@ -46,7 +51,7 @@ namespace DragonTD
             AddWall(new Point(3, 4));
             AddWall(new Point(2, 2));
             PlaceHexEntity(new ProjectileTower(game, this, new Point(2, 4), Tower.TowerType.Basic));
-            wm.StartWave(Start, Goal, Map);
+            WM.StartWave(Start, Goal, Map);
             /* End Temporary Setup */
         }
 
@@ -159,17 +164,30 @@ namespace DragonTD
             ProjectileList.Add(p);
         }
 
+        public bool IsWaveOngoing()
+        {
+            return WM.WaveOngoing;
+        }
+
+        public void StartNextWave()
+        {
+            WM.StartWave(Start, Goal, Map);
+        }
+
         public override void Update(GameTime gameTime)
         {
+            TimeSpan simSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * SimSpeed));
+            GameTime simTime = new GameTime(gameTime.TotalGameTime, simSpan);
+
             foreach (HexEntity h in Map)
             {
-                h.Update(gameTime);
+                h.Update(simTime);
             }
 
             for (int i = EnemyList.Count - 1; i >= 0; i--)
             {
                 Enemy.Enemy e = EnemyList[i];
-                e.Update(gameTime);
+                e.Update(simTime);
 
                 if (e.Dead)
                 {
@@ -189,10 +207,16 @@ namespace DragonTD
                 }
             }
 
+            // Check for wave end
+            if (EnemyList.Count == 0)
+            {
+                WM.WaveOngoing = false;
+            }
+
             for (int i = ProjectileList.Count - 1; i >= 0; i--)
             {
                 Projectile p = ProjectileList[i];
-                p.Update(gameTime);
+                p.Update(simTime);
 
                 foreach (Enemy.Enemy e in EnemyList)
                 {
