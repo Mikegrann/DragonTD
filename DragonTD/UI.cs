@@ -43,13 +43,30 @@ namespace DragonTD
 
             if(building != null)
             {
-                //after pressing LMB, place building
-                if(inputStates.CurrentMouse.LeftButton == ButtonState.Released && inputStates.LastMouse.LeftButton == ButtonState.Pressed)
+                // Draw temporary building on hover
+                Vector2 p = pointer - new Vector2(64, 0);
+                building.Position = HexEntity.PixelToHex(p);
+                building.ScreenPosition = HexEntity.CalculateScreenPosition(building.Position);
+
+                if (level.IsPlaceable(building))
                 {
-                    Vector2 p = pointer - new Vector2(64, 0);
-                    Console.WriteLine("screen:{0} world:{1} hex:{2}",inputStates.CurrentMouse.Position, p, HexEntity.PixelToHex(p));
-                    if(level.PlaceHexEntity(building, HexEntity.PixelToHex(p)))
-                        building = null;
+                    building.Color = new Color(128, 128, 128, 128);
+                }
+                else
+                {
+                    building.Color = new Color(64, 64, 64, 192);
+                }
+
+                //after pressing LMB, place building
+                if (inputStates.CurrentMouse.LeftButton == ButtonState.Released && inputStates.LastMouse.LeftButton == ButtonState.Pressed)
+                {
+                    
+                    Console.WriteLine("screen:{0} world:{1} hex:{2}",inputStates.CurrentMouse.Position, p, building.Position);
+                    if (level.PlaceHexEntity(building))
+                    {
+                        building.Color = Color.White;
+                        level.Building = building = null;
+                    }
                 }
             }
 
@@ -274,7 +291,7 @@ namespace DragonTD
             private void TowerButton_OnClick(Button sender)
             {
                 Console.WriteLine("button click " + sender.Name);
-                ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.ProjectileTower.ProjectileTowerType.Basic);
+                ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.ProjectileTower.ProjectileTowerType.Basic);
             }
 
             private void TowerButton_OnHover(Button sender)

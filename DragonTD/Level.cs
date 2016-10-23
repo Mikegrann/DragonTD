@@ -22,6 +22,8 @@ namespace DragonTD
 
         public Random rand;
 
+        public Tower.Tower Building;
+
         public Level(Game game) : base(game)
         {
             Width = 16;
@@ -29,6 +31,7 @@ namespace DragonTD
 
             EnemyList = new List<Enemy>();
             ProjectileList = new List<Projectile>();
+            WaveManager wm = new WaveManager(game, this);
 
             rand = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
 
@@ -41,11 +44,9 @@ namespace DragonTD
             AddWall(new Point(4, 3));
             AddWall(new Point(3, 4));
             AddWall(new Point(2, 2));
-
             PlaceHexEntity(new ProjectileTower(game, this, new Point(2, 4), ProjectileTower.ProjectileTowerType.Basic));
-
-            WaveManager wm = new WaveManager(game, this);
             wm.StartWave(Start, Goal, Map);
+            /* End Temporary Setup */
         }
 
         // Randomize starting map
@@ -92,13 +93,28 @@ namespace DragonTD
             }
         }
 
+        public bool InBounds(HexEntity hex)
+        {
+            return ((hex.Position.Y >= 0 && hex.Position.Y < Height) && (hex.Position.X >= 0 && hex.Position.X < Width));
+        }
+        public bool IsPlaceable(HexEntity hex)
+        {
+            if (!InBounds(hex))
+            {
+                return false;
+            }
+
+            HexEntity current = Map[hex.Position.Y, hex.Position.X];
+            return current != null && current.Passable && current != Start && current != Goal;
+        }
+
         public bool PlaceHexEntity(HexEntity hex)
         {
             //if out of bounds, return false;
-            if ((hex.Position.Y < 0 || hex.Position.Y >= Height) || (hex.Position.X < 0 || hex.Position.X >= Width))
-                return false;
-            else
+            if (InBounds(hex))
                 Map[hex.Position.Y, hex.Position.X] = hex;
+            else
+                return false;
             return true;
         }
         public bool PlaceHexEntity(HexEntity hex, Point p)
@@ -207,6 +223,11 @@ namespace DragonTD
             foreach (Projectile p in ProjectileList)
             {
                 p.Draw(gameTime);
+            }
+
+            if (Building != null)
+            {
+                Building.Draw(gameTime);
             }
         }
 
