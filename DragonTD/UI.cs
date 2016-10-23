@@ -20,7 +20,7 @@ namespace DragonTD
         UpNextWindow upNextWindow;
         TreasureWindow treasureWindow;
 
-        Tower.Tower building;
+        HexEntity building;
 
         Matrix ViewMatrix;
 
@@ -59,7 +59,7 @@ namespace DragonTD
                         Console.WriteLine("screen:{0} world:{1} hex:{2}", inputStates.CurrentMouse.Position, p, building.Position);
                         if (level.PlaceHexEntity(building))
                         {
-                            level.Money -= building.GetTowerStats().Cost;
+                            level.Money -= building.Cost;
                             building.Color = Color.White;
                             level.Building = building = null;
                         }
@@ -302,10 +302,10 @@ namespace DragonTD
                 Console.WriteLine("button click " + sender.Name);
                 if (sender.Name == "basicTower")
                     ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.TowerType.Basic);
-                else if(sender.Name == "freezeTower")
+                else if (sender.Name == "freezeTower")
                     ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, Point.Zero, Tower.TowerType.Freeze);
-                else if(sender.Name == "wall")
-                { }
+                else if (sender.Name == "wall")
+                    ui.level.Building = ui.building = new Obstacle(Game, ui.level, Point.Zero, Game.Content.Load<Texture2D>("textures/obstacles/wall1"));
 
             }
 
@@ -333,9 +333,10 @@ namespace DragonTD
 
         class TowerContextMenu : Window
         {
-            public TowerContextMenu (Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
+            public TowerContextMenu (Game game, UI parent, Rectangle bounds, HexEntity entity) : base(game, parent, bounds)
             {
-
+                //show context for entity.
+                //
             }
         }
 

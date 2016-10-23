@@ -23,7 +23,7 @@ namespace DragonTD
 
         public Random rand;
 
-        public Tower.Tower Building;
+        public HexEntity Building;
 
         public Level(Game game) : base(game)
         {
