@@ -76,9 +76,10 @@ namespace DragonTD
             treasureWindow.Update(gameTime);
 
             if (inputStates.CurrentKey.IsKeyUp(Keys.Q) && inputStates.LastKey.IsKeyDown(Keys.Q))
+            {
                 buildWindow.Enabled = !buildWindow.Enabled;
-
-            
+                treasureWindow.Enabled = !treasureWindow.Enabled;
+            }          
 
         }
 
@@ -371,18 +372,18 @@ namespace DragonTD
 
                 if (Enabled)
                 {
-                    if (offsetLocation.Y > 0)
-                        offsetLocation.Y -= ScrollOffscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (offsetLocation.Y < 0)
-                        offsetLocation.Y = 0;
+                    if (offsetLocation.X > 0)
+                        offsetLocation.X -= ScrollOffscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (offsetLocation.X < 0)
+                        offsetLocation.X = 0;
                     base.Update(gameTime);
                 }
                 else
                 {
-                    if (offsetLocation.Y < bounds.Height)
-                        offsetLocation.Y += ScrollOffscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (offsetLocation.Y > bounds.Height)
-                        offsetLocation.Y = bounds.Height;
+                    if (offsetLocation.X < bounds.Height)
+                        offsetLocation.X += ScrollOffscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (offsetLocation.X > bounds.Height)
+                        offsetLocation.X = bounds.Height;
                 }
             }
 
