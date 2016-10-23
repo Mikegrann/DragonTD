@@ -9,6 +9,7 @@ namespace DragonTD
     class Spawn : HexEntity
     {
         private List<HexEntity> RecentPath;
+        private HexEntity RecentGoal;
 
         public Spawn(Game game, Level level, Point position, Texture2D texture) : base(game, level, position, texture, true)
         {
@@ -18,15 +19,23 @@ namespace DragonTD
         // Uses the most recently created Path (saved)
         public Enemy CreateEnemy(Enemy.EnemyType Type)
         {
-            return new Enemy(this.Game, RecentPath, Enemy.GetEnemyStats(Type), this.ScreenPosition, Enemy.GetEnemyTexture(Game, Type));
+            if (Type == Enemy.EnemyType.Flying)
+            {
+                return new FlyingEnemy(this.Game, Enemy.GetEnemyStats(Type), this.ScreenPosition, Enemy.GetEnemyTexture(Game, Type), RecentGoal);
+            }
+            else
+            {
+                return new WalkingEnemy(this.Game, Enemy.GetEnemyStats(Type), this.ScreenPosition, Enemy.GetEnemyTexture(Game, Type), RecentPath);
+            }
         }
 
         // Creates a new Path for this and subsequent calls
-        public Enemy CreateEnemy(List<HexEntity> Path, Enemy.EnemyType Type)
+        public Enemy CreateEnemy(Enemy.EnemyType Type, HexEntity Goal, List<HexEntity> Path)
         {
             RecentPath = Path;
+            RecentGoal = Goal;
 
-            return new Enemy(this.Game, Path, Enemy.GetEnemyStats(Type), this.ScreenPosition, Enemy.GetEnemyTexture(Game, Type));
+            return CreateEnemy(Type);
         }
     }
 }

@@ -42,6 +42,7 @@
     <Compile Include="DragonTDGame.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="EnemyStats.cs" />
+    <Compile Include="FlyingEnemy.cs" />
     <Compile Include="HexEntity.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Obstacle.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Treasure.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="WalkingEnemy.cs" />
     <Compile Include="Wave.cs" />
     <Compile Include="WaveManager.cs" />
     <Compile Include="Tower\Tower.cs" />

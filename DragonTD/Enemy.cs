@@ -6,12 +6,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DragonTD
 {
-    class Enemy : DrawableGameComponent
+    abstract class Enemy : DrawableGameComponent
     {
-        private List<HexEntity> Path;
-        private int PathIndex;
-        private float PathProgress;
-
         public Texture2D Texture;
         SpriteBatch spriteBatch;
 
@@ -19,7 +15,7 @@ namespace DragonTD
         public float Rotation;
 
         public EnemyStats Stats;
-        public Vector2 ScreenPosition { get; private set; }
+        public Vector2 ScreenPosition { get; protected set; }
 
         private int PoisonDamage;
         private float PoisonTimer;
@@ -28,16 +24,15 @@ namespace DragonTD
 
         public float FreezeTime;
 
-        public Enemy(Game game, List<HexEntity> Path, EnemyStats Stats, Vector2 ScreenPosition, Texture2D texture) : base(game)
-        {
-            this.Path = Path;
+        public Enemy(Game game, EnemyStats Stats, Vector2 ScreenPosition, Texture2D texture) : base(game)
+        { 
             this.Stats = Stats;
             this.ScreenPosition = ScreenPosition;
 
             this.Texture = texture;
             spriteBatch = game.Services.GetService<SpriteBatch>();
 
-            PathProgress = PathIndex = 0;
+
             PoisonTimer = PoisonDamage = 0;
         }
 
@@ -73,35 +68,6 @@ namespace DragonTD
 
         public override void Update(GameTime gameTime)
         {
-            if (PathIndex < Path.Count - 1)
-            {
-                if (FreezeTime <= 0)
-                {
-                    ScreenPosition = Path[PathIndex].ScreenPosition + (Path[PathIndex + 1].ScreenPosition - Path[PathIndex].ScreenPosition) * PathProgress;
-
-                    Rotation = (float)Math.PI / 2 + 
-                        (float)Math.Atan2(Path[PathIndex + 1].ScreenPosition.Y - Path[PathIndex].ScreenPosition.Y,
-                        Path[PathIndex + 1].ScreenPosition.X - Path[PathIndex].ScreenPosition.X);
-
-                    PathProgress += Stats.Speed * 0.01f;
-                    if (PathProgress > 1.0f)
-                    {
-                        PathProgress -= 1.0f;
-                        PathIndex++;
-                    }
-
-                    // Reached end of path
-                    if (PathIndex == Path.Count)
-                    {
-                        // TODO: Enemy reaches end - decrease treasure resource
-                    }
-                }
-                else
-                {
-                    FreezeTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                }
-            }
-
             // Apply Poison DoT
             if (PoisonTimer > 0.0)
             {
@@ -110,10 +76,7 @@ namespace DragonTD
             }
         }
 
-        public float GetProgress()
-        {
-            return PathIndex + PathProgress;
-        }
+        public abstract float GetDistanceFromGoal();
 
         public void ApplyPoison(int dps, float duration)
         {

@@ -39,7 +39,7 @@ namespace DragonTD
             {
                 for (int i = 0; i < desc.Item1; i++)
                 {
-                    Enemy tmpEnemy = new Enemy(Game, Path, Enemy.GetEnemyStats(desc.Item2), start.ScreenPosition, Enemy.GetEnemyTexture(Game, desc.Item2));
+                    Enemy tmpEnemy = start.CreateEnemy(desc.Item2, goal, Path);
                     tmpEnemy.FreezeTime = 0.1f * i;
                     Level.EnemyList.Add(tmpEnemy);
                 }
