@@ -86,11 +86,17 @@ namespace DragonTD
         public bool PlaceHexEntity(HexEntity hex)
         {
             //if out of bounds, return false;
-            if ((hex.Position.Y < 0 && hex.Position.Y >= Height) && (hex.Position.X < 0 && hex.Position.X >= Width))
+            if ((hex.Position.Y < 0 || hex.Position.Y >= Height) || (hex.Position.X < 0 || hex.Position.X >= Width))
                 return false;
             else
                 Map[hex.Position.Y, hex.Position.X] = hex;
             return true;
+        }
+        public bool PlaceHexEntity(HexEntity hex, Point p)
+        {
+            hex.Position = p;
+            hex.ScreenPosition = HexEntity.CalculateScreenPosition(p);
+            return PlaceHexEntity(hex);
         }
 
         public void AddProjectile(Projectile p)

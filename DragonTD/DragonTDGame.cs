@@ -15,6 +15,8 @@ namespace DragonTD
         Level level;
         UI ui;
 
+        public Matrix ViewMatrix;
+
         public DragonTDGame()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -22,6 +24,7 @@ namespace DragonTD
             this.IsMouseVisible = true;
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
+            ViewMatrix = Matrix.CreateTranslation(new Vector3(200, 200, 0)) * Matrix.CreateScale(0.5f);
         }
 
         /// <summary>
@@ -83,7 +86,7 @@ namespace DragonTD
 
             //Draw Level
             //for now, draw at 0.5 scale.
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Matrix.CreateTranslation(new Vector3(200, 200, 0)) * Matrix.CreateScale(0.5f));
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, ViewMatrix);
             level.Draw(gameTime);
             spriteBatch.End();
             //Then Draw UI

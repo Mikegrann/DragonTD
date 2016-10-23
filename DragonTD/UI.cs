@@ -22,7 +22,9 @@ namespace DragonTD
 
         Tower.Tower building;
 
-        public UI(Game game, Level level) : base(game)
+        Matrix ViewMatrix;
+
+        public UI(DragonTDGame game, Level level) : base(game)
         {
             screenSize = game.GraphicsDevice.Viewport.Bounds.Size;
             centerScreen = new Point(screenSize.X / 2, screenSize.Y / 2);
@@ -31,17 +33,33 @@ namespace DragonTD
             buildWindow = new BuildWindow(game, this, new Rectangle(0, screenSize.Y-96, screenSize.X, 96));
             upNextWindow = new UpNextWindow(game, this, new Rectangle(centerScreen.X-250, 0, 500, 150));
             treasureWindow = new TreasureWindow(game, this, new Rectangle(screenSize.X-260, screenSize.Y-96, 260, 96));
+            ViewMatrix = game.ViewMatrix;
         }
 
         public override void Update(GameTime gameTime)
         {
             inputStates.Update();
+
+            if(building != null)
+            {
+                //after pressing LMB, place building
+                if(inputStates.CurrentMouse.LeftButton == ButtonState.Released && inputStates.LastMouse.LeftButton == ButtonState.Pressed)
+                {
+                    Point p = (Vector2.Transform(inputStates.CurrentMouse.Position.ToVector2(), Matrix.Invert(ViewMatrix))).ToPoint();
+                    Console.WriteLine("screen:{0} world:{1} hex:{2}",inputStates.CurrentMouse.Position, p, HexEntity.PixelToHex(p));
+                    level.PlaceHexEntity(building, HexEntity.PixelToHex(p));
+                    building = null;
+                }
+            }
+
             buildWindow.Update(gameTime);
             upNextWindow.Update(gameTime);
             treasureWindow.Update(gameTime);
 
             if (inputStates.CurrentKey.IsKeyUp(Keys.Q) && inputStates.LastKey.IsKeyDown(Keys.Q))
                 buildWindow.Enabled = !buildWindow.Enabled;
+
+            
 
         }
 

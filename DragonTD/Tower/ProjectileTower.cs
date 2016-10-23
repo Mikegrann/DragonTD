@@ -24,7 +24,7 @@ namespace DragonTD.Tower
 
         public Texture2D ProjectileTexture;
 
-        public ProjectileTower(Game game, Level level, Point position, ProjectileTowerType type) : base(game, level, position, null)
+        public ProjectileTower(Game game, Level level, Point position, ProjectileTowerType type) : base(game, level, position)
         {
             UpgradeLevel = 0;
             TargetType = TargetingMode.Default;

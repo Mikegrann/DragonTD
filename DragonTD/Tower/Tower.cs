@@ -31,7 +31,7 @@ namespace DragonTD.Tower
             { TowerType.Basic, new List<TowerStats> { new TowerStats(128f, 0.5f, 128f, 1), new TowerStats(192f, 0.3f, 128f, 2), new TowerStats(256f, 0.2f, 128f, 3) } }
         };
         
-        public Tower(Game game, Level level, Point position, Texture2D texture) : base(game, level, position, texture, false)
+        public Tower(Game game, Level level, Point position) : base(game, level, position, null, false)
         {
             
         }
