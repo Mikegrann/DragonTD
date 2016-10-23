@@ -8,11 +8,6 @@ namespace DragonTD.Tower
     abstract class Tower : HexEntity
     {
         /// <summary>
-        /// Cost to build
-        /// </summary>
-        public int Cost;
-
-        /// <summary>
         /// Level of the tower
         /// </summary>
         public int UpgradeLevel = 0;
@@ -25,18 +20,25 @@ namespace DragonTD.Tower
         
         public enum TowerType { Basic = 0, Freeze = 1, Lightning = 2, Poison = 3, Piercing = 4, Sniper = 5, Explosive = 6 };
 
+        public TowerType TType;
+
         //TODO: initialize dictionary at game.LoadContent.
         public static Dictionary<TowerType, List<TowerStats>> AllTowerStats = new Dictionary<TowerType, List<TowerStats>>()
         {
-            { TowerType.Basic, new List<TowerStats> { new TowerStats(193f, 0.5f, 256f, 1), new TowerStats(257f, 0.3f, 256f, 2), new TowerStats(321f, 0.2f, 256f, 3) } }
+            { TowerType.Basic, new List<TowerStats> { new ProjectileTowerStats(193f, 0.5f, 50, 256f, 1), new ProjectileTowerStats(257f, 0.3f, 75, 256f, 2), new ProjectileTowerStats(321f, 0.2f, 100, 256f, 3) } }
         };
         
-        public Tower(Game game, Level level, Point position) : base(game, level, position, null, false)
+        public Tower(Game game, Level level, Point position, TowerType type) : base(game, level, position, null, false)
         {
-            
+            TType = type;
         }
 
-        // TODO: Set TowerStats (maybe implement reads from config files?)
+        public TowerStats GetTowerStats()
+        {
+            return GetTowerStats(TType, UpgradeLevel);
+        }
+
+        // TODO: Set ProjectileTowerStats (maybe implement reads from config files?)
         public static TowerStats GetTowerStats(TowerType type, int level)
         {
             switch (type)

@@ -17,20 +17,15 @@ namespace DragonTD.Tower
         public enum TargetingMode { Default, Flying, Closest, Furthest, Lightest, Heaviest };
 
         public TargetingMode TargetType;
-        
-        public enum ProjectileTowerType { Basic = 0, Freeze = 1, Poison = 3, Piercing = 4, Sniper = 5, Explosive = 6 };
-
-        public TowerType towerType;
 
         public Texture2D ProjectileTexture;
 
-        public ProjectileTower(Game game, Level level, Point position, ProjectileTowerType type) : base(game, level, position)
+        public ProjectileTower(Game game, Level level, Point position, TowerType type) : base(game, level, position, type)
         {
             UpgradeLevel = 0;
             TargetType = TargetingMode.Default;
-            towerType = (TowerType)type;
-            Texture = GetTowerTexture(game, towerType, UpgradeLevel);
-            ProjectileTexture = GetProjectileTexture(game, towerType);
+            Texture = GetTowerTexture(game, TType, UpgradeLevel);
+            ProjectileTexture = GetProjectileTexture(game, TType);
         }
 
         /// <summary>
@@ -68,7 +63,7 @@ namespace DragonTD.Tower
                 if (target != null)
                 {
                     CreateProjectile(target);
-                    FiringCooldown = GetTowerStats(towerType, UpgradeLevel).FireRate;
+                    FiringCooldown = GetTowerStats(TType, UpgradeLevel).FireRate;
                 }
             }
             else
@@ -91,7 +86,7 @@ namespace DragonTD.Tower
             {
                 float dist = Util.Distance(ScreenPosition, e.ScreenPosition);
 
-                if (dist < GetTowerStats(towerType, UpgradeLevel).Range)
+                if (dist < GetTowerStats(TType, UpgradeLevel).Range)
                 {
                     if (candidate == null) candidate = e;
 
@@ -138,7 +133,7 @@ namespace DragonTD.Tower
 
         public void CreateProjectile(Enemy target)
         {
-            Level.AddProjectile(new Projectile(Game, ProjectileTexture, null, GetTowerStats(towerType, UpgradeLevel), 
+            Level.AddProjectile(new Projectile(Game, ProjectileTexture, null, (ProjectileTowerStats)GetTowerStats(TType, UpgradeLevel), 
                 ScreenPosition + 60f * new Vector2((float)Math.Cos(Rotation - Math.PI / 2.0), (float)Math.Sin(Rotation - Math.PI / 2.0)), target.ScreenPosition));
         }
     }

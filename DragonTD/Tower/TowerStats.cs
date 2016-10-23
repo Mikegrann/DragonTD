@@ -9,14 +9,27 @@ namespace DragonTD.Tower
     class TowerStats
     {
         public float Range { get; private set; }
+        public float FireRate { get; private set; }
+        public int Cost { get; private set; }
+
+        public TowerStats (float range, float firerate, int cost)
+        {
+            Range = range;
+            FireRate = firerate;
+            Cost = cost;
+        }
+    }
+
+    class ProjectileTowerStats : TowerStats
+    {
         public int BasicDamage { get; private set; }
         public int PiercingDamage { get; private set; }
         public int PoisonDamage { get; private set; }
         public float PoisonDuration { get; private set; }
-        public float FireRate { get; private set; }
         public float ProjectileSpeed { get; private set; }
         public int MultiHit { get; private set; }
         public float SplashRadius { get; private set; }
+
 
         /// <summary>
         /// Stats for all towers.
@@ -29,16 +42,14 @@ namespace DragonTD.Tower
         /// <param name="fireRate">Seconds between attacks</param>
         /// <param name="projectileSpeed">Speed of projectile in pixels per second.</param>
         /// <param name="multi">Number of targets the projectile can hit.</param>
-        public TowerStats(float range, float fireRate, float projectileSpeed, 
+        public ProjectileTowerStats(float range, float fireRate, int cost, float projectileSpeed,
             int basicDamage = 0, int piercingDamage = 0, int poisonDamage = 0, float poisonDuration = 0f,
-            int multi = 1, float splash = 0f)
+            int multi = 1, float splash = 0f) : base(range, fireRate, cost)
         {
-            Range = range;
             BasicDamage = basicDamage;
             PiercingDamage = piercingDamage;
             PoisonDamage = poisonDamage;
             PoisonDuration = poisonDuration;
-            FireRate = fireRate;
             ProjectileSpeed = projectileSpeed;
             MultiHit = multi;
             SplashRadius = splash;

@@ -44,7 +44,7 @@ namespace DragonTD
             AddWall(new Point(4, 3));
             AddWall(new Point(3, 4));
             AddWall(new Point(2, 2));
-            PlaceHexEntity(new ProjectileTower(game, this, new Point(2, 4), ProjectileTower.ProjectileTowerType.Basic));
+            PlaceHexEntity(new ProjectileTower(game, this, new Point(2, 4), Tower.Tower.TowerType.Basic));
             wm.StartWave(Start, Goal, Map);
             /* End Temporary Setup */
         }
@@ -103,6 +103,8 @@ namespace DragonTD
             {
                 return false;
             }
+
+            // TODO: Check that the Path does not get blocked
 
             HexEntity current = Map[hex.Position.Y, hex.Position.X];
             return current != null && current.Passable && current != Start && current != Goal;
@@ -164,6 +166,10 @@ namespace DragonTD
                         {
                             Money = 0;
                         }
+                    }
+                    else // Killed
+                    {
+                        Money += e.Stats.MoneyDropped;
                     }
                     EnemyList.RemoveAt(i);
                 }

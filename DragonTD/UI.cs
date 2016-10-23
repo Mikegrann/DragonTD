@@ -64,6 +64,7 @@ namespace DragonTD
                     Console.WriteLine("screen:{0} world:{1} hex:{2}",inputStates.CurrentMouse.Position, p, building.Position);
                     if (level.PlaceHexEntity(building))
                     {
+                        level.Money -= building.GetTowerStats().Cost;
                         building.Color = Color.White;
                         level.Building = building = null;
                     }
@@ -291,7 +292,7 @@ namespace DragonTD
             private void TowerButton_OnClick(Button sender)
             {
                 Console.WriteLine("button click " + sender.Name);
-                ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.ProjectileTower.ProjectileTowerType.Basic);
+                ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.Tower.TowerType.Basic);
             }
 
             private void TowerButton_OnHover(Button sender)

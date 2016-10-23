@@ -11,14 +11,16 @@ namespace DragonTD
         public int Health, Shields;
         public float Speed;
 
+        public int MoneyDropped;
         public int TreasureStolen;
 
-        public EnemyStats(int health, int shields, int speed, int treasure)
+        public EnemyStats(int health, int shields, int speed, int dropped, int treasure)
         {
             Health = health;
             Shields = shields;
             Speed = speed;
 
+            MoneyDropped = dropped;
             TreasureStolen = treasure;
         }
     }
