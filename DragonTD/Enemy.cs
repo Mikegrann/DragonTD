@@ -43,8 +43,9 @@ namespace DragonTD
             {
                 default:
                 case EnemyType.Basic:
-                    return new EnemyStats(20, 0, 3);
-                    break;
+                    return new EnemyStats(20, 0, 100);
+                case EnemyType.Flying:
+                    return new EnemyStats(10, 0, 50);
             }
         }
 
@@ -56,7 +57,8 @@ namespace DragonTD
                 default:
                 case EnemyType.Basic:
                     return game.Content.Load<Texture2D>("textures/enemies/basic");
-                    break;
+                case EnemyType.Flying:
+                    return game.Content.Load<Texture2D>("textures/enemies/flying");
             }
         }
 
