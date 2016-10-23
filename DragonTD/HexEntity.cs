@@ -146,23 +146,80 @@ namespace DragonTD
         /// <returns>Integer number of "steps"</returns>
         public static int Distance(HexEntity start, HexEntity goal)
         {
-            Point3D a = CubeCoords(start.Position);
-            Point3D b = CubeCoords(goal.Position);
+            Point3D a = OffsetToCube(start.Position);
+            Point3D b = OffsetToCube(goal.Position);
 
             return (Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y) + Math.Abs(a.Z - b.Z)) / 2;
         }
 
-        /// <summary>
-        /// Converts to Cube-based coordinates
-        /// </summary>
-        /// <param name="OffsetCoords">Offset-based coordinates</param>
-        /// <returns>Cube-based coordinates</returns>
-        public static Point3D CubeCoords(Point OffsetCoords)
+
+        public static Point3D OffsetToCube(Point OffsetCoords)
         {
             Point3D NewCoords = new Point3D();
             NewCoords.X = OffsetCoords.X - (OffsetCoords.Y + (OffsetCoords.Y % 2)) / 2;
             NewCoords.Z = OffsetCoords.Y;
             NewCoords.Y = -NewCoords.X - NewCoords.Z;
+
+            return NewCoords;
+        }
+
+        public static Vector3 AxialToCube(Vector2 AxialCoords)
+        {
+            Vector3 NewCoords = new Vector3();
+            NewCoords.X = AxialCoords.X;
+            NewCoords.Z = AxialCoords.Y;
+            NewCoords.Y = -NewCoords.X - NewCoords.Z;
+
+            return NewCoords;
+        }
+
+        public static Point CubeToOffset(Point3D CubeCoords)
+        {
+            Point NewCoords = new Point();
+            NewCoords.X = CubeCoords.X + (CubeCoords.Z + (CubeCoords.Z % 2)) / 2;
+            NewCoords.Y = CubeCoords.Z;
+
+            return NewCoords;
+        }
+
+        public static Point3D PixelToCube(Vector2 PixelCoords)
+        {
+            Vector2 NewCoords = new Vector2();
+            NewCoords.X = (float)(PixelCoords.X * Math.Sqrt(3.0) / 3.0 - PixelCoords.Y / 3.0) / 74.0f;
+            NewCoords.Y = (PixelCoords.Y * 2.0f / 3.0f) / 74.0f;
+
+            return CubeRound(AxialToCube(NewCoords));
+        }
+
+        public static Point PixelToHex(Vector2 PixelCoords)
+        {
+            return CubeToOffset(PixelToCube(PixelCoords));
+        }
+
+        public static Point3D CubeRound(Vector3 CubeCoords)
+        {
+            Point3D NewCoords = new Point3D();
+            NewCoords.X = (int)Math.Round(CubeCoords.X);
+            NewCoords.Y = (int)Math.Round(CubeCoords.Y);
+            NewCoords.Z = (int)Math.Round(CubeCoords.Z);
+
+            Vector3 DiffCoords = new Vector3();
+            DiffCoords.X = Math.Abs(NewCoords.X - CubeCoords.X);
+            DiffCoords.Y = Math.Abs(NewCoords.Y - CubeCoords.Y);
+            DiffCoords.Z = Math.Abs(NewCoords.Z - CubeCoords.Z);
+
+            if (DiffCoords.X > DiffCoords.Y && DiffCoords.X > DiffCoords.Z)
+            {
+                NewCoords.X = -NewCoords.Y - NewCoords.Z;
+            }
+            else if (DiffCoords.Y > DiffCoords.Z)
+            {
+                NewCoords.Y = -NewCoords.X - NewCoords.Z;
+            }
+            else
+            {
+                NewCoords.Z = -NewCoords.X - NewCoords.Y;
+            }
 
             return NewCoords;
         }
