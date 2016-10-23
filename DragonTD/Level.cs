@@ -20,6 +20,8 @@ namespace DragonTD
 
         public int Money;
 
+        public Random rand;
+
         public Level(Game game) : base(game)
         {
             Width = 16;
@@ -28,18 +30,17 @@ namespace DragonTD
             EnemyList = new List<Enemy>();
             ProjectileList = new List<Projectile>();
 
+            rand = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+
             InitializeMap();
 
-            /* Temporary Test Map */
-            PlaceHexEntity(new Obstacle(game, this, new Point(3, 0), game.Content.Load<Texture2D>("textures/obstacles/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(4, 1), game.Content.Load<Texture2D>("textures/obstacles/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(4, 2), game.Content.Load<Texture2D>("textures/obstacles/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(4, 3), game.Content.Load<Texture2D>("textures/obstacles/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(3, 4), game.Content.Load<Texture2D>("textures/obstacles/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(2, 2), game.Content.Load<Texture2D>("textures/obstacles/wall")));
-
-            PlaceHexEntity(new Obstacle(game, this, new Point(5, 4), game.Content.Load<Texture2D>("textures/obstacles/tree1")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(6, 5), game.Content.Load<Texture2D>("textures/obstacles/tree2")));
+            /* Temporary Test Map - TODO: Remove */
+            AddWall(new Point(3, 0));
+            AddWall(new Point(4, 1));
+            AddWall(new Point(4, 2));
+            AddWall(new Point(4, 3));
+            AddWall(new Point(3, 4));
+            AddWall(new Point(2, 2));
 
             PlaceHexEntity(new ProjectileTower(game, this, new Point(2, 4), ProjectileTower.ProjectileTowerType.Basic));
 
@@ -50,7 +51,6 @@ namespace DragonTD
         // Randomize starting map
         public void InitializeMap()
         {
-            Random rand = new Random();
             List<Texture2D> ObstacleTextures = new List<Texture2D>();
             ObstacleTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/tree1"));
             ObstacleTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/tree2"));
@@ -106,6 +106,20 @@ namespace DragonTD
             hex.Position = p;
             hex.ScreenPosition = HexEntity.CalculateScreenPosition(p);
             return PlaceHexEntity(hex);
+        }
+
+        // Randomizes Wall Texture
+        public void AddWall(Point p)
+        {
+            List<Texture2D> WallTextures = new List<Texture2D>();
+            WallTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/wall1"));
+            WallTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/wall2"));
+            WallTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/wall3"));
+            WallTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/wall4"));
+            WallTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/wall5"));
+            WallTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/wall6"));
+            
+            PlaceHexEntity(new Obstacle(Game, this, p, WallTextures[rand.Next(0, WallTextures.Count - 1)]));
         }
 
         public void AddProjectile(Projectile p)
