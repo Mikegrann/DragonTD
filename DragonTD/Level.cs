@@ -234,6 +234,8 @@ namespace DragonTD
                 h.Draw(gameTime);
             }
 
+            DrawPath();
+
             foreach (Enemy e in EnemyList)
             {
                 e.Draw(gameTime);
@@ -250,5 +252,17 @@ namespace DragonTD
             }
         }
 
+        public void DrawPath()
+        {
+            List<HexEntity> Path = WaveManager.CreatePath(Start, Goal, Map);
+            for (int i = 0; i < Path.Count - 1; i++)
+            {
+                Vector2 diff = Path[i + 1].ScreenPosition - Path[i].ScreenPosition;
+                float rot = (float)Math.PI / 2.0f + (float)Math.Atan2(diff.Y, diff.X);
+                Texture2D tex = Game.Content.Load<Texture2D>("textures/arrow");
+
+                Game.Services.GetService<SpriteBatch>().Draw(tex, Path[i].ScreenPosition + diff / 2.0f, null, Color.White, rot, new Vector2(tex.Width / 2, tex.Height / 2), 1f, SpriteEffects.None, 0f);
+            }
+        }
     }
 }
