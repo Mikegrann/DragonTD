@@ -14,7 +14,7 @@ namespace DragonTD.Tower
         /// Lightest = fire at target with least health
         /// Heaviest = fire at target with most health
         /// </summary>
-        public enum TargetingMode { Default, Closest, Furthest, Lightest, Heaviest };
+        public enum TargetingMode { Default, Flying, Closest, Furthest, Lightest, Heaviest };
 
         public TargetingMode TargetType;
         
@@ -99,6 +99,12 @@ namespace DragonTD.Tower
                     {
                         case TargetingMode.Default:
                             return e;
+                        case TargetingMode.Flying:
+                            if (e.GetType() == typeof(FlyingEnemy))
+                            {
+                                return e;
+                            }
+                            break;
                         case TargetingMode.Closest:
                             if (dist < Util.Distance(ScreenPosition, candidate.ScreenPosition))
                             {
