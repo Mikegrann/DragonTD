@@ -24,8 +24,6 @@ namespace DragonTD.Tower
         {
             UpgradeLevel = 0;
             TargetType = TargetingMode.Default;
-
-            Rotation = (float)Math.PI;
         }
 
         /// <summary>
@@ -101,7 +99,7 @@ namespace DragonTD.Tower
                             }
                             break;
                         case TargetingMode.Furthest:
-                            if (e.GetProgress() < candidate.GetProgress())
+                            if (e.GetDistanceFromGoal() < candidate.GetDistanceFromGoal())
                             {
                                 candidate = e;
                             }
