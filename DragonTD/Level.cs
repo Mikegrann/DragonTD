@@ -140,12 +140,18 @@ namespace DragonTD
                             }
                         }
 
-                        if (--p.MultiHit == 0)
+                        if (--p.MultiHit <= 0)
                         {
                             ProjectileList.RemoveAt(i);
                             break;
                         }
                     }
+                }
+                
+                if (p.MultiHit <= 0)
+                {
+                    ProjectileList.RemoveAt(i);
+                    break;
                 }
             }
         }

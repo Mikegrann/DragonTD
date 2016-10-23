@@ -28,7 +28,7 @@ namespace DragonTD.Tower
         //TODO: initialize dictionary at game.LoadContent.
         public static Dictionary<TowerType, List<TowerStats>> AllTowerStats = new Dictionary<TowerType, List<TowerStats>>()
         {
-            { TowerType.Basic, new List<TowerStats> { new TowerStats(128f, 0.5f, 128f, 1), new TowerStats(192f, 0.3f, 128f, 2), new TowerStats(256f, 0.2f, 128f, 3) } }
+            { TowerType.Basic, new List<TowerStats> { new TowerStats(128f, 0.5f, 256f, 1), new TowerStats(192f, 0.3f, 256f, 2), new TowerStats(256f, 0.2f, 256f, 3) } }
         };
         
         public Tower(Game game, Level level, Point position) : base(game, level, position, null, false)

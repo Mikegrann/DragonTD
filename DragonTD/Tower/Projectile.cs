@@ -13,6 +13,7 @@ namespace DragonTD
         // Velocity in pixels per second
         Vector2 Velocity;
         public Vector2 Position;
+        Vector2 StartPosition;
         Vector2 Target;
 
         Texture2D Texture;
@@ -40,7 +41,7 @@ namespace DragonTD
             Stats = stats;
             MultiHit = Stats.MultiHit;
 
-            Position = position;
+            StartPosition = Position = position;
             Target = target;
 
             Vector2 direction = target - position;
@@ -52,6 +53,12 @@ namespace DragonTD
         public override void Update(GameTime gameTime)
         {
             Position += (float)gameTime.ElapsedGameTime.TotalSeconds * Velocity;
+
+            // Signal death
+            if (Util.Distance(StartPosition, Position) > Stats.Range)
+            {
+                MultiHit = 0;
+            }
         }
 
         public override void Draw(GameTime gameTime)
