@@ -15,7 +15,7 @@ namespace DragonTD
         public float Rotation;
 
         public EnemyStats Stats;
-        public Vector2 ScreenPosition { get; protected set; }
+        public Vector2 ScreenPosition { get;  set; }
 
         private int PoisonDamage;
         private float PoisonTimer;

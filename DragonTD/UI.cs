@@ -39,16 +39,19 @@ namespace DragonTD
         public override void Update(GameTime gameTime)
         {
             inputStates.Update();
+            Vector2 pointer = (Vector2.Transform(inputStates.CurrentMouse.Position.ToVector2(), Matrix.Invert(ViewMatrix)));
+
+            level.EnemyList[0].ScreenPosition = pointer;
 
             if(building != null)
             {
                 //after pressing LMB, place building
                 if(inputStates.CurrentMouse.LeftButton == ButtonState.Released && inputStates.LastMouse.LeftButton == ButtonState.Pressed)
                 {
-                    Point p = (Vector2.Transform(inputStates.CurrentMouse.Position.ToVector2(), Matrix.Invert(ViewMatrix))).ToPoint();
+                    Vector2 p = pointer - new Vector2(64, 0);
                     Console.WriteLine("screen:{0} world:{1} hex:{2}",inputStates.CurrentMouse.Position, p, HexEntity.PixelToHex(p));
-                    level.PlaceHexEntity(building, HexEntity.PixelToHex(p));
-                    building = null;
+                    if(level.PlaceHexEntity(building, HexEntity.PixelToHex(p)))
+                        building = null;
                 }
             }
 
