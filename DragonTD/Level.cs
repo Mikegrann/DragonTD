@@ -10,6 +10,8 @@ namespace DragonTD
     {
         //REMEMBER! Y,X
         public HexEntity[,] Map;
+        public Spawn Start;
+        public Treasure Goal;
 
         public int Width, Height;
 
@@ -20,37 +22,74 @@ namespace DragonTD
 
         public Level(Game game) : base(game)
         {
-            Texture2D testHex = game.Content.Load<Texture2D>("textures/testhex");
-            Width = 8;
-            Height = 8;
+            Width = 16;
+            Height = 9;
 
             EnemyList = new List<Enemy>();
             ProjectileList = new List<Projectile>();
 
+            InitializeMap();
+
+            /* Temporary Test Map */
+            PlaceHexEntity(new Obstacle(game, this, new Point(3, 0), game.Content.Load<Texture2D>("textures/obstacles/wall")));
+            PlaceHexEntity(new Obstacle(game, this, new Point(4, 1), game.Content.Load<Texture2D>("textures/obstacles/wall")));
+            PlaceHexEntity(new Obstacle(game, this, new Point(4, 2), game.Content.Load<Texture2D>("textures/obstacles/wall")));
+            PlaceHexEntity(new Obstacle(game, this, new Point(4, 3), game.Content.Load<Texture2D>("textures/obstacles/wall")));
+            PlaceHexEntity(new Obstacle(game, this, new Point(3, 4), game.Content.Load<Texture2D>("textures/obstacles/wall")));
+            PlaceHexEntity(new Obstacle(game, this, new Point(2, 2), game.Content.Load<Texture2D>("textures/obstacles/wall")));
+
+            PlaceHexEntity(new Obstacle(game, this, new Point(5, 4), game.Content.Load<Texture2D>("textures/obstacles/tree1")));
+            PlaceHexEntity(new Obstacle(game, this, new Point(6, 5), game.Content.Load<Texture2D>("textures/obstacles/tree2")));
+
+            PlaceHexEntity(new ProjectileTower(game, this, new Point(2, 4), ProjectileTower.ProjectileTowerType.Basic));
+
+            WaveManager wm = new WaveManager(game, this);
+            wm.StartWave(Start, Goal, Map);
+        }
+
+        // Randomize starting map
+        public void InitializeMap()
+        {
+            Random rand = new Random();
+            List<Texture2D> ObstacleTextures = new List<Texture2D>();
+            ObstacleTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/tree1"));
+            ObstacleTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/tree2"));
+            ObstacleTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/pond"));
+            ObstacleTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/rock1"));
+            ObstacleTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/rock2"));
+
+            Texture2D testHex = Game.Content.Load<Texture2D>("textures/outlinehex");
+
             //create empty map.
             Map = new HexEntity[Height, Width];
-            for(int y = 0; y < Height; y++)
+            for (int y = 0; y < Height; y++)
             {
-                for(int x = 0; x < Width; x++)
+                for (int x = 0; x < Width; x++)
                 {
                     //fill in map with passable null hexes
-                    Map[y, x] = new HexEntity(game, this, new Point(x, y), testHex, true);
+                    Map[y, x] = new HexEntity(Game, this, new Point(x, y), testHex, true);
                 }
             }
 
-            PlaceHexEntity(new Obstacle(game, this, new Point(3, 0), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(4, 1), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(4, 2), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(4, 3), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(3, 4), game.Content.Load<Texture2D>("textures/wall")));
-            PlaceHexEntity(new Obstacle(game, this, new Point(2, 2), game.Content.Load<Texture2D>("textures/wall")));
+            // Randomize spawn/treasure
+            Start = new Spawn(Game, this, new Point(rand.Next(0, Width / 3), rand.Next(0, Height - 1)), testHex); // Left third
+            Goal = new Treasure(Game, this, new Point(rand.Next(Width * 2 / 3, Width - 1), rand.Next(0, Height - 1)), Game.Content.Load<Texture2D>("textures/treasure")); // Right third
 
-            PlaceHexEntity(new ProjectileTower(game, this, new Point(2, 4), ProjectileTower.ProjectileTowerType.Basic));
-            PlaceHexEntity(new Spawn(game, this, new Point(3, 1), testHex));
-            PlaceHexEntity(new Treasure(game, this, new Point(6, 3), testHex));
+            PlaceHexEntity(Start);
+            PlaceHexEntity(Goal);
 
-            WaveManager wm = new WaveManager(game, this);
-            wm.StartWave((Spawn)Map[1, 3], (Treasure)Map[3, 6], Map);
+            // Randomize obstacles, up to (but maybe less than) maxObstacles
+            int maxObstacles = 10;
+            for (int i = 0; i < maxObstacles; i++)
+            {
+                Point location = new Point(rand.Next(0, Width - 1), rand.Next(0, Height - 1));
+                PlaceHexEntity(new Obstacle(Game, this, location, ObstacleTextures[rand.Next(0, ObstacleTextures.Count - 1)]));
+
+                if (WaveManager.CreatePath(Start, Goal, Map).Count == 0) // Obstacle blocks the path
+                {
+                    PlaceHexEntity(new HexEntity(Game, this, location, testHex, true)); // Reset to null hex
+                }
+            }
         }
 
         public bool PlaceHexEntity(HexEntity hex)

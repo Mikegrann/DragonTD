@@ -24,7 +24,7 @@ namespace DragonTD
             this.IsMouseVisible = true;
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
-            ViewMatrix = Matrix.CreateTranslation(new Vector3(200, 200, 0)) * Matrix.CreateScale(0.5f);
+            ViewMatrix = Matrix.CreateTranslation(new Vector3(288, 200, 0)) * Matrix.CreateScale(0.5f);
         }
 
         /// <summary>
@@ -85,6 +85,9 @@ namespace DragonTD
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             //Draw Level
+            spriteBatch.Begin();
+            spriteBatch.Draw(Content.Load<Texture2D>("textures/bg"), new Vector2(0, 0), Color.White); // TODO: Move background drawing back to Level somehow
+            spriteBatch.End();
             //for now, draw at 0.5 scale.
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, ViewMatrix);
             level.Draw(gameTime);
