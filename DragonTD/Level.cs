@@ -254,6 +254,13 @@ namespace DragonTD
 
         public void DrawPath()
         {
+            HexEntity Saved = null;
+            if (Building != null && InBounds(Building))
+            {
+                Saved = Map[Building.Position.Y, Building.Position.X];
+                Map[Building.Position.Y, Building.Position.X] = Building;
+            }
+
             List<HexEntity> Path = WaveManager.CreatePath(Start, Goal, Map);
             for (int i = 0; i < Path.Count - 1; i++)
             {
@@ -262,6 +269,11 @@ namespace DragonTD
                 Texture2D tex = Game.Content.Load<Texture2D>("textures/arrow");
 
                 Game.Services.GetService<SpriteBatch>().Draw(tex, Path[i].ScreenPosition + diff / 2.0f, null, Color.White, rot, new Vector2(tex.Width / 2, tex.Height / 2), 1f, SpriteEffects.None, 0f);
+            }
+
+            if (Building != null && InBounds(Building))
+            {
+                Map[Building.Position.Y, Building.Position.X] = Saved;
             }
         }
     }
