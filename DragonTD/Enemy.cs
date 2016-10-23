@@ -15,7 +15,7 @@ namespace DragonTD
         public float Rotation;
 
         public bool Dead;
-
+        
         public EnemyStats Stats;
         public Vector2 ScreenPosition { get;  set; }
 
@@ -25,6 +25,9 @@ namespace DragonTD
         public enum EnemyType { Trash, Basic, Flying, Fast, Mid, Heavy, Buff };
 
         public float FreezeTime;
+
+        public float SpeedDebuff = 1f;
+        public float SpeedDebuffTimer = 0f;
 
         public Enemy(Game game, EnemyStats Stats, Vector2 ScreenPosition, Texture2D texture) : base(game)
         { 
@@ -78,6 +81,16 @@ namespace DragonTD
             {
                 Stats.Health -= (int)(PoisonDamage * gameTime.ElapsedGameTime.TotalSeconds);
                 PoisonTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            if(SpeedDebuffTimer > 0)
+            {
+                SpeedDebuffTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Color = Color.Cyan;
+            }
+            else
+            {
+                Color = Color.White;
+                SpeedDebuff = 1f;
             }
         }
 

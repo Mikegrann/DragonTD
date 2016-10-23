@@ -29,7 +29,7 @@ namespace DragonTD
                         (float)Math.Atan2(Path[PathIndex + 1].ScreenPosition.Y - Path[PathIndex].ScreenPosition.Y,
                         Path[PathIndex + 1].ScreenPosition.X - Path[PathIndex].ScreenPosition.X);
 
-                    PathProgress += (float)gameTime.ElapsedGameTime.TotalSeconds * Stats.Speed / (Path[PathIndex + 1].ScreenPosition - Path[PathIndex].ScreenPosition).Length();
+                    PathProgress += (float)gameTime.ElapsedGameTime.TotalSeconds * (Stats.Speed * SpeedDebuff) / (Path[PathIndex + 1].ScreenPosition - Path[PathIndex].ScreenPosition).Length();
                     if (PathProgress > 1.0f)
                     {
                         PathProgress -= 1.0f;

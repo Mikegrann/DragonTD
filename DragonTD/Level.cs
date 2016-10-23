@@ -126,7 +126,7 @@ namespace DragonTD
         public bool PlaceHexEntity(HexEntity hex)
         {
             //if out of bounds, return false;
-            if (InBounds(hex))
+            if (IsPlaceable(hex))
                 Map[hex.Position.Y, hex.Position.X] = hex;
             else
                 return false;

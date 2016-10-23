@@ -20,6 +20,20 @@ namespace DragonTD.Tower
         }
     }
 
+    class AoETowerStats : TowerStats
+    {
+        public int Damage { get; private set; }
+        public float SpeedDebuff { get; private set; }
+        public float SpeedDebuffTime { get; private set; }
+
+        public AoETowerStats(float range, float firerate, int cost, int damage = 0, float speedDebuff = 0, float speedDebuffTime = 0) : base(range, firerate, cost)
+        {
+            Damage = damage;
+            SpeedDebuff = speedDebuff;
+            SpeedDebuffTime = speedDebuffTime;
+        }
+    }
+
     class ProjectileTowerStats : TowerStats
     {
         public int BasicDamage { get; private set; }

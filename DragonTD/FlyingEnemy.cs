@@ -33,7 +33,7 @@ namespace DragonTD
                 }
                 else
                 {
-                    ScreenPosition += (float)gameTime.ElapsedGameTime.TotalSeconds * Velocity;
+                    ScreenPosition += (float)gameTime.ElapsedGameTime.TotalSeconds * Velocity * SpeedDebuff;
                 }
             }
             else
