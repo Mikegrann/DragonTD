@@ -51,23 +51,23 @@ namespace DragonTD
                 if (level.IsPlaceable(building))
                 {
                     building.Color = new Color(128, 128, 128, 128);
+
+                    //after pressing LMB, place building
+                    if (inputStates.CurrentMouse.LeftButton == ButtonState.Released && inputStates.LastMouse.LeftButton == ButtonState.Pressed)
+                    {
+
+                        Console.WriteLine("screen:{0} world:{1} hex:{2}", inputStates.CurrentMouse.Position, p, building.Position);
+                        if (level.PlaceHexEntity(building))
+                        {
+                            level.Money -= building.GetTowerStats().Cost;
+                            building.Color = Color.White;
+                            level.Building = building = null;
+                        }
+                    }
                 }
                 else
                 {
                     building.Color = new Color(64, 64, 64, 192);
-                }
-
-                //after pressing LMB, place building
-                if (inputStates.CurrentMouse.LeftButton == ButtonState.Released && inputStates.LastMouse.LeftButton == ButtonState.Pressed)
-                {
-                    
-                    Console.WriteLine("screen:{0} world:{1} hex:{2}",inputStates.CurrentMouse.Position, p, building.Position);
-                    if (level.PlaceHexEntity(building))
-                    {
-                        level.Money -= building.GetTowerStats().Cost;
-                        building.Color = Color.White;
-                        level.Building = building = null;
-                    }
                 }
             }
 

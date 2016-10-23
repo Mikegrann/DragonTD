@@ -101,13 +101,26 @@ namespace DragonTD
         {
             if (!InBounds(hex))
             {
-                return false;
+                return false; // Out of Bounds
             }
 
-            // TODO: Check that the Path does not get blocked
-
             HexEntity current = Map[hex.Position.Y, hex.Position.X];
-            return current != null && current.Passable && current != Start && current != Goal;
+            if (current == Start || current == Goal)
+            {
+                return false; // Overwrites spawn or treasure room
+            }
+
+            Map[hex.Position.Y, hex.Position.X] = hex;
+            if (WaveManager.CreatePath(Start, Goal, Map).Count == 0)
+            {
+                Map[hex.Position.Y, hex.Position.X] = current;
+                return false; // Cuts off the Path
+            }
+            else
+            {
+                Map[hex.Position.Y, hex.Position.X] = current;
+                return true;
+            }
         }
 
         public bool PlaceHexEntity(HexEntity hex)
