@@ -255,7 +255,7 @@ namespace DragonTD
             private void TowerButton_OnClick(Button sender)
             {
                 Console.WriteLine("button click " + sender.Name);
-                ui.building = new Tower.BasicTower(Game, ui.level, Point.Zero);
+                ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.ProjectileTower.ProjectileTowerType.Basic);
             }
 
             private void TowerButton_OnHover(Button sender)

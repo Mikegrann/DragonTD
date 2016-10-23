@@ -75,7 +75,7 @@ namespace DragonTD
             PlaceHexEntity(new Obstacle(game, this, new Point(4, 3), game.Content.Load<Texture2D>("textures/wall")));
             PlaceHexEntity(new Obstacle(game, this, new Point(3, 4), game.Content.Load<Texture2D>("textures/wall")));
 
-            PlaceHexEntity(new BasicTower(game, this, new Point(2, 4)));
+            PlaceHexEntity(new ProjectileTower(game, this, new Point(2, 4), ProjectileTower.ProjectileTowerType.Basic));
             PlaceHexEntity(new Spawn(game, this, new Point(3, 1), testHex));
             PlaceHexEntity(new Treasure(game, this, new Point(6, 3), testHex));
 

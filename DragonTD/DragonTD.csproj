@@ -48,7 +48,6 @@
     <Compile Include="Obstacle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Sprite.cs" />
-    <Compile Include="Tower\BasicTower.cs" />
     <Compile Include="Tower\Projectile.cs" />
     <Compile Include="Tower\ProjectileTower.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
