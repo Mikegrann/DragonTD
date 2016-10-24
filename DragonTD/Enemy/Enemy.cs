@@ -56,6 +56,8 @@ namespace DragonTD.Enemy
                 default:
                 case EnemyType.Basic:
                     return new EnemyStats(20, 0, 100, 5, 20);
+                case EnemyType.Mid:
+                    return new EnemyStats(20, 20, 80, 25, 50);
                 case EnemyType.Flying:
                     return new EnemyStats(10, 0, 50, 15, 25);
             }
