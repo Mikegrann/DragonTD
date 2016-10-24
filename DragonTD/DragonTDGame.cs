@@ -24,7 +24,7 @@ namespace DragonTD
             this.IsMouseVisible = true;
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
-            ViewMatrix = Matrix.CreateTranslation(new Vector3(288, 200, 0)) * Matrix.CreateScale(0.5f);
+            ViewMatrix = Matrix.CreateTranslation(new Vector3(288, 276, 0)) * Matrix.CreateScale(0.5f);
         }
 
         /// <summary>

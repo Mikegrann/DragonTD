@@ -18,7 +18,7 @@ namespace DragonTD
 
         BuildWindow buildWindow;
         UpNextWindow upNextWindow;
-        TreasureWindow treasureWindow;
+        SpeedControlsWindow speedControlWindow;
 
         HexEntity building;
 
@@ -35,7 +35,8 @@ namespace DragonTD
             this.level = level;
             buildWindow = new BuildWindow(game, this, new Rectangle(0, 613, screenSize.X, 107));
             upNextWindow = new UpNextWindow(game, this, new Rectangle(0, 0, screenSize.X, 138));
-            treasureWindow = new TreasureWindow(game, this, new Rectangle(screenSize.X-370, 0, 370, screenSize.Y));
+            speedControlWindow = new SpeedControlsWindow(game, this, new Rectangle(screenSize.X-65, screenSize.Y-69, 64, 66));
+            speedControlWindow.Enabled = false;
             ViewMatrix = game.ViewMatrix;
             LeftBorder = game.Content.Load<Texture2D>("Textures/UI/Left Border");
             RightBorder = game.Content.Load<Texture2D>("Textures/UI/Right Border");
@@ -78,12 +79,13 @@ namespace DragonTD
 
             buildWindow.Update(gameTime);
             upNextWindow.Update(gameTime);
-            treasureWindow.Update(gameTime);
+            speedControlWindow.Update(gameTime);
 
             if (inputStates.CurrentKey.IsKeyUp(Keys.Q) && inputStates.LastKey.IsKeyDown(Keys.Q))
             {
                 buildWindow.Enabled = !buildWindow.Enabled;
-                treasureWindow.Enabled = !treasureWindow.Enabled;
+                speedControlWindow.Enabled = !speedControlWindow.Enabled;
+                upNextWindow.Enabled = !upNextWindow.Enabled;
             }          
 
         }
@@ -94,7 +96,7 @@ namespace DragonTD
             spriteBatch.Draw(RightBorder, Vector2.Zero, Color.White);
             buildWindow.Draw(gameTime);
             upNextWindow.Draw(gameTime);
-            treasureWindow.Draw(gameTime);
+            speedControlWindow.Draw(gameTime);
         }
 
         class InputStates
@@ -120,7 +122,8 @@ namespace DragonTD
             internal SpriteBatch spriteBatch;
             public Texture2D Texture;
             private Rectangle bounds;
-            public Rectangle Bounds { get { return new Rectangle(bounds.Location + parentWindow.Bounds.Location, bounds.Size); } private set { bounds = value; } }
+            public Vector2 offsetLocation = Vector2.Zero;
+            public Rectangle Bounds { get { return new Rectangle(bounds.Location + parentWindow.Bounds.Location + offsetLocation.ToPoint(), bounds.Size); } private set { bounds = value; } }
             public Color Color { get; set; }
             internal Window parentWindow;
 
@@ -134,6 +137,16 @@ namespace DragonTD
                 if (!color.HasValue)
                     color = Color.White;
                 Color = color.Value;
+            }
+
+            public void SetLocation(int x, int y)
+            {
+                bounds.X = x;
+                bounds.Y = y;
+            }
+            public void SetLocation(Point p)
+            {
+                SetLocation(p.X, p.Y);
             }
 
             public override void Draw(GameTime gameTime)
@@ -343,12 +356,18 @@ namespace DragonTD
                         offsetLocation.Y = 0;
                     }
 
-                    if (animState == WindowAnimState.Moving)
-                        offsetLocation.Y -= ScrollOnscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (animState == WindowAnimState.Bounce)
+                    switch(animState)
+                    {
+                        default:
+                            break;
+                        case WindowAnimState.Moving:
+                            offsetLocation.Y -= ScrollOnscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            break;
+                        case WindowAnimState.Bounce:
                         offsetLocation.Y += (ScrollOnscreenSpeed / 10f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-
+                            break;
+                    }
+                    
                     base.Update(gameTime);
                 }
                 else
@@ -388,17 +407,121 @@ namespace DragonTD
 
         class UpNextWindow : Window
         {
+            public enum WindowAnimState { Moving, Bounce, Paused, Button, ButtonBounce, Wait }
+
+            WindowAnimState animState = WindowAnimState.Paused;
+            //pixels per second
+            float WindowScrollOffscreenSpeed = 327f;
+            float WindowScrollOnscreenSpeed = 654f;
+
+            float ButtonScrollOffscreenSpeed = 180f;
+            float ButtonScrollOnscreenSpeed = 90f;
+
+            const float TimeBetweenAnimations = 0.25f;
+            float TimerBetweenAnimations = 0;
+
+            Button BeginNextWaveButton;
+
             public UpNextWindow(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
                 UIComponent backgroundImage = new UIComponent("background", game, this, game.Content.Load<Texture2D>("Textures/UI/Top Border"), bounds, null);
                 //Background = game.Content.Load<Texture2D>("Textures/UI/Top Border");
 
-                Button BeginNextWaveButton = new Button("NextWave", game, this, game.Content.Load<Texture2D>("Textures/UI/DropButton"), null, null, null, new Rectangle(434, 87, 370, 60), null);
+                BeginNextWaveButton = new Button("NextWave", game, this, game.Content.Load<Texture2D>("Textures/UI/DropButton"), null, null, null, new Rectangle(434, 87, 370, 60), null);
 
                 BeginNextWaveButton.OnClick += BeginNextWaveButton_OnClick;
 
                 components.Add(BeginNextWaveButton);
                 components.Add(backgroundImage);
+            }
+
+            public override void Update(GameTime gameTime)
+            {
+                if (Enabled)
+                {
+                    if (animState == WindowAnimState.Paused && offsetLocation.Y < 0)
+                    {
+                        animState = WindowAnimState.Moving;
+                        BeginNextWaveButton.offsetLocation = new Vector2(0, -39);
+                    }
+                    if (animState == WindowAnimState.Moving && offsetLocation.Y > 0)
+                        animState = WindowAnimState.Bounce;
+                    if (animState == WindowAnimState.Bounce && offsetLocation.Y <= 0)
+                    {
+                        animState = WindowAnimState.Wait;
+                        offsetLocation.Y = 0;
+                    }
+                    if (animState == WindowAnimState.Wait)
+                    {
+                        TimerBetweenAnimations += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        if (TimerBetweenAnimations > TimeBetweenAnimations)
+                        {
+                            TimerBetweenAnimations = 0;
+                            animState = WindowAnimState.Button;
+                        }
+                    }
+                    if (animState == WindowAnimState.Button && BeginNextWaveButton.offsetLocation.Y > 0)
+                        animState = WindowAnimState.ButtonBounce;
+                    if (animState == WindowAnimState.ButtonBounce && BeginNextWaveButton.offsetLocation.Y <= 0)
+                    {
+                        animState = WindowAnimState.Paused;
+                        BeginNextWaveButton.offsetLocation.Y = 0;
+                    }
+
+                    switch(animState)
+                    {
+                        default: break;
+                        case WindowAnimState.Moving:
+                            offsetLocation.Y += WindowScrollOnscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            break;
+                        case WindowAnimState.Bounce:
+                            offsetLocation.Y -= (WindowScrollOnscreenSpeed / 10f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            break;
+                        case WindowAnimState.Button:
+                            BeginNextWaveButton.offsetLocation.Y += ButtonScrollOnscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            break;
+                        case WindowAnimState.ButtonBounce:
+                            BeginNextWaveButton.offsetLocation.Y -= (ButtonScrollOnscreenSpeed / 10f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            break;
+                    }
+
+                }
+                else //-138 main
+                {
+                    if (animState == WindowAnimState.Paused && BeginNextWaveButton.offsetLocation.Y > -39)
+                        animState = WindowAnimState.Button;
+                    if(animState == WindowAnimState.Button && BeginNextWaveButton.offsetLocation.Y < -39)
+                    {
+                        BeginNextWaveButton.offsetLocation.Y = -39;
+                        animState = WindowAnimState.Wait;
+                    }
+                    if(animState == WindowAnimState.Wait)
+                    {
+                        TimerBetweenAnimations += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        if(TimerBetweenAnimations >= TimeBetweenAnimations)
+                        {
+                            TimerBetweenAnimations = 0f;
+                            animState = WindowAnimState.Moving;
+                        }
+                    }
+                    if(animState == WindowAnimState.Moving && offsetLocation.Y < -138)
+                    {
+                        offsetLocation.Y = -138;
+                        animState = WindowAnimState.Paused;
+                    }
+
+                    switch(animState)
+                    {
+                        default: break;
+                        case WindowAnimState.Button:
+                            BeginNextWaveButton.offsetLocation.Y -= ButtonScrollOffscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            break;
+                        case WindowAnimState.Moving:
+                            offsetLocation.Y -= WindowScrollOffscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            break;
+                    }
+                }
+                base.Update(gameTime);
             }
 
             private void BeginNextWaveButton_OnClick(Button sender)
@@ -407,18 +530,18 @@ namespace DragonTD
             }
         }
 
-        class TreasureWindow : Window
+        class SpeedControlsWindow : Window
         {
             //pixels per second
             float ScrollOffscreenSpeed = 128f;
 
             Button PausePlayButton, FastForwardButton;
 
-            public TreasureWindow(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
+            public SpeedControlsWindow(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
                 // Pause/Play Button
                 Texture2D pauseTexture = game.Content.Load<Texture2D>("textures/ui/buttons/pause");
-                Point playPoint = new Point(bounds.Width - 40, bounds.Height - 90);
+                Point playPoint = new Point(10, 0);
                 PausePlayButton = new Button("pausePlay", game, this, pauseTexture, pauseTexture, pauseTexture, pauseTexture,
                     new Rectangle(playPoint, new Point(pauseTexture.Width, pauseTexture.Height)), null);
 
@@ -430,7 +553,7 @@ namespace DragonTD
 
                 // FastForward Button
                 Texture2D forwardTexture = game.Content.Load<Texture2D>("textures/ui/buttons/fastforward");
-                Point forwardPoint = new Point(bounds.Width - 40, bounds.Height - 60);
+                Point forwardPoint = new Point(10, 31);
                 FastForwardButton = new Button("pausePlay", game, this, forwardTexture, forwardTexture, forwardTexture, forwardTexture,
                     new Rectangle(forwardPoint, new Point(forwardTexture.Width, forwardTexture.Height)), null);
 
@@ -457,10 +580,10 @@ namespace DragonTD
                 }
                 else
                 {
-                    if (offsetLocation.X < bounds.Height)
+                    if (offsetLocation.X < bounds.Width)
                         offsetLocation.X += ScrollOffscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (offsetLocation.X > bounds.Height)
-                        offsetLocation.X = bounds.Height;
+                    if (offsetLocation.X > bounds.Width)
+                        offsetLocation.X = bounds.Width;
                 }
             }
 
