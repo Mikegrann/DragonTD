@@ -24,16 +24,21 @@ namespace DragonTD
 
         Matrix ViewMatrix;
 
+        Texture2D LeftBorder;
+        Texture2D RightBorder;
+
         public UI(DragonTDGame game, Level level) : base(game)
         {
             screenSize = game.GraphicsDevice.Viewport.Bounds.Size;
             centerScreen = new Point(screenSize.X / 2, screenSize.Y / 2);
             spriteBatch = game.Services.GetService<SpriteBatch>();
             this.level = level;
-            buildWindow = new BuildWindow(game, this, new Rectangle(0, screenSize.Y-96, screenSize.X, 96));
-            upNextWindow = new UpNextWindow(game, this, new Rectangle(centerScreen.X-250, 0, 500, 150));
-            treasureWindow = new TreasureWindow(game, this, new Rectangle(screenSize.X-260, screenSize.Y-96, 260, 96));
+            buildWindow = new BuildWindow(game, this, new Rectangle(0, 613, screenSize.X, 107));
+            upNextWindow = new UpNextWindow(game, this, new Rectangle(0, 0, screenSize.X, 138));
+            treasureWindow = new TreasureWindow(game, this, new Rectangle(screenSize.X-370, 0, 370, screenSize.Y));
             ViewMatrix = game.ViewMatrix;
+            LeftBorder = game.Content.Load<Texture2D>("Textures/UI/Left Border");
+            RightBorder = game.Content.Load<Texture2D>("Textures/UI/Right Border");
         }
 
         public override void Update(GameTime gameTime)
@@ -85,6 +90,8 @@ namespace DragonTD
 
         public override void Draw(GameTime gameTime)
         {
+            spriteBatch.Draw(LeftBorder, Vector2.Zero, Color.White);
+            spriteBatch.Draw(RightBorder, Vector2.Zero, Color.White);
             buildWindow.Draw(gameTime);
             upNextWindow.Draw(gameTime);
             treasureWindow.Draw(gameTime);
@@ -159,9 +166,10 @@ namespace DragonTD
             public void SetTextures(Texture2D texture, Texture2D hoverTexture, Texture2D clickTexture, Texture2D disabledTexture)
             {
                 Texture = texture;
-                HoverTexture = hoverTexture;
-                ClickTexture = clickTexture;
-                DisabledTexture = disabledTexture;
+                HoverTexture = (hoverTexture != null)? hoverTexture : Texture;
+                ClickTexture = (clickTexture != null) ? clickTexture : Texture;
+                DisabledTexture = (disabledTexture != null) ? disabledTexture : Texture;
+                
             }
 
             public override void Update(GameTime gameTime)
@@ -225,11 +233,13 @@ namespace DragonTD
             internal Vector2 offsetLocation = Vector2.Zero;
             internal Rectangle bounds;
             public Rectangle Bounds { get { return new Rectangle(bounds.Location + offsetLocation.ToPoint(), bounds.Size); } set { bounds = value; } }
+            public Texture2D Background;
 
-            public Window(Game game, UI parent, Rectangle bounds) : base(game)
+            public Window(Game game, UI parent, Rectangle bounds, Texture2D background = null) : base(game)
             {
                 ui = parent;
                 Bounds = bounds;
+                Background = background;
             }
 
             public override void Update(GameTime gameTime)
@@ -243,61 +253,115 @@ namespace DragonTD
 
             public override void Draw(GameTime gameTime)
             {
-                if(Visible)
+                if (Visible)
+                {
+                    if (Background != null)
+                        ui.spriteBatch.Draw(Background, Bounds, Color.White);
                     foreach (UIComponent c in components)
                     {
                         c.Draw(gameTime);
                     }
+                }
             }
         }
 
         class BuildWindow : Window
         {
             //pixels per second
-            float ScrollOffscreenSpeed = 128f;
+            float ScrollOffscreenSpeed = 256f;
+            float ScrollOnscreenSpeed = 512f;
 
             public BuildWindow(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
-                Button BasicTowerButton = new Button("basicTower", game, this, game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButton"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonH"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonC"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonD"), new Rectangle(64, 0, 80, 80), null);
-                Button FreezeTowerButton = new Button("freezeTower", game, this, game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButton"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonH"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonC"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonD"), new Rectangle(180, 0, 80, 80), null);
-                Button WallButton = new Button("wall", game, this, game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButton"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonH"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonC"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonD"), new Rectangle(276, 0, 80, 80), null);
-
-                BasicTowerButton.OnHover += TowerButton_OnHover;
-                BasicTowerButton.OnClick += TowerButton_OnClick;
-                BasicTowerButton.OnLeave += TowerButton_OnLeave;
+                Background = game.Content.Load<Texture2D>("Textures/UI/Bottom Border");
+                Button WallButton           = new Button("wall",            game, this, game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButton"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonH"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonC"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonD"), new Rectangle(229, 8, 60, 60), null);
+                Button BasicTowerButton     = new Button("basicTower",      game, this, game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButton"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonH"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonC"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonD"), new Rectangle(322, 8, 60, 60), null);
+                Button PoisonTowerButton    = new Button("poisonTower",     game, this, game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButton"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonH"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonC"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonD"), new Rectangle(413, 8, 60, 60), null);
+                Button PiercingTowerButton  = new Button("piercingTower",   game, this, game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButton"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonH"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonC"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonD"), new Rectangle(506, 8, 60, 60), null);
+                Button SniperTowerButton    = new Button("sniperTower",     game, this, game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButton"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonH"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonC"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonD"), new Rectangle(598, 8, 60, 60), null);
+                Button ExplosiveTowerButton = new Button("explosiveTower",  game, this, game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButton"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonH"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonC"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonD"), new Rectangle(691, 8, 60, 60), null);
+                Button FreezeTowerButton    = new Button("freezeTower",     game, this, game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButton"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonH"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonC"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonD"), new Rectangle(783, 8, 60, 60), null);
+                Button LightningTowerButton = new Button("lightningTower",  game, this, game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButton"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonH"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonC"), game.Content.Load<Texture2D>("Textures/UI/Buttons/TestButtonD"), new Rectangle(875, 8, 60, 60), null);
 
                 WallButton.OnHover += TowerButton_OnHover;
                 WallButton.OnClick += TowerButton_OnClick;
                 WallButton.OnLeave += TowerButton_OnLeave;
 
+                BasicTowerButton.OnHover += TowerButton_OnHover;
+                BasicTowerButton.OnClick += TowerButton_OnClick;
+                BasicTowerButton.OnLeave += TowerButton_OnLeave;
+
+                PoisonTowerButton.OnHover += TowerButton_OnHover;
+                PoisonTowerButton.OnClick += TowerButton_OnClick;
+                PoisonTowerButton.OnLeave += TowerButton_OnLeave;
+
+                PiercingTowerButton.OnHover += TowerButton_OnHover;
+                PiercingTowerButton.OnClick += TowerButton_OnClick;
+                PiercingTowerButton.OnLeave += TowerButton_OnLeave;
+
+                SniperTowerButton.OnHover += TowerButton_OnHover;
+                SniperTowerButton.OnClick += TowerButton_OnClick;
+                SniperTowerButton.OnLeave += TowerButton_OnLeave;
+
+                ExplosiveTowerButton.OnHover += TowerButton_OnHover;
+                ExplosiveTowerButton.OnClick += TowerButton_OnClick;
+                ExplosiveTowerButton.OnLeave += TowerButton_OnLeave;
+
                 FreezeTowerButton.OnHover += TowerButton_OnHover;
                 FreezeTowerButton.OnClick += TowerButton_OnClick;
                 FreezeTowerButton.OnLeave += TowerButton_OnLeave;
 
-                components.Add(BasicTowerButton);
-                components.Add(FreezeTowerButton);
+                LightningTowerButton.OnHover += TowerButton_OnHover;
+                LightningTowerButton.OnClick += TowerButton_OnClick;
+                LightningTowerButton.OnLeave += TowerButton_OnLeave;
+
                 components.Add(WallButton);
+                components.Add(BasicTowerButton);
+                components.Add(PoisonTowerButton);
+                components.Add(PiercingTowerButton);
+                components.Add(SniperTowerButton);
+                components.Add(ExplosiveTowerButton);
+                components.Add(FreezeTowerButton);
+                components.Add(LightningTowerButton);
             }
+
+            public enum WindowAnimState { Moving, Bounce, Paused }
+
+            WindowAnimState animState = WindowAnimState.Paused;
 
             public override void Update(GameTime gameTime)
             {
                 if(Enabled)
                 {
-                    if(offsetLocation.Y > 0)
-                        offsetLocation.Y -= ScrollOffscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (offsetLocation.Y < 0)
+                    if (animState == WindowAnimState.Paused && offsetLocation.Y > 0)
+                        animState = WindowAnimState.Moving;
+                    if (animState == WindowAnimState.Moving && offsetLocation.Y < 0)
+                        animState = WindowAnimState.Bounce;
+                    if (animState == WindowAnimState.Bounce && offsetLocation.Y >= 0)
+                    {
+                        animState = WindowAnimState.Paused;
                         offsetLocation.Y = 0;
+                    }
+
+                    if (animState == WindowAnimState.Moving)
+                        offsetLocation.Y -= ScrollOnscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (animState == WindowAnimState.Bounce)
+                        offsetLocation.Y += (ScrollOnscreenSpeed / 10f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+
                     base.Update(gameTime);
                 }
                 else
                 {
+                    //we don't need a bounce. but still set animstate to paused
+                    animState = WindowAnimState.Paused;
                     if (offsetLocation.Y < bounds.Height)
                         offsetLocation.Y += ScrollOffscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     if (offsetLocation.Y > bounds.Height)
                         offsetLocation.Y = bounds.Height;
                 }
             }
-            
+
 
             private void TowerButton_OnLeave(Button sender)
             {
@@ -326,7 +390,20 @@ namespace DragonTD
         {
             public UpNextWindow(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
+                UIComponent backgroundImage = new UIComponent("background", game, this, game.Content.Load<Texture2D>("Textures/UI/Top Border"), bounds, null);
+                //Background = game.Content.Load<Texture2D>("Textures/UI/Top Border");
 
+                Button BeginNextWaveButton = new Button("NextWave", game, this, game.Content.Load<Texture2D>("Textures/UI/DropButton"), null, null, null, new Rectangle(434, 87, 370, 60), null);
+
+                BeginNextWaveButton.OnClick += BeginNextWaveButton_OnClick;
+
+                components.Add(BeginNextWaveButton);
+                components.Add(backgroundImage);
+            }
+
+            private void BeginNextWaveButton_OnClick(Button sender)
+            {
+                Console.WriteLine("BeginNextButton Clicked");
             }
         }
 
