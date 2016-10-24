@@ -76,9 +76,10 @@ namespace DragonTD
             treasureWindow.Update(gameTime);
 
             if (inputStates.CurrentKey.IsKeyUp(Keys.Q) && inputStates.LastKey.IsKeyDown(Keys.Q))
+            {
                 buildWindow.Enabled = !buildWindow.Enabled;
-
-            
+                treasureWindow.Enabled = !treasureWindow.Enabled;
+            }          
 
         }
 
@@ -110,7 +111,7 @@ namespace DragonTD
         {
             public string Name { get; private set; }
             internal SpriteBatch spriteBatch;
-            public Texture2D Texture { get; private set; }
+            public Texture2D Texture;
             private Rectangle bounds;
             public Rectangle Bounds { get { return new Rectangle(bounds.Location + parentWindow.Bounds.Location, bounds.Size); } private set { bounds = value; } }
             public Color Color { get; set; }
@@ -152,6 +153,12 @@ namespace DragonTD
 
             public Button(string name, Game game, Window parent, Texture2D texture, Texture2D hoverTexture, Texture2D clickTexture, Texture2D disabledTexture, Rectangle bounds, Color? color) : base(name, game, parent, texture, bounds, color)
             {
+                SetTextures(texture, hoverTexture, clickTexture, disabledTexture);
+            }
+
+            public void SetTextures(Texture2D texture, Texture2D hoverTexture, Texture2D clickTexture, Texture2D disabledTexture)
+            {
+                Texture = texture;
                 HoverTexture = hoverTexture;
                 ClickTexture = clickTexture;
                 DisabledTexture = disabledTexture;
@@ -325,9 +332,129 @@ namespace DragonTD
 
         class TreasureWindow : Window
         {
+            //pixels per second
+            float ScrollOffscreenSpeed = 128f;
+
+            Button PausePlayButton, FastForwardButton;
+
             public TreasureWindow(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
+                // Pause/Play Button
+                Texture2D pauseTexture = game.Content.Load<Texture2D>("textures/ui/buttons/pause");
+                Point playPoint = new Point(bounds.Width - 40, bounds.Height - 90);
+                PausePlayButton = new Button("pausePlay", game, this, pauseTexture, pauseTexture, pauseTexture, pauseTexture,
+                    new Rectangle(playPoint, new Point(pauseTexture.Width, pauseTexture.Height)), null);
 
+                PausePlayButton.OnHover += PausePlayButton_OnHover;
+                PausePlayButton.OnClick += PausePlayButton_OnClick;
+                PausePlayButton.OnLeave += PausePlayButton_OnLeave;
+
+                components.Add(PausePlayButton);
+
+                // FastForward Button
+                Texture2D forwardTexture = game.Content.Load<Texture2D>("textures/ui/buttons/fastforward");
+                Point forwardPoint = new Point(bounds.Width - 40, bounds.Height - 60);
+                FastForwardButton = new Button("pausePlay", game, this, forwardTexture, forwardTexture, forwardTexture, forwardTexture,
+                    new Rectangle(forwardPoint, new Point(forwardTexture.Width, forwardTexture.Height)), null);
+
+                FastForwardButton.OnHover += FastForwardButton_OnHover;
+                FastForwardButton.OnClick += FastForwardButton_OnClick;
+                FastForwardButton.OnLeave += FastForwardButton_OnLeave;
+
+                components.Add(FastForwardButton);
+            }
+
+            public override void Update(GameTime gameTime)
+            {
+                // TODO: Enable pause/play/forward button after "start wave" button is pressed
+                PausePlayButton.Enabled = PausePlayButton.Enabled && ui.level.IsWaveOngoing();
+                FastForwardButton.Enabled = FastForwardButton.Enabled && ui.level.IsWaveOngoing();
+
+                if (Enabled)
+                {
+                    if (offsetLocation.X > 0)
+                        offsetLocation.X -= ScrollOffscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (offsetLocation.X < 0)
+                        offsetLocation.X = 0;
+                    base.Update(gameTime);
+                }
+                else
+                {
+                    if (offsetLocation.X < bounds.Height)
+                        offsetLocation.X += ScrollOffscreenSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (offsetLocation.X > bounds.Height)
+                        offsetLocation.X = bounds.Height;
+                }
+            }
+
+            private void PausePlayButton_OnLeave(Button sender)
+            {
+                Console.WriteLine("button leave " + sender.Name);
+            }
+
+            private void PausePlayButton_OnClick(Button sender)
+            {
+                Console.WriteLine("button click " + sender.Name);
+                
+                if (ui.level.SimSpeed > 0.0f)
+                {
+                    ui.level.SimSpeed = 0.0f; // Pause
+
+                    FastForwardButton.Enabled = false;
+
+                    Texture2D playTexture = Game.Content.Load<Texture2D>("textures/ui/buttons/play");
+                    sender.SetTextures(playTexture, playTexture, playTexture, playTexture);
+
+                    Texture2D forwardTexture = Game.Content.Load<Texture2D>("textures/ui/buttons/fastforward");
+                    FastForwardButton.SetTextures(forwardTexture, forwardTexture, forwardTexture, forwardTexture);
+                }
+                else
+                {
+                    ui.level.SimSpeed = 1.0f; // Play at normal speed
+
+                    FastForwardButton.Enabled = true;
+
+                    Texture2D pauseTexture = Game.Content.Load<Texture2D>("textures/ui/buttons/pause");
+                    sender.SetTextures(pauseTexture, pauseTexture, pauseTexture, pauseTexture);
+                }
+            }
+
+            private void PausePlayButton_OnHover(Button sender)
+            {
+                Console.WriteLine("buton hobver " + sender.Name);
+            }
+
+            private void FastForwardButton_OnLeave(Button sender)
+            {
+                Console.WriteLine("button leave " + sender.Name);
+            }
+
+            private void FastForwardButton_OnClick(Button sender)
+            {
+                Console.WriteLine("button click " + sender.Name);
+
+                if (ui.level.SimSpeed == 1.0f)
+                {
+                    ui.level.SimSpeed = 2.0f; // Fast Forward
+
+                    Texture2D playTexture = Game.Content.Load<Texture2D>("textures/ui/buttons/play");
+                    sender.SetTextures(playTexture, playTexture, playTexture, playTexture);
+
+                    Texture2D pauseTexture = Game.Content.Load<Texture2D>("textures/ui/buttons/pause");
+                    PausePlayButton.SetTextures(pauseTexture, pauseTexture, pauseTexture, pauseTexture);
+                }
+                else
+                {
+                    ui.level.SimSpeed = 1.0f; // Play at normal speed
+
+                    Texture2D forwardTexture = Game.Content.Load<Texture2D>("textures/ui/buttons/fastforward");
+                    sender.SetTextures(forwardTexture, forwardTexture, forwardTexture, forwardTexture);
+                }
+            }
+
+            private void FastForwardButton_OnHover(Button sender)
+            {
+                Console.WriteLine("buton hobver " + sender.Name);
             }
         }
 

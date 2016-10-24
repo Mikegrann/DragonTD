@@ -13,12 +13,14 @@ namespace DragonTD
         public List<Wave> Waves { get; private set; }
 
         public Level Level;
+        public bool WaveOngoing;
 
         public WaveManager(Game game, Level level) : base(game)
         {
             this.Level = level;
 
             WaveNumber = 0;
+            WaveOngoing = false;
             Waves = new List<Wave>();
 
             // TODO: Restructure waves to read from files?
@@ -45,6 +47,9 @@ namespace DragonTD
                     Level.EnemyList.Add(tmpEnemy);
                 }
             }
+
+            WaveNumber++;
+            WaveOngoing = true;
         }
 
         /// <summary>
