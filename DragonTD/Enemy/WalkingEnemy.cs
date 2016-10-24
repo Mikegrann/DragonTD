@@ -11,7 +11,7 @@ namespace DragonTD.Enemy
         private int PathIndex;
         private float PathProgress;
 
-        public WalkingEnemy(Game game, EnemyStats Stats, Vector2 ScreenPosition, Texture2D texture, List<HexEntity> Path) : base(game, Stats, ScreenPosition, texture) 
+        public WalkingEnemy(Game game, EnemyStats Stats, Vector2 ScreenPosition, AnimatedSprite texture, List<HexEntity> Path) : base(game, Stats, ScreenPosition, texture) 
         {
             this.Path = Path;
             PathProgress = PathIndex = 0;

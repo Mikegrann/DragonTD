@@ -30,14 +30,14 @@ namespace DragonTD
         /// <summary>
         /// Hex Tile Texture
         /// </summary>
-        public Texture2D Texture;
+        public AnimatedSprite Texture;
 
         /// <summary>
         /// How much the tile costs to place
         /// </summary>
         public int Cost = 0;
 
-        public Color Color = Color.White;
+        public Color Color { get { return Texture.Color; } set { Texture.Color = value; } }
 
         /// <summary>
         /// The level on which the Hex exists
@@ -50,7 +50,16 @@ namespace DragonTD
         {
             Position = position;
             ScreenPosition = CalculateScreenPosition(Position);
-            Texture = texture;
+            Texture = new AnimatedSprite(new Texture2D[] { texture }, Color.White, 1f);
+            Passable = passable;
+            spriteBatch = game.Services.GetService<SpriteBatch>();
+            Level = level;
+        }
+        public HexEntity(Game game, Level level, Point position, AnimatedSprite animatedSprite, bool passable) : base(game)
+        {
+            Position = position;
+            ScreenPosition = CalculateScreenPosition(Position);
+            Texture = animatedSprite;
             Passable = passable;
             spriteBatch = game.Services.GetService<SpriteBatch>();
             Level = level;
@@ -70,7 +79,8 @@ namespace DragonTD
         public override void Draw(GameTime gameTime)
         {
             if (Texture != null)
-                spriteBatch.Draw(Texture, ScreenPosition, null, Color, Rotation, new Vector2(Texture.Width / 2, Texture.Height / 2), 1f, SpriteEffects.None, 0f);
+                //spriteBatch.Draw(Texture, ScreenPosition, null, Color, Rotation, new Vector2(Texture.Width / 2, Texture.Height / 2), 1f, SpriteEffects.None, 0f);
+                Texture.Draw(gameTime, spriteBatch, ScreenPosition, new Vector2(Texture.Width / 2, Texture.Height / 2), Rotation);
         }
 
 

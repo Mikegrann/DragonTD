@@ -86,7 +86,7 @@ namespace DragonTD
 
             //Draw Level
             spriteBatch.Begin();
-            spriteBatch.Draw(Content.Load<Texture2D>("textures/bg"), new Vector2(0, 0), Color.White); // TODO: Move background drawing back to Level somehow
+            spriteBatch.Draw(Content.Load<Texture2D>("Textures/Background/Background"), new Vector2(0, 0), Color.White); // TODO: Move background drawing back to Level somehow
             spriteBatch.End();
             //for now, draw at 0.5 scale.
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, ViewMatrix);

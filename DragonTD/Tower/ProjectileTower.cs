@@ -18,7 +18,7 @@ namespace DragonTD.Tower
 
         public TargetingMode TargetType;
 
-        public Texture2D ProjectileTexture;
+        public AnimatedSprite ProjectileTexture;
 
         public ProjectileTower(Game game, Level level, Point position, TowerType type) : base(game, level, position, type)
         {

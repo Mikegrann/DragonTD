@@ -54,13 +54,14 @@ namespace DragonTD
         public void InitializeMap()
         {
             List<Texture2D> ObstacleTextures = new List<Texture2D>();
-            ObstacleTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/tree1"));
-            ObstacleTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/tree2"));
-            ObstacleTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/pond"));
-            ObstacleTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/rock1"));
-            ObstacleTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/rock2"));
+            ObstacleTextures.Add(Game.Content.Load<Texture2D>("Textures/Obstacles/Lake"));
+            ObstacleTextures.Add(Game.Content.Load<Texture2D>("Textures/Obstacles/Rock1"));
+            ObstacleTextures.Add(Game.Content.Load<Texture2D>("Textures/Obstacles/Rock2"));
+            ObstacleTextures.Add(Game.Content.Load<Texture2D>("Textures/Obstacles/Tree1"));
+            ObstacleTextures.Add(Game.Content.Load<Texture2D>("Textures/Obstacles/Tree2"));
+            ObstacleTextures.Add(Game.Content.Load<Texture2D>("Textures/Obstacles/Tree3orTurd1"));
 
-            Texture2D testHex = Game.Content.Load<Texture2D>("textures/outlinehex");
+            Texture2D testHex = Game.Content.Load<Texture2D>("Textures/UI/outlinehex");
 
             //create empty map.
             Map = new HexEntity[Height, Width];
@@ -75,7 +76,7 @@ namespace DragonTD
 
             // Randomize spawn/treasure
             Start = new Spawn(Game, this, new Point(rand.Next(0, Width / 3), rand.Next(0, Height - 1)), testHex); // Left third
-            Goal = new Treasure(Game, this, new Point(rand.Next(Width * 2 / 3, Width - 1), rand.Next(0, Height - 1)), Game.Content.Load<Texture2D>("textures/treasure")); // Right third
+            Goal = new Treasure(Game, this, new Point(rand.Next(Width * 2 / 3, Width - 1), rand.Next(0, Height - 1)), Game.Content.Load<Texture2D>("Textures/Treasure/TreasurePile")); // Right third
 
             PlaceHexEntity(Start);
             PlaceHexEntity(Goal);
@@ -144,13 +145,13 @@ namespace DragonTD
         public void AddWall(Point p)
         {
             List<Texture2D> WallTextures = new List<Texture2D>();
-            WallTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/wall1"));
-            WallTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/wall2"));
-            WallTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/wall3"));
-            WallTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/wall4"));
-            WallTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/wall5"));
-            WallTextures.Add(Game.Content.Load<Texture2D>("textures/obstacles/wall6"));
-            
+            WallTextures.Add(Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile1"));
+            WallTextures.Add(Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile2"));
+            WallTextures.Add(Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile3"));
+            WallTextures.Add(Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile4"));
+            WallTextures.Add(Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile5"));
+            WallTextures.Add(Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile6"));
+
             PlaceHexEntity(new Obstacle(Game, this, p, WallTextures[rand.Next(0, WallTextures.Count - 1)]));
         }
 
@@ -267,7 +268,7 @@ namespace DragonTD
             {
                 Vector2 diff = Path[i + 1].ScreenPosition - Path[i].ScreenPosition;
                 float rot = (float)Math.PI / 2.0f + (float)Math.Atan2(diff.Y, diff.X);
-                Texture2D tex = Game.Content.Load<Texture2D>("textures/arrow");
+                Texture2D tex = Game.Content.Load<Texture2D>("Textures/UI/arrow");
 
                 Game.Services.GetService<SpriteBatch>().Draw(tex, Path[i].ScreenPosition + diff / 2.0f, null, Color.White, rot, new Vector2(tex.Width / 2, tex.Height / 2), 1f, SpriteEffects.None, 0f);
             }

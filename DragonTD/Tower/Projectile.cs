@@ -18,8 +18,8 @@ namespace DragonTD
 
         public bool Dead;
 
-        Texture2D Texture;
-        Color Color;
+        AnimatedSprite Texture;
+        Color Color { get { return Texture.Color; } set { Texture.Color = value; } }
 
         SpriteBatch spriteBatch;
 
@@ -32,14 +32,15 @@ namespace DragonTD
         /// <param name="position">ScreenPosition</param>
         /// <param name="velocity">Velocity of projectile in pixels per second.</param>
         /// <param name="stats">stats of the tower. includes damage values.</param>
-        public Projectile(Game game, Texture2D texture, Nullable<Color> color, Tower.ProjectileTowerStats stats, Vector2 position, Vector2 target) : base(game)
+        public Projectile(Game game, AnimatedSprite texture, Nullable<Color> color, Tower.ProjectileTowerStats stats, Vector2 position, Vector2 target) : base(game)
         {
+            Texture = texture;
+
             if (color.HasValue)
                 Color = color.Value;
             else
                 Color = Color.White;
 
-            Texture = texture;
             Stats = stats;
             MultiHit = Stats.MultiHit;
 
@@ -67,7 +68,8 @@ namespace DragonTD
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Draw(Texture, Position, null, Color.White, GetRotation(Velocity), new Vector2(Texture.Width / 2, Texture.Height / 2), 1f, SpriteEffects.None, 0);
+            //spriteBatch.Draw(Texture, Position, null, Color.White, GetRotation(Velocity), new Vector2(Texture.Width / 2, Texture.Height / 2), 1f, SpriteEffects.None, 0);
+            Texture.Draw(gameTime, spriteBatch, Position, new Vector2(Texture.Width / 2, Texture.Height / 2), GetRotation(Velocity));
         }
 
         public static float GetRotation(Vector2 velocity)

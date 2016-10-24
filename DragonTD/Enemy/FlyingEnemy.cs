@@ -11,7 +11,7 @@ namespace DragonTD.Enemy
         HexEntity Target;
         Vector2 Velocity;
 
-        public FlyingEnemy(Game game, EnemyStats Stats, Vector2 ScreenPosition, Texture2D texture, HexEntity target) : base(game, Stats, ScreenPosition, texture)
+        public FlyingEnemy(Game game, EnemyStats Stats, Vector2 ScreenPosition, AnimatedSprite texture, HexEntity target) : base(game, Stats, ScreenPosition, texture)
         {
             Target = target;
 
