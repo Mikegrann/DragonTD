@@ -51,7 +51,7 @@ namespace DragonTD
             AddWall(new Point(3, 4));
             AddWall(new Point(2, 2));
             PlaceHexEntity(new ProjectileTower(game, this, new Point(2, 4), Tower.TowerType.Basic));
-            WM.StartWave(Start, Goal, Map);
+            //WM.StartWave(Start, Goal, Map);
             /* End Temporary Setup */
         }
 

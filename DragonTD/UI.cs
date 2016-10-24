@@ -81,12 +81,24 @@ namespace DragonTD
             upNextWindow.Update(gameTime);
             speedControlWindow.Update(gameTime);
 
-            if (inputStates.CurrentKey.IsKeyUp(Keys.Q) && inputStates.LastKey.IsKeyDown(Keys.Q))
+            /*if (inputStates.CurrentKey.IsKeyUp(Keys.Q) && inputStates.LastKey.IsKeyDown(Keys.Q))
             {
                 buildWindow.Enabled = !buildWindow.Enabled;
                 speedControlWindow.Enabled = !speedControlWindow.Enabled;
                 upNextWindow.Enabled = !upNextWindow.Enabled;
-            }          
+            }       */   
+            if(level.IsWaveOngoing())
+            {
+                buildWindow.Enabled = false;
+                upNextWindow.Enabled = false;
+                speedControlWindow.Enabled = true;
+            }
+            else
+            {
+                buildWindow.Enabled = true;
+                upNextWindow.Enabled = true;
+                speedControlWindow.Enabled = false;
+            }
 
         }
 
@@ -527,6 +539,7 @@ namespace DragonTD
             private void BeginNextWaveButton_OnClick(Button sender)
             {
                 Console.WriteLine("BeginNextButton Clicked");
+                ui.level.StartNextWave();
             }
         }
 
