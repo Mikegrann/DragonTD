@@ -90,6 +90,12 @@ namespace DragonTD
                 if (Other.Stats.Shields > 0)
                 {
                     Other.Stats.Shields -= Stats.BasicDamage;
+
+                    // Roll over extra damage from hits that break shields
+                    if (Other.Stats.Shields < 0) {
+                        Other.Stats.Health += Other.Stats.Shields;
+                        Other.Stats.Shields = 0;
+                    }
                 }
                 else
                 {

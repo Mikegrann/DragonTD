@@ -101,7 +101,18 @@ namespace DragonTD.Tower
         public void ApplyEffect(Enemy.Enemy Other)
         {
             // Apply Basic
-            Other.Stats.Health -= ((AoETowerStats)GetTowerStats()).Damage;
+            if (Other.Stats.Shields > 0) {
+                Other.Stats.Shields -= (int)(1.5 * ((AoETowerStats)GetTowerStats()).Damage); // Double effectiveness on shields
+
+                // Roll over extra damage from hits that break shields
+                if (Other.Stats.Shields < 0) {
+                    Other.Stats.Health += Other.Stats.Shields;
+                    Other.Stats.Shields = 0;
+                }
+            }
+            else {
+                Other.Stats.Health -= ((AoETowerStats)GetTowerStats()).Damage;
+            }
 
             Other.SpeedDebuff = ((AoETowerStats)GetTowerStats()).SpeedDebuff;
             Other.SpeedDebuffTimer = ((AoETowerStats)GetTowerStats()).SpeedDebuffTime;
