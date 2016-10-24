@@ -21,6 +21,8 @@ namespace DragonTD.Enemy
         public EnemyStats Stats;
         public Vector2 ScreenPosition { get;  set; }
 
+        private int MaxHealth, MaxShield;
+
         private int PoisonDamage;
         private float PoisonTimer;
 
@@ -33,6 +35,9 @@ namespace DragonTD.Enemy
         public Enemy(Game game, EnemyStats Stats, Vector2 ScreenPosition, AnimatedSprite texture) : base(game)
         { 
             this.Stats = Stats;
+            MaxHealth = Stats.Health;
+            MaxShield = Stats.Shields;
+
             this.ScreenPosition = ScreenPosition;
 
             this.Texture = texture;
@@ -137,6 +142,21 @@ namespace DragonTD.Enemy
             if (Texture != null)
                 //spriteBatch.Draw(Texture, ScreenPosition, null, Color, Rotation, new Vector2(Texture.Width / 2, Texture.Height / 2), 1f, SpriteEffects.None, 0f);
                 Texture.Draw(gameTime, spriteBatch, ScreenPosition, new Vector2(Texture.Width / 2, Texture.Height / 2), Rotation);
+
+            // TODO: Redo logic for new health bars
+            int healthRatio = Stats.Health * 50 / MaxHealth;
+            spriteBatch.Draw(Game.Content.Load<Texture2D>("Textures/UI/HealthBars"), 
+                new Rectangle((int)ScreenPosition.X, (int)ScreenPosition.Y - 40, 40, 8), 
+                new Rectangle(0, 5 * healthRatio, 52, 5), 
+                Color.White, 0f, new Vector2(25, 0), SpriteEffects.None, 0f);
+
+            if (Stats.Shields > 0) {
+                int shieldRatio = Stats.Shields * 50 / MaxShield;
+                spriteBatch.Draw(Game.Content.Load<Texture2D>("Textures/UI/HealthBars"),
+                    new Rectangle((int)ScreenPosition.X, (int)ScreenPosition.Y - 45, 40, 8),
+                    new Rectangle(0, 5 * shieldRatio, 52, 5),
+                    Color.White, 0f, new Vector2(25, 0), SpriteEffects.None, 0f);
+            }
         }
 
         public override void Update(GameTime gameTime)
