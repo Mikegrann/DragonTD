@@ -247,7 +247,7 @@ namespace DragonTD
                             {
                                 if (Util.Distance(e.ScreenPosition, e2.ScreenPosition) < p.Stats.SplashRadius && !e.Equals(e2))
                                 {
-                                    p.ApplyEffect(e);
+                                    p.ApplyEffect(e2);
                                 }
                             }
                         }

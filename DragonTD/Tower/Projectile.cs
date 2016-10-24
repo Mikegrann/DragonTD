@@ -16,7 +16,7 @@ namespace DragonTD
         Vector2 StartPosition;
         Vector2 Target;
 
-        List<Enemy.Enemy> EnemiesHit;
+        HashSet<Enemy.Enemy> EnemiesHit;
 
         public bool Dead;
 
@@ -51,7 +51,7 @@ namespace DragonTD
 
             Dead = false;
 
-            EnemiesHit = new List<Enemy.Enemy>();
+            EnemiesHit = new HashSet<Enemy.Enemy>();
 
             Vector2 direction = target - position;
             direction.Normalize();
@@ -84,10 +84,8 @@ namespace DragonTD
         public void ApplyEffect(Enemy.Enemy Other)
         {
             // Prevent a single attack from hitting the same enemy twice
-            if (!EnemiesHit.Contains(Other))
+            if (EnemiesHit.Add(Other))
             {
-                EnemiesHit.Add(Other);
-
                 // Apply Basic
                 if (Other.Stats.Shields > 0)
                 {
