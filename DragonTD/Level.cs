@@ -22,7 +22,7 @@ namespace DragonTD
 
         public float SimSpeed;
 
-        public int Money;
+        public int Money = 1000;
 
         public Random rand;
 
@@ -103,6 +103,10 @@ namespace DragonTD
         public bool InBounds(HexEntity hex)
         {
             return ((hex.Position.Y >= 0 && hex.Position.Y < Height) && (hex.Position.X >= 0 && hex.Position.X < Width));
+        }
+        public bool InBounds(Point p)
+        {
+            return ((p.Y >= 0 && p.Y < Height) && (p.X >= 0 && p.X < Width));
         }
         public bool IsPlaceable(HexEntity hex)
         {

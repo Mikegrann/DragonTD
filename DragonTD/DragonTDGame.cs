@@ -85,7 +85,9 @@ namespace DragonTD
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            //renders the context menu's render target before rendering everything else, because switching
+            //render targets clears the backbuffer.
+            ui.DrawRenderTargets(gameTime);
 
             //Draw Level
             spriteBatch.Begin();

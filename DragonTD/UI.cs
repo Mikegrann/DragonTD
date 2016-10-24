@@ -20,6 +20,8 @@ namespace DragonTD
         UpNextWindow upNextWindow;
         SpeedControlsWindow speedControlWindow;
 
+        TowerContextMenu contextMenu;
+
         HexEntity building;
 
         Matrix ViewMatrix;
@@ -36,6 +38,7 @@ namespace DragonTD
             buildWindow = new BuildWindow(game, this, new Rectangle(0, 613, screenSize.X, 107));
             upNextWindow = new UpNextWindow(game, this, new Rectangle(0, 0, screenSize.X, 138));
             speedControlWindow = new SpeedControlsWindow(game, this, new Rectangle(screenSize.X-65, screenSize.Y-69, 64, 66));
+            contextMenu = new TowerContextMenu(game, this, Rectangle.Empty);
             speedControlWindow.Enabled = false;
             ViewMatrix = game.ViewMatrix;
             LeftBorder = game.Content.Load<Texture2D>("Textures/UI/Left Border");
@@ -47,39 +50,40 @@ namespace DragonTD
             inputStates.Update();
             Vector2 pointer = (Vector2.Transform(inputStates.CurrentMouse.Position.ToVector2(), Matrix.Invert(ViewMatrix)));
 
-            if(building != null)
+            if (building != null)
             {
-                // Draw temporary building on hover
-                Vector2 p = pointer - new Vector2(64, 0);
-                building.Position = HexEntity.PixelToHex(p);
-                building.ScreenPosition = HexEntity.CalculateScreenPosition(building.Position);
-
-                if (level.IsPlaceable(building))
+                //hide context menu while building.
+                contextMenu.Hide();
+                BuildingLogic(pointer);
+            }
+            //if we are not building, clicking on a tower opens context menu.
+            else
+            {
+                if (inputStates.CurrentMouse.LeftButton == ButtonState.Released && inputStates.LastMouse.LeftButton == ButtonState.Pressed)
                 {
-                    building.Color = new Color(128, 128, 128, 128);
-
-                    //after pressing LMB, place building
-                    if (inputStates.CurrentMouse.LeftButton == ButtonState.Released && inputStates.LastMouse.LeftButton == ButtonState.Pressed)
+                    Point p = HexEntity.PixelToHex(pointer - new Vector2(64, 0));
+                    if (level.InBounds(p))
                     {
-
-                        Console.WriteLine("screen:{0} world:{1} hex:{2}", inputStates.CurrentMouse.Position, p, building.Position);
-                        if (level.PlaceHexEntity(building))
-                        {
-                            level.Money -= building.Cost;
-                            building.Color = Color.White;
-                            level.Building = building = null;
-                        }
+                        HexEntity Target = level.Map[p.Y, p.X];
+                        //if (Target.GetType() == typeof(Tower.Tower))
+                            contextMenu.Show(Target);
+                        //else
+                        //    contextMenu.Hide();
                     }
+                    else
+                        contextMenu.Hide();
                 }
-                else
+                //right clicking hides open context menu
+                if (inputStates.LastMouse.RightButton == ButtonState.Pressed && inputStates.CurrentMouse.RightButton == ButtonState.Released)
                 {
-                    building.Color = new Color(64, 64, 64, 192);
+                    contextMenu.Hide();
                 }
             }
 
             buildWindow.Update(gameTime);
             upNextWindow.Update(gameTime);
             speedControlWindow.Update(gameTime);
+            contextMenu.Update(gameTime);
 
             /*if (inputStates.CurrentKey.IsKeyUp(Keys.Q) && inputStates.LastKey.IsKeyDown(Keys.Q))
             {
@@ -102,6 +106,53 @@ namespace DragonTD
 
         }
 
+        private void BuildingLogic(Vector2 pointer)
+        {
+            //right click to cancel building.
+            if (inputStates.LastMouse.RightButton == ButtonState.Pressed && inputStates.CurrentMouse.RightButton == ButtonState.Released)
+            {
+                level.Building = building = null;
+                return;
+            }
+            //cancel building if insuficient funds
+            if (level.Money < building.Cost)
+            {
+                level.Building = building = null;
+                return;
+            }
+            // Draw temporary building on hover
+            Vector2 p = pointer - new Vector2(64, 0);
+            building.Position = HexEntity.PixelToHex(p);
+            building.ScreenPosition = HexEntity.CalculateScreenPosition(building.Position);
+
+            if (level.IsPlaceable(building))
+            {
+                building.Color = new Color(128, 128, 128, 128);
+
+                //after pressing LMB, place building
+                if (inputStates.CurrentMouse.LeftButton == ButtonState.Released && inputStates.LastMouse.LeftButton == ButtonState.Pressed)
+                {
+
+                    Console.WriteLine("screen:{0} world:{1} hex:{2}", inputStates.CurrentMouse.Position, p, building.Position);
+                    if (level.PlaceHexEntity(building))
+                    {
+                        level.Money -= building.Cost;
+                        building.Color = Color.White;
+                        level.Building = building = null;
+                    }
+                }
+            }
+            else
+            {
+                building.Color = new Color(64, 64, 64, 192);
+            }
+        }
+
+        public void DrawRenderTargets(GameTime gameTime)
+        {
+            contextMenu.DrawRenderTargets(gameTime);
+        }
+
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Draw(LeftBorder, Vector2.Zero, Color.White);
@@ -109,6 +160,7 @@ namespace DragonTD
             buildWindow.Draw(gameTime);
             upNextWindow.Draw(gameTime);
             speedControlWindow.Draw(gameTime);
+            contextMenu.Draw(gameTime);
         }
 
         class InputStates
@@ -669,11 +721,92 @@ namespace DragonTD
 
         class TowerContextMenu : Window
         {
-            public TowerContextMenu (Game game, UI parent, Rectangle bounds, HexEntity entity) : base(game, parent, bounds)
+            RenderTarget2D rt;
+            HexEntity Target;
+            bool statsOnly;
+            float transparency = 0;
+            const float fadeTime = 0.05f;
+            float fadeTimer = 0f;
+            SpriteFont font;
+
+            public TowerContextMenu (Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
-                //show context for entity.
-                //
+                rt = new RenderTarget2D(game.GraphicsDevice, 200, 200);
+                font = game.Content.Load<SpriteFont>("Fonts/Console");
+                Visible = false;
             }
+
+            public void Show(HexEntity target, bool statsOnly = false)
+            {
+                //if we clicked on the same target again, close
+                if (Target != null && Target.Position.Equals(target.Position))
+                {
+                    Hide();
+                    return;
+                }
+                Target = target;
+                this.statsOnly = statsOnly;
+                Enabled = (target != null);
+            }
+
+            public void Hide()
+            {
+                Enabled = false;
+            }
+
+            public void DrawRenderTargets(GameTime gameTime)
+            {
+                if (Visible && Target != null)
+                {
+                    ui.Game.GraphicsDevice.SetRenderTarget(rt);
+                    ui.spriteBatch.Begin();
+
+                    ui.spriteBatch.GraphicsDevice.Clear(Color.White);
+                    ui.spriteBatch.DrawString(font, Target.GetType().ToString(), Vector2.Zero, Color.Black);
+
+                    ui.spriteBatch.End();
+                    ui.Game.GraphicsDevice.SetRenderTarget(null);
+                }
+            }
+
+            public override void Draw(GameTime gameTime)
+            {
+                if(Visible && Target != null)
+                {
+                    ui.spriteBatch.Draw(rt, Vector2.Transform(Target.ScreenPosition, ui.ViewMatrix).ToPoint().ToVector2(), Color.FromNonPremultiplied(255, 255, 255, (int)(transparency * 255f)));
+                }
+                base.Draw(gameTime);
+            }
+
+            public override void Update(GameTime gameTime)
+            {
+                if (Target == null)
+                    Hide();
+
+                if (Enabled && fadeTimer < fadeTime)
+                {
+                    fadeTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (fadeTimer > fadeTime)
+                        fadeTimer = fadeTime;
+                }
+                else if (!Enabled && fadeTimer > 0)
+                {
+                    fadeTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (fadeTimer < 0)
+                    {
+                        //once we are at 0, we can remove the target
+                        Target = null;
+                        fadeTimer = 0;
+                    }
+                }
+                transparency = fadeTimer / fadeTime;
+
+                Visible = transparency > 0;
+
+
+                base.Update(gameTime);
+            }
+
         }
 
     }
