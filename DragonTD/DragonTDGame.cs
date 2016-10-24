@@ -71,9 +71,12 @@ namespace DragonTD
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            level.Update(gameTime);
-            ui.Update(gameTime);
-            base.Update(gameTime);
+            if (this.IsActive)
+            {
+                level.Update(gameTime);
+                ui.Update(gameTime);
+                base.Update(gameTime);
+            }
         }
 
         /// <summary>
