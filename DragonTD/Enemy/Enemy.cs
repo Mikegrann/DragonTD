@@ -158,6 +158,8 @@ namespace DragonTD.Enemy
                 Color = Color.White;
                 SpeedDebuff = 1f;
             }
+
+            if (Stats.Health <= 0) { Dead = true; }
         }
 
         public abstract float GetDistanceFromGoal();
