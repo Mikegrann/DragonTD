@@ -16,6 +16,8 @@ namespace DragonTD
         Vector2 StartPosition;
         Vector2 Target;
 
+        List<Enemy.Enemy> EnemiesHit;
+
         public bool Dead;
 
         AnimatedSprite Texture;
@@ -49,6 +51,8 @@ namespace DragonTD
 
             Dead = false;
 
+            EnemiesHit = new List<Enemy.Enemy>();
+
             Vector2 direction = target - position;
             direction.Normalize();
             Velocity = direction * stats.ProjectileSpeed;
@@ -79,21 +83,32 @@ namespace DragonTD
 
         public void ApplyEffect(Enemy.Enemy Other)
         {
-            // Apply Basic
-            if (Other.Stats.Shields > 0)
+            // Prevent a single attack from hitting the same enemy twice
+            if (!EnemiesHit.Contains(Other))
             {
-                Other.Stats.Shields -= Stats.BasicDamage;
-            }
-            else
-            {
-                Other.Stats.Health -= Stats.BasicDamage;
-            }
+                EnemiesHit.Add(Other);
 
-            // Piercing Ignores Shields
-            Other.Stats.Health -= Stats.PiercingDamage;
+                // Apply Basic
+                if (Other.Stats.Shields > 0)
+                {
+                    Other.Stats.Shields -= Stats.BasicDamage;
+                }
+                else
+                {
+                    Other.Stats.Health -= Stats.BasicDamage;
+                }
 
-            // Set up a Poison DoT
-            Other.ApplyPoison(Stats.PoisonDamage, Stats.PoisonDuration);
+                // Piercing Ignores Shields
+                Other.Stats.Health -= Stats.PiercingDamage;
+
+                // Set up a Poison DoT
+                if (Stats.PoisonDamage > 0)
+                {
+                    Other.ApplyPoison(Stats.PoisonDamage, Stats.PoisonDuration);
+                }
+
+                MultiHit--;
+            }
         }
     }
 

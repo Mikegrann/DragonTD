@@ -404,8 +404,18 @@ namespace DragonTD
                 Console.WriteLine("button click " + sender.Name);
                 if (sender.Name == "basicTower")
                     ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.TowerType.Basic);
+                else if (sender.Name == "poisonTower")
+                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.TowerType.Poison);
+                else if (sender.Name == "piercingTower")
+                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.TowerType.Piercing);
+                else if (sender.Name == "sniperTower")
+                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.TowerType.Sniper);
+                else if (sender.Name == "explosiveTower")
+                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.TowerType.Explosive);
                 else if (sender.Name == "freezeTower")
                     ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, Point.Zero, Tower.TowerType.Freeze);
+                else if (sender.Name == "lightningTower")
+                    ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, Point.Zero, Tower.TowerType.Lightning);
                 else if (sender.Name == "wall")
                     ui.level.Building = ui.building = new Obstacle(Game, ui.level, Point.Zero, Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile1"));
 

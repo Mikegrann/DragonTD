@@ -146,8 +146,9 @@ namespace DragonTD.Enemy
             {
                 Stats.Health -= (int)(PoisonDamage * gameTime.ElapsedGameTime.TotalSeconds);
                 PoisonTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Color = Color.Green;
             }
-            if(SpeedDebuffTimer > 0)
+            else if (SpeedDebuffTimer > 0)
             {
                 SpeedDebuffTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 Color = Color.Cyan;
@@ -165,6 +166,7 @@ namespace DragonTD.Enemy
         {
             PoisonDamage = dps;
             PoisonTimer = duration;
+            Color = Color.Green;
         }
     }
 }

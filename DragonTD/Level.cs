@@ -222,7 +222,8 @@ namespace DragonTD
                 foreach (Enemy.Enemy e in EnemyList)
                 {
                     // TODO: Implement variable bounding boxes
-                    if (Util.Distance(p.Position, e.ScreenPosition) < 16f)
+                    float hitboxSize = 32;
+                    if (Util.Distance(p.Position, e.ScreenPosition) < hitboxSize)
                     {
                         p.ApplyEffect(e);
 
@@ -238,7 +239,7 @@ namespace DragonTD
                             }
                         }
 
-                        if (--p.MultiHit <= 0)
+                        if (p.MultiHit <= 0)
                         {
                             p.Dead = true;
                             break;
