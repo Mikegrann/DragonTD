@@ -152,7 +152,7 @@ namespace DragonTD.Enemy
 
             if (Stats.Shields > 0) {
                 int shieldRatio = Stats.Shields * 50 / MaxShield;
-                spriteBatch.Draw(Game.Content.Load<Texture2D>("Textures/UI/HealthBars"),
+                spriteBatch.Draw(Game.Content.Load<Texture2D>("Textures/UI/ShieldBars"),
                     new Rectangle((int)ScreenPosition.X, (int)ScreenPosition.Y - 45, 40, 8),
                     new Rectangle(0, 5 * shieldRatio, 52, 5),
                     Color.White, 0f, new Vector2(25, 0), SpriteEffects.None, 0f);
