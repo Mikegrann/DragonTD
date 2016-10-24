@@ -12,9 +12,9 @@ namespace DragonTD
         private List<HexEntity> RecentPath;
         private HexEntity RecentGoal;
 
-        public Spawn(Game game, Level level, Point position, Texture2D texture) : base(game, level, position, texture, true)
+        public Spawn(Game game, Level level, Point position) : base(game, level, position, (AnimatedSprite)null, true)
         {
-
+            Texture = new AnimatedSprite(new Texture2D[] { game.Content.Load<Texture2D>("Textures/Start and End/Spawn") }, Color.White, 1f);
         }
 
         // Uses the most recently created Path (saved)

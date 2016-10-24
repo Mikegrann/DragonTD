@@ -29,6 +29,8 @@ namespace DragonTD
         Texture2D LeftBorder;
         Texture2D RightBorder;
 
+        SpriteFont font;
+
         public UI(DragonTDGame game, Level level) : base(game)
         {
             screenSize = game.GraphicsDevice.Viewport.Bounds.Size;
@@ -43,6 +45,7 @@ namespace DragonTD
             ViewMatrix = game.ViewMatrix;
             LeftBorder = game.Content.Load<Texture2D>("Textures/UI/Left Border");
             RightBorder = game.Content.Load<Texture2D>("Textures/UI/Right Border");
+            font = game.Content.Load<SpriteFont>("Fonts/console");
         }
 
         public override void Update(GameTime gameTime)
@@ -65,10 +68,10 @@ namespace DragonTD
                     if (level.InBounds(p))
                     {
                         HexEntity Target = level.Map[p.Y, p.X];
-                        //if (Target.GetType() == typeof(Tower.Tower))
-                            contextMenu.Show(Target);
-                        //else
-                        //    contextMenu.Hide();
+                        if (Target.GetType().IsSubclassOf(typeof(Tower.Tower)))
+                            contextMenu.Show((Tower.Tower)Target);
+                        else
+                            contextMenu.Hide();
                     }
                     else
                         contextMenu.Hide();
@@ -161,6 +164,8 @@ namespace DragonTD
             upNextWindow.Draw(gameTime);
             speedControlWindow.Draw(gameTime);
             contextMenu.Draw(gameTime);
+
+            spriteBatch.DrawString(font, "$" + level.Money.ToString(), new Vector2(1076, 688), Color.Black);
         }
 
         class InputStates
@@ -732,21 +737,24 @@ namespace DragonTD
         class TowerContextMenu : Window
         {
             RenderTarget2D rt;
-            HexEntity Target;
+            Tower.Tower Target;
             bool statsOnly;
             float transparency = 0;
             const float fadeTime = 0.05f;
             float fadeTimer = 0f;
             SpriteFont font;
+            string[] towerInfo;
 
             public TowerContextMenu (Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
-                rt = new RenderTarget2D(game.GraphicsDevice, 200, 200);
+                rt = new RenderTarget2D(game.GraphicsDevice, 300, 300);
                 font = game.Content.Load<SpriteFont>("Fonts/Console");
                 Visible = false;
+                offsetLocation.Y = -rt.Height / 2f;
+                Background = game.Content.Load<Texture2D>("Textures/UI/ContextMenu/test");
             }
 
-            public void Show(HexEntity target, bool statsOnly = false)
+            public void Show(Tower.Tower target, bool statsOnly = false)
             {
                 //if we clicked on the same target again, close
                 if (Target != null && Target.Position.Equals(target.Position))
@@ -756,13 +764,40 @@ namespace DragonTD
                 }
                 Target = target;
                 this.statsOnly = statsOnly;
-                Enabled = (target != null);
+                Enabled = true;
+                bounds.Location = Vector2.Transform(Target.ScreenPosition, ui.ViewMatrix).ToPoint() + offsetLocation.ToPoint();
+                switch (Target.TType)
+                {
+                    case Tower.TowerType.Basic:
+                        towerInfo = new string[] { "Basic Tower" };
+                        break;
+                    case Tower.TowerType.Poison:
+                        towerInfo = new string[] { "Poison Tower" };
+                        break;
+                    case Tower.TowerType.Piercing:
+                        towerInfo = new string[] { "Piercing Tower" };
+                        break;
+                    case Tower.TowerType.Sniper:
+                        towerInfo = new string[] { "Sniper Tower" };
+                        break;
+                    case Tower.TowerType.Explosive:
+                        towerInfo = new string[] { "Explosive Tower" };
+                        break;
+                    case Tower.TowerType.Freeze:
+                        towerInfo = new string[] { "Frost Tower" };
+                        break;
+                    case Tower.TowerType.Lightning:
+                        towerInfo = new string[] { "Lightning Tower" };
+                        break;
+
+                }
             }
 
             public void Hide()
             {
                 Enabled = false;
             }
+
 
             public void DrawRenderTargets(GameTime gameTime)
             {
@@ -771,8 +806,15 @@ namespace DragonTD
                     ui.Game.GraphicsDevice.SetRenderTarget(rt);
                     ui.spriteBatch.Begin();
 
-                    ui.spriteBatch.GraphicsDevice.Clear(Color.White);
-                    ui.spriteBatch.DrawString(font, Target.GetType().ToString(), Vector2.Zero, Color.Black);
+                    ui.spriteBatch.GraphicsDevice.Clear(Color.Transparent);
+                    ui.spriteBatch.Draw(Background, rt.Bounds, Color.White);
+                    
+                    ui.spriteBatch.DrawString(font, towerInfo[0], new Vector2(72, 10), Color.Black);
+
+                    for(int i = 1; i < towerInfo.Length; i++)
+                    {
+                        ui.spriteBatch.DrawString(font, towerInfo[i], new Vector2(72, 10 + (i * 16)), Color.Black);
+                    }
 
                     ui.spriteBatch.End();
                     ui.Game.GraphicsDevice.SetRenderTarget(null);
@@ -783,7 +825,7 @@ namespace DragonTD
             {
                 if(Visible && Target != null)
                 {
-                    ui.spriteBatch.Draw(rt, Vector2.Transform(Target.ScreenPosition, ui.ViewMatrix).ToPoint().ToVector2(), Color.FromNonPremultiplied(255, 255, 255, (int)(transparency * 255f)));
+                    ui.spriteBatch.Draw(rt, bounds.Location.ToVector2(), Color.FromNonPremultiplied(255, 255, 255, (int)(transparency * 255f)));
                 }
                 base.Draw(gameTime);
             }

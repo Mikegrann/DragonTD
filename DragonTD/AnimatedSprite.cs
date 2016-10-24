@@ -31,6 +31,10 @@ namespace DragonTD
             Textures = textures;
             Width = Textures[0].Width;
             Height = Textures[0].Height;
+            if(Textures.Length <= 1)
+            {
+                PauseAnimation();
+            }
         }
 
         public void StartAnimation()

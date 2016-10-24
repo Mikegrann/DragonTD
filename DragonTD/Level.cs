@@ -82,8 +82,8 @@ namespace DragonTD
             }
 
             // Randomize spawn/treasure
-            Start = new Spawn(Game, this, new Point(rand.Next(0, Width / 3), rand.Next(0, Height - 1)), testHex); // Left third
-            Goal = new Treasure(Game, this, new Point(rand.Next(Width * 2 / 3, Width - 1), rand.Next(0, Height - 1)), Game.Content.Load<Texture2D>("Textures/Treasure/TreasurePile")); // Right third
+            Start = new Spawn(Game, this, new Point(rand.Next(0, Width / 3), rand.Next(0, Height - 1))); // Left third
+            Goal = new Treasure(Game, this, new Point(rand.Next(Width * 2 / 3, Width - 1), rand.Next(0, Height - 1))); // Right third
 
             PlaceHexEntity(Start);
             PlaceHexEntity(Goal);
