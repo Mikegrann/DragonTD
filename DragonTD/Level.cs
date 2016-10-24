@@ -44,17 +44,6 @@ namespace DragonTD
             rand = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
 
             InitializeMap();
-
-            /* Temporary Test Map - TODO: Remove */
-            AddWall(new Point(3, 0));
-            AddWall(new Point(4, 1));
-            AddWall(new Point(4, 2));
-            AddWall(new Point(4, 3));
-            AddWall(new Point(3, 4));
-            AddWall(new Point(2, 2));
-            PlaceHexEntity(new ProjectileTower(game, this, new Point(2, 4), Tower.TowerType.Basic));
-            //WM.StartWave(Start, Goal, Map);
-            /* End Temporary Setup */
         }
 
         // Randomize starting map
@@ -247,6 +236,8 @@ namespace DragonTD
                         // Apply also to nearby enemies
                         if (p.Stats.SplashRadius > 0.0f)
                         {
+                            EffectList.Add(new AoEEffect(Game, AoEEffect.EffectType.Explosion, p.Position));
+
                             foreach (Enemy.Enemy e2 in EnemyList)
                             {
                                 if (Util.Distance(e.ScreenPosition, e2.ScreenPosition) < p.Stats.SplashRadius && !e.Equals(e2))

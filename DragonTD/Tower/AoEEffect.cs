@@ -43,8 +43,19 @@ namespace DragonTD.Tower
                                                                 game.Content.Load<Texture2D>(TTexDir + "Lightning/Lightning3"),
                                                                 game.Content.Load<Texture2D>(TTexDir + "Lightning/Lightning4"),
                                                                 game.Content.Load<Texture2D>(TTexDir + "Lightning/Lightning5"), }, Color.White, TAnimTime);
-                    //case EffectType.Explosion:
-                    //    return new AnimatedSprite(new Texture2D[] { game.Content.Load<Texture2D>(TTexDir + "Red Dragon/Redfinal12"), game.Content.Load<Texture2D>(TTexDir + "Red Dragon/Redfinal3478"), game.Content.Load<Texture2D>(TTexDir + "Red Dragon/Redfinal56"), game.Content.Load<Texture2D>(TTexDir + "Red Dragon/Redfinal3478") }, Color.White, TAnimTime);
+
+                case EffectType.Explosion:
+                    return new AnimatedSprite(new Texture2D[] { game.Content.Load<Texture2D>(TTexDir + "Explosion/Boom1"),
+                                                                game.Content.Load<Texture2D>(TTexDir + "Explosion/Boom2"),
+                                                                game.Content.Load<Texture2D>(TTexDir + "Explosion/Boom3"),
+                                                                game.Content.Load<Texture2D>(TTexDir + "Explosion/Boom4"),
+                                                                game.Content.Load<Texture2D>(TTexDir + "Explosion/Boom5"),
+                                                                game.Content.Load<Texture2D>(TTexDir + "Explosion/Boom6"),
+                                                                game.Content.Load<Texture2D>(TTexDir + "Explosion/Boom7"),
+                                                                game.Content.Load<Texture2D>(TTexDir + "Explosion/Boom8"),
+                                                                game.Content.Load<Texture2D>(TTexDir + "Explosion/Boom9"),
+                                                                game.Content.Load<Texture2D>(TTexDir + "Explosion/Boom10"),
+                                                                game.Content.Load<Texture2D>(TTexDir + "Explosion/Boom11"), }, Color.White, TAnimTime / 2.0f);
             }
         }
 
