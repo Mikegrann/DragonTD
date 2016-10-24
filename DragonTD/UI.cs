@@ -133,7 +133,11 @@ namespace DragonTD
                 building.Color = new Color(128, 128, 128, 128);
 
                 //after pressing LMB, place building
-                if (inputStates.CurrentMouse.LeftButton == ButtonState.Released && inputStates.LastMouse.LeftButton == ButtonState.Pressed)
+                if (inputStates.CurrentMouse.LeftButton == ButtonState.Released && inputStates.LastMouse.LeftButton == ButtonState.Pressed &&
+                    !buildWindow.Bounds.Contains(inputStates.CurrentMouse.Position) &&
+                    !upNextWindow.Bounds.Contains(inputStates.CurrentMouse.Position) &&
+                    !speedControlWindow.Bounds.Contains(inputStates.CurrentMouse.Position) &&
+                    !contextMenu.Bounds.Contains(inputStates.CurrentMouse.Position))
                 {
 
                     Console.WriteLine("screen:{0} world:{1} hex:{2}", inputStates.CurrentMouse.Position, p, building.Position);
@@ -606,7 +610,11 @@ namespace DragonTD
             private void BeginNextWaveButton_OnClick(Button sender)
             {
                 Console.WriteLine("BeginNextButton Clicked");
-                ui.level.StartNextWave();
+
+                // Prevent launching a wave while a building is in hand
+                if (ui.building == null) {
+                    ui.level.StartNextWave();
+                }
             }
         }
 
