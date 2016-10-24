@@ -255,26 +255,29 @@ namespace DragonTD
 
         public override void Draw(GameTime gameTime)
         {
+            TimeSpan simSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * SimSpeed));
+            GameTime simTime = new GameTime(gameTime.TotalGameTime, simSpan);
+
             foreach (HexEntity h in Map)
             {
-                h.Draw(gameTime);
+                h.Draw(simTime);
             }
 
             DrawPath();
 
             foreach (Enemy.Enemy e in EnemyList)
             {
-                e.Draw(gameTime);
+                e.Draw(simTime);
             }
 
             foreach (Projectile p in ProjectileList)
             {
-                p.Draw(gameTime);
+                p.Draw(simTime);
             }
 
             if (Building != null)
             {
-                Building.Draw(gameTime);
+                Building.Draw(simTime);
             }
         }
 

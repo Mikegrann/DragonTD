@@ -579,10 +579,6 @@ namespace DragonTD
 
             public override void Update(GameTime gameTime)
             {
-                // TODO: Enable pause/play/forward button after "start wave" button is pressed
-                PausePlayButton.Enabled = PausePlayButton.Enabled && ui.level.IsWaveOngoing();
-                FastForwardButton.Enabled = FastForwardButton.Enabled && ui.level.IsWaveOngoing();
-
                 if (Enabled)
                 {
                     if (offsetLocation.X > 0)
