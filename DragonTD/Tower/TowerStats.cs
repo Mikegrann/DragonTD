@@ -56,6 +56,7 @@ namespace DragonTD.Tower
         /// <param name="fireRate">Seconds between attacks</param>
         /// <param name="projectileSpeed">Speed of projectile in pixels per second.</param>
         /// <param name="multi">Number of targets the projectile can hit.</param>
+        /// <param name="splash">Radius of effect for nearby enemies.</param>
         public ProjectileTowerStats(float range, float fireRate, int cost, float projectileSpeed,
             int basicDamage = 0, int piercingDamage = 0, int poisonDamage = 0, float poisonDuration = 0f,
             int multi = 1, float splash = 0f) : base(range, fireRate, cost)

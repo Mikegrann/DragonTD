@@ -18,6 +18,7 @@ namespace DragonTD
 
         public List<Enemy.Enemy> EnemyList;
         public List<Projectile> ProjectileList;
+        public List<AoEEffect> EffectList;
         WaveManager WM;
 
         public float SimSpeed;
@@ -37,6 +38,7 @@ namespace DragonTD
 
             EnemyList = new List<Enemy.Enemy>();
             ProjectileList = new List<Projectile>();
+            EffectList = new List<AoEEffect>();
             WM = new WaveManager(game, this);
 
             rand = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
@@ -189,6 +191,17 @@ namespace DragonTD
                 h.Update(simTime);
             }
 
+            for (int i = EffectList.Count - 1; i >= 0; i--)
+            {
+                AoEEffect e = EffectList[i];
+                e.Update(simTime);
+
+                if (e.Done)
+                {
+                    EffectList.RemoveAt(i);
+                }
+            }
+
             for (int i = EnemyList.Count - 1; i >= 0; i--)
             {
                 Enemy.Enemy e = EnemyList[i];
@@ -226,7 +239,8 @@ namespace DragonTD
                 foreach (Enemy.Enemy e in EnemyList)
                 {
                     // TODO: Implement variable bounding boxes
-                    if (Util.Distance(p.Position, e.ScreenPosition) < 16f)
+                    float hitboxSize = 32;
+                    if (Util.Distance(p.Position, e.ScreenPosition) < hitboxSize)
                     {
                         p.ApplyEffect(e);
 
@@ -237,12 +251,12 @@ namespace DragonTD
                             {
                                 if (Util.Distance(e.ScreenPosition, e2.ScreenPosition) < p.Stats.SplashRadius && !e.Equals(e2))
                                 {
-                                    p.ApplyEffect(e);
+                                    p.ApplyEffect(e2);
                                 }
                             }
                         }
 
-                        if (--p.MultiHit <= 0)
+                        if (p.MultiHit <= 0)
                         {
                             p.Dead = true;
                             break;
@@ -261,6 +275,11 @@ namespace DragonTD
         {
             TimeSpan simSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * SimSpeed));
             GameTime simTime = new GameTime(gameTime.TotalGameTime, simSpan);
+
+            foreach (AoEEffect e in EffectList)
+            {
+                e.Draw(simTime);
+            }
 
             foreach (HexEntity h in Map)
             {

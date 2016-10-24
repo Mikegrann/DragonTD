@@ -8,7 +8,7 @@ namespace DragonTD
     {
         TimeSpan ElapsedTime;
         TimeSpan TimeBetweenFrames;
-        int CurrentFrame = 0;
+        public int CurrentFrame { get; private set; }
         bool Animating = true;
 
         Texture2D[] Textures;
@@ -25,6 +25,7 @@ namespace DragonTD
         /// <param name="timeBetweenFrames">Time between frames in seconds</param>
         public AnimatedSprite(Texture2D[] textures, Color color, float timeBetweenFrames)
         {
+            CurrentFrame = 0;
             TimeBetweenFrames = new TimeSpan(0, 0, 0, 0, (int)(timeBetweenFrames * 1000));
             Color = color;
             Textures = textures;
