@@ -30,28 +30,28 @@ namespace DragonTD.Tower
                                                           new ProjectileTowerStats(321f, 0.2f, 100, 256f, 7) } },
 
             { TowerType.Freeze, new List<TowerStats>    { new AoETowerStats(193f, 1f, 60, 0, 0.75f, 1f),
-                                                          new AoETowerStats(257f, 0.5f, 95, 0, 0.5f, 1.5f),
-                                                          new AoETowerStats(321f, 0.5f, 140, 0, 0.25f, 2f) } },
+                                                          new AoETowerStats(257f, 1f, 95, 0, 0.5f, 1.5f),
+                                                          new AoETowerStats(321f, 1f, 140, 0, 0.25f, 2f) } },
 
-            { TowerType.Lightning, new List<TowerStats> { new AoETowerStats(193f, 1.5f, 80, 4),
-                                                          new AoETowerStats(257f, 0.8f, 120, 4),
-                                                          new AoETowerStats(321f, 0.3f, 200, 4) } },
+            { TowerType.Lightning, new List<TowerStats> { new AoETowerStats(193f, 1.5f, 80, 3),
+                                                          new AoETowerStats(257f, 0.8f, 120, 3),
+                                                          new AoETowerStats(321f, 0.3f, 200, 3) } },
 
-            { TowerType.Poison, new List<TowerStats>    { new ProjectileTowerStats(385f, 0.8f, 70, 192f, 0, 1, 1, 1.0f),
-                                                          new ProjectileTowerStats(513f, 0.75f, 130, 192f, 0, 1, 2, 1.5f),
-                                                          new ProjectileTowerStats(641f, 0.7f, 200, 256f, 0, 1, 3, 2.0f) } },
+            { TowerType.Poison, new List<TowerStats>    { new ProjectileTowerStats(385f, 0.8f, 70, 192f, 0, 2, 1, 1.0f),
+                                                          new ProjectileTowerStats(513f, 0.75f, 130, 192f, 0, 2, 2, 1.5f),
+                                                          new ProjectileTowerStats(641f, 0.7f, 200, 256f, 0, 2, 3, 2.0f) } },
 
-            { TowerType.Piercing, new List<TowerStats>  { new ProjectileTowerStats(513f, 1.5f, 110, 512f, 2, multi: 2),
-                                                          new ProjectileTowerStats(641f, 1.1f, 140, 512f, 4, multi: 4),
-                                                          new ProjectileTowerStats(769f, 1.0f, 200, 512f, 5, multi: 8) } },
+            { TowerType.Piercing, new List<TowerStats>  { new ProjectileTowerStats(513f, 1.5f, 110, 512f, 1, 2, multi: 2),
+                                                          new ProjectileTowerStats(641f, 1.1f, 140, 512f, 1, 3, multi: 4),
+                                                          new ProjectileTowerStats(769f, 1.0f, 200, 512f, 2, 4, multi: 8) } },
 
             { TowerType.Sniper, new List<TowerStats>    { new ProjectileTowerStats(769f, 3.5f, 120, 1024f, 10),
                                                           new ProjectileTowerStats(1025f, 3.0f, 210, 1280f, 12),
                                                           new ProjectileTowerStats(1025f, 2.5f, 330, 1280f, 14) } },
 
-            { TowerType.Explosive, new List<TowerStats> { new ProjectileTowerStats(513f, 2.5f, 90, 192f, 1, splash:193f),
-                                                          new ProjectileTowerStats(641f, 2.1f, 130, 192f, 3, splash:193f),
-                                                          new ProjectileTowerStats(769f, 2.0f, 180, 192f, 5, splash:193f) } },
+            { TowerType.Explosive, new List<TowerStats> { new ProjectileTowerStats(513f, 2.5f, 90, 192f, 3, splash:193f),
+                                                          new ProjectileTowerStats(641f, 2.1f, 130, 192f, 5, splash:193f),
+                                                          new ProjectileTowerStats(769f, 2.0f, 180, 192f, 7, splash:193f) } },
         };
         
         //WOW, never thought I'd have to cast null before.
