@@ -18,6 +18,7 @@ namespace DragonTD
 
         public List<Enemy.Enemy> EnemyList;
         public List<Projectile> ProjectileList;
+        public List<AoEEffect> EffectList;
         WaveManager WM;
 
         public float SimSpeed;
@@ -37,6 +38,7 @@ namespace DragonTD
 
             EnemyList = new List<Enemy.Enemy>();
             ProjectileList = new List<Projectile>();
+            EffectList = new List<AoEEffect>();
             WM = new WaveManager(game, this);
 
             rand = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
@@ -185,6 +187,17 @@ namespace DragonTD
                 h.Update(simTime);
             }
 
+            for (int i = EffectList.Count - 1; i >= 0; i--)
+            {
+                AoEEffect e = EffectList[i];
+                e.Update(simTime);
+
+                if (e.Done)
+                {
+                    EffectList.RemoveAt(i);
+                }
+            }
+
             for (int i = EnemyList.Count - 1; i >= 0; i--)
             {
                 Enemy.Enemy e = EnemyList[i];
@@ -258,6 +271,11 @@ namespace DragonTD
         {
             TimeSpan simSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * SimSpeed));
             GameTime simTime = new GameTime(gameTime.TotalGameTime, simSpan);
+
+            foreach (AoEEffect e in EffectList)
+            {
+                e.Draw(simTime);
+            }
 
             foreach (HexEntity h in Map)
             {

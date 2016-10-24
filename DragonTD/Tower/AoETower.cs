@@ -49,6 +49,9 @@ namespace DragonTD.Tower
             {
                 if (targets.Count > 0)
                 {
+                    // Spawn effect drawing
+                    Level.EffectList.Add(new AoEEffect(Game, GetEffect(TType), ScreenPosition));
+
                     foreach(Enemy.Enemy e in targets)
                     {
                         ApplyEffect(e);
@@ -59,6 +62,18 @@ namespace DragonTD.Tower
             else
             {
                 FiringCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+        }
+
+        public static AoEEffect.EffectType GetEffect(TowerType type)
+        {
+            switch (type)
+            {
+                default:
+                case TowerType.Freeze:
+                    return AoEEffect.EffectType.Freeze;
+                case TowerType.Lightning:
+                    return AoEEffect.EffectType.Lightning;
             }
         }
 

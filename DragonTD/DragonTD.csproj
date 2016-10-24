@@ -48,6 +48,7 @@
     <Compile Include="Obstacle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Sprite.cs" />
+    <Compile Include="Tower\AoEEffect.cs" />
     <Compile Include="Tower\AoETower.cs" />
     <Compile Include="Tower\Projectile.cs" />
     <Compile Include="Tower\ProjectileTower.cs" />
