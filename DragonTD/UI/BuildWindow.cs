@@ -119,21 +119,21 @@ namespace DragonTD.UI
             {
                 Console.WriteLine("button click " + sender.Name);
                 if (sender.Name == "basicTower")
-                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.TowerType.Basic);
+                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Basic);
                 else if (sender.Name == "poisonTower")
-                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.TowerType.Poison);
+                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Poison);
                 else if (sender.Name == "piercingTower")
-                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.TowerType.Piercing);
+                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Piercing);
                 else if (sender.Name == "sniperTower")
-                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.TowerType.Sniper);
+                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Sniper);
                 else if (sender.Name == "explosiveTower")
-                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, Point.Zero, Tower.TowerType.Explosive);
+                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Explosive);
                 else if (sender.Name == "freezeTower")
-                    ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, Point.Zero, Tower.TowerType.Freeze);
+                    ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Freeze);
                 else if (sender.Name == "lightningTower")
-                    ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, Point.Zero, Tower.TowerType.Lightning);
+                    ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Lightning);
                 else if (sender.Name == "wall")
-                    ui.level.Building = ui.building = new Obstacle(Game, ui.level, Point.Zero, Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile1"));
+                    ui.level.Building = ui.building = new Obstacle(Game, ui.level, new Point(-100, -100), Obstacle.ObstacleType.Wall);
 
             }
 

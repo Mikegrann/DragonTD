@@ -21,7 +21,7 @@ namespace DragonTD.UI
             public delegate void ButtonLeftEventHandler(Button sender);
             public event ButtonLeftEventHandler OnLeave;
 
-            public Button(string name, Game game, Window parent, Texture2D texture, Texture2D hoverTexture, Texture2D clickTexture, Texture2D disabledTexture, Rectangle bounds, Color? color) : base(name, game, parent, texture, bounds, color)
+            public Button(string name, Game game, Window parent, Texture2D texture, Texture2D hoverTexture, Texture2D clickTexture, Texture2D disabledTexture, Rectangle bounds, Color? color, bool drawnOnRenderTarget = false) : base(name, game, parent, texture, bounds, color, drawnOnRenderTarget)
             {
                 SetTextures(texture, hoverTexture, clickTexture, disabledTexture);
             }
@@ -70,21 +70,42 @@ namespace DragonTD.UI
             {
                 if (Visible)
                 {
-                    if (!Enabled)
-                        spriteBatch.Draw(DisabledTexture, Bounds, Color);
+                    if (DrawnOnRenderTarget)
+                    {
+                        if (!Enabled)
+                            spriteBatch.Draw(DisabledTexture, BoundsWithoutParent, Color);
+                        else
+                            switch (currentState)
+                            {
+                                default:
+                                    spriteBatch.Draw(Texture, BoundsWithoutParent, Color);
+                                    break;
+                                case UIButtonState.Hover:
+                                    spriteBatch.Draw(HoverTexture, BoundsWithoutParent, Color);
+                                    break;
+                                case UIButtonState.Click:
+                                    spriteBatch.Draw(ClickTexture, BoundsWithoutParent, Color);
+                                    break;
+                            }
+                    }
                     else
-                        switch (currentState)
-                        {
-                            default:
-                                spriteBatch.Draw(Texture, Bounds, Color);
-                                break;
-                            case UIButtonState.Hover:
-                                spriteBatch.Draw(HoverTexture, Bounds, Color);
-                                break;
-                            case UIButtonState.Click:
-                                spriteBatch.Draw(ClickTexture, Bounds, Color);
-                                break;
-                        }
+                    {
+                        if (!Enabled)
+                            spriteBatch.Draw(DisabledTexture, Bounds, Color);
+                        else
+                            switch (currentState)
+                            {
+                                default:
+                                    spriteBatch.Draw(Texture, Bounds, Color);
+                                    break;
+                                case UIButtonState.Hover:
+                                    spriteBatch.Draw(HoverTexture, Bounds, Color);
+                                    break;
+                                case UIButtonState.Click:
+                                    spriteBatch.Draw(ClickTexture, Bounds, Color);
+                                    break;
+                            }
+                    }
                 }
             }
         }

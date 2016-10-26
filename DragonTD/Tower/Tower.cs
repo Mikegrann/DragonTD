@@ -18,7 +18,8 @@ namespace DragonTD.Tower
         /// (0 = can fire now)
         /// </summary>
         public float FiringCooldown = 0;
-        
+
+        internal Localization local;
 
         public TowerType TType;
 
@@ -57,6 +58,7 @@ namespace DragonTD.Tower
         //WOW, never thought I'd have to cast null before.
         public Tower(Game game, Level level, Point position, TowerType type) : base(game, level, position, (AnimatedSprite)null, false)
         {
+            local = game.Services.GetService<Localization>();
             TType = type;
             this.Cost = GetTowerStats().Cost;
         }
@@ -64,6 +66,50 @@ namespace DragonTD.Tower
         public TowerStats GetTowerStats()
         {
             return GetTowerStats(TType, UpgradeLevel);
+        }
+
+        //returns if this tower can be upgraded or not.
+        public bool CanUpgrade()
+        {
+            return (UpgradeLevel < AllTowerStats[TType].Count - 1) ;
+        }
+
+        //returns how much it cost to just upgrade the tower.
+        public int Upgrade()
+        {
+            if(CanUpgrade())
+            {
+                int c = CostToUpgrade;
+                Cost += CostToUpgrade;
+                UpgradeLevel++;
+                return c;
+            }
+            return 0;
+        }
+
+        //returns how much it costs to upgrade.
+        public int CostToUpgrade
+        {
+            get
+            {
+                if (CanUpgrade())
+                    return AllTowerStats[TType][UpgradeLevel + 1].Cost;
+                return 0;
+            }
+        }
+
+        //to be implemented by subclasses.
+        public virtual List<string> GetTowerStatsStrings(List<string> info)
+        {
+            if (info == null)
+                info = new List<string>();
+            info.Add(local.Get("Tower."+TType.ToString()));
+            info.Add(local.Get("cost") + ": " + GetTowerStats().Cost);
+            info.Add(local.Get("upgradeLevel") + ": " + (UpgradeLevel + 1));
+            info.Add(local.Get("range") + ": " + GetTowerStats().Range);
+            info.Add(local.Get("fireRate") + ": " + GetTowerStats().FireRate);
+
+            return info;
         }
 
         // TODO: Set ProjectileTowerStats (maybe implement reads from config files?)

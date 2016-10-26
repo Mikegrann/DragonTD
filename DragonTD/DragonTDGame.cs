@@ -21,6 +21,8 @@ namespace DragonTD
 
         Texture2D whiteSquare;
 
+        Localization localization;
+
         public DragonTDGame()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -29,6 +31,9 @@ namespace DragonTD
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
             ViewMatrix = Matrix.CreateTranslation(new Vector3(288, 276, 0)) * Matrix.CreateScale(0.5f);
+
+            localization = new Localization("en-US");
+            Services.AddService<Localization>(localization);
         }
 
         /// <summary>

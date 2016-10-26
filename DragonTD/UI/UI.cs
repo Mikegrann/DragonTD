@@ -31,8 +31,11 @@ namespace DragonTD.UI
 
         SpriteFont font;
 
+        internal Localization Localization;
+
         public UI(DragonTDGame game, Level level) : base(game)
         {
+            Localization = game.Services.GetService<Localization>();
             screenSize = game.GraphicsDevice.Viewport.Bounds.Size;
             centerScreen = new Point(screenSize.X / 2, screenSize.Y / 2);
             spriteBatch = game.Services.GetService<SpriteBatch>();
@@ -64,16 +67,24 @@ namespace DragonTD.UI
             {
                 if (inputStates.CurrentMouse.LeftButton == ButtonState.Released && inputStates.LastMouse.LeftButton == ButtonState.Pressed)
                 {
-                    Point p = HexEntity.PixelToHex(pointer - new Vector2(64, 0));
-                    if (level.InBounds(p))
+                    //if we aren't within the bounds of the context menu or the menu isn't open
+                    if (!contextMenu.Visible || !contextMenu.bounds.Contains(inputStates.CurrentMouse.Position))
                     {
-                        HexEntity Target = level.Map[p.Y, p.X];
-                        if (Target.GetType().IsSubclassOf(typeof(Tower.Tower)))
-                            contextMenu.Show((Tower.Tower)Target);
+                        Point p = HexEntity.PixelToHex(pointer - new Vector2(64, 0));
+                        if (level.InBounds(p))
+                        {
+                            HexEntity Target = level.Map[p.Y, p.X];
+                            if (Target.GetType().IsSubclassOf(typeof(Tower.Tower)))
+                                contextMenu.Show(Target);
+                            else if(Target.GetType() == typeof(Obstacle) && ((Obstacle)Target).Type == Obstacle.ObstacleType.Wall)
+                                    contextMenu.Show(Target);
+                            else
+                                contextMenu.Hide();
+                        }
                         else
                             contextMenu.Hide();
                     }
-                    else
+                    else if(contextMenu.Visible && !contextMenu.bounds.Contains(inputStates.CurrentMouse.Position))
                         contextMenu.Hide();
                 }
                 //right clicking hides open context menu
@@ -83,9 +94,12 @@ namespace DragonTD.UI
                 }
             }
 
-            buildWindow.Update(gameTime);
-            upNextWindow.Update(gameTime);
-            speedControlWindow.Update(gameTime);
+            if (!contextMenu.Visible)
+            {
+                buildWindow.Update(gameTime);
+                upNextWindow.Update(gameTime);
+                speedControlWindow.Update(gameTime);
+            }
             contextMenu.Update(gameTime);
 
             /*if (inputStates.CurrentKey.IsKeyUp(Keys.Q) && inputStates.LastKey.IsKeyDown(Keys.Q))

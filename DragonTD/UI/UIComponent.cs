@@ -12,10 +12,24 @@ namespace DragonTD.UI
             public Texture2D Texture;
             private Rectangle bounds;
             public Vector2 offsetLocation = Vector2.Zero;
-            public Rectangle Bounds { get { return new Rectangle(bounds.Location + parentWindow.Bounds.Location + offsetLocation.ToPoint(), bounds.Size); } private set { bounds = value; } }
+            public Rectangle Bounds { get { return new Rectangle(bounds.Location + parentWindow.Bounds.Location + offsetLocation.ToPoint() + parentWindow.offsetLocation.ToPoint(), bounds.Size); } private set { bounds = value; } }
+            public Rectangle BoundsWithoutParent { get { return bounds; } }
             public Color Color { get; set; }
             internal Window parentWindow;
+            internal bool DrawnOnRenderTarget;
 
+            public UIComponent(string name, Game game, Window parent, Texture2D texture, Rectangle bounds, Color? color, bool drawnOnRenderTarget) : base(game)
+            {
+                Name = name;
+                parentWindow = parent;
+                spriteBatch = game.Services.GetService<SpriteBatch>();
+                Texture = texture;
+                Bounds = bounds;
+                if (!color.HasValue)
+                    color = Color.White;
+                Color = color.Value;
+                DrawnOnRenderTarget = drawnOnRenderTarget;
+            }
             public UIComponent(string name, Game game, Window parent, Texture2D texture, Rectangle bounds, Color? color) : base(game)
             {
                 Name = name;
@@ -26,6 +40,7 @@ namespace DragonTD.UI
                 if (!color.HasValue)
                     color = Color.White;
                 Color = color.Value;
+                DrawnOnRenderTarget = false;
             }
 
             public void SetLocation(int x, int y)
@@ -41,7 +56,12 @@ namespace DragonTD.UI
             public override void Draw(GameTime gameTime)
             {
                 if (Visible)
-                    spriteBatch.Draw(Texture, Bounds, Color);
+                {
+                    if (DrawnOnRenderTarget)
+                        spriteBatch.Draw(Texture, BoundsWithoutParent, Color);
+                    else
+                        spriteBatch.Draw(Texture, Bounds, Color);
+                }
             }
         }
     }

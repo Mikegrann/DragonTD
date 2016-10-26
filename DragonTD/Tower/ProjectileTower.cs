@@ -28,6 +28,42 @@ namespace DragonTD.Tower
             ProjectileTexture = GetProjectileTexture(game, TType);
         }
 
+        public override List<string> GetTowerStatsStrings(List<string> info)
+        {
+            if (info == null)
+                info = new List<string>();
+
+            base.GetTowerStatsStrings(info);
+
+            info.Add(local.Get("targeting") + ": " + local.Get("TargetType."+TargetType.ToString()));
+
+            switch (TType)
+            {
+                case TowerType.Basic:
+                    info.Add(local.Get("damage") + ": " + ((ProjectileTowerStats)GetTowerStats()).BasicDamage);
+                    break;
+                case TowerType.Poison:
+                    info.Add(local.Get("poisonDamage") + ": " + ((ProjectileTowerStats)GetTowerStats()).PoisonDamage);
+                    info.Add(local.Get("poisonDuration") + ": " + ((ProjectileTowerStats)GetTowerStats()).PoisonDuration);
+                    break;
+                case TowerType.Piercing:
+                    info.Add(local.Get("damage") + ": " + ((ProjectileTowerStats)GetTowerStats()).BasicDamage);
+                    info.Add(local.Get("piercingDamage") + ": " + ((ProjectileTowerStats)GetTowerStats()).PiercingDamage);
+                    info.Add(local.Get("multiHit") + ": " + ((ProjectileTowerStats)GetTowerStats()).MultiHit);
+                    break;
+                case TowerType.Sniper:
+                    info.Add(local.Get("damage") + ": " + ((ProjectileTowerStats)GetTowerStats()).BasicDamage);
+                    break;
+                case TowerType.Explosive:
+                    info.Add(local.Get("splashDamage") + ": " + ((ProjectileTowerStats)GetTowerStats()).BasicDamage);
+                    break;
+                default:
+                    break;
+            }
+            
+            return info;
+        }
+
         /// <summary>
         /// Looks for candidate enemies and shoots a projectile
         /// at the best candidate (if any found).

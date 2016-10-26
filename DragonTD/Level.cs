@@ -36,6 +36,8 @@ namespace DragonTD
 
         public HexEntity Building;
 
+        Texture2D emptyHexTexture;
+
         public Level(Game game) : base(game)
         {
             InitializeLevel(game, new Point(16, 9));
@@ -66,19 +68,11 @@ namespace DragonTD
         // Randomize starting map
         public void InitializeMap()
         {
-            List<Texture2D> ObstacleTextures = new List<Texture2D>();
-            ObstacleTextures.Add(Game.Content.Load<Texture2D>("Textures/Obstacles/Lake"));
-            ObstacleTextures.Add(Game.Content.Load<Texture2D>("Textures/Obstacles/Rock1"));
-            ObstacleTextures.Add(Game.Content.Load<Texture2D>("Textures/Obstacles/Rock2"));
-            ObstacleTextures.Add(Game.Content.Load<Texture2D>("Textures/Obstacles/Tree1"));
-            ObstacleTextures.Add(Game.Content.Load<Texture2D>("Textures/Obstacles/Tree2"));
-            ObstacleTextures.Add(Game.Content.Load<Texture2D>("Textures/Obstacles/Tree3orTurd1"));
-
-            Texture2D testHex = Game.Content.Load<Texture2D>("Textures/UI/outlinehex");
+            emptyHexTexture = Game.Content.Load<Texture2D>("Textures/UI/outlinehex");
 
             //calculate screensize of map.
-            ScreenSize = new Vector2 ((testHex.Width * Width) + (testHex.Width / 2f), ((testHex.Height*0.75f)*Height) + (testHex.Height*0.25f));
-            ScreenOffset = new Vector2(testHex.Width / 2f, testHex.Height / 2f);
+            ScreenSize = new Vector2 ((emptyHexTexture.Width * Width) + (emptyHexTexture.Width / 2f), ((emptyHexTexture.Height*0.75f)*Height) + (emptyHexTexture.Height*0.25f));
+            ScreenOffset = new Vector2(emptyHexTexture.Width / 2f, emptyHexTexture.Height / 2f);
 
             //create empty map.
             Map = new HexEntity[Height, Width];
@@ -87,7 +81,7 @@ namespace DragonTD
                 for (int x = 0; x < Width; x++)
                 {
                     //fill in map with passable null hexes
-                    Map[y, x] = new HexEntity(Game, this, new Point(x, y), testHex, true);
+                    Map[y, x] = new HexEntity(Game, this, new Point(x, y), emptyHexTexture, true);
                 }
             }
 
@@ -103,11 +97,11 @@ namespace DragonTD
             for (int i = 0; i < maxObstacles; i++)
             {
                 Point location = new Point(rand.Next(0, Width - 1), rand.Next(0, Height - 1));
-                PlaceHexEntity(new Obstacle(Game, this, location, ObstacleTextures[rand.Next(0, ObstacleTextures.Count - 1)]));
+                PlaceHexEntity(new Obstacle(Game, this, location, (Obstacle.ObstacleType)rand.Next(1, 4)));
 
                 if (WaveManager.CreatePath(Start, Goal, Map).Count == 0) // Obstacle blocks the path
                 {
-                    PlaceHexEntity(new HexEntity(Game, this, location, testHex, true)); // Reset to null hex
+                    PlaceHexEntity(new HexEntity(Game, this, location, emptyHexTexture, true)); // Reset to null hex
                 }
             }
         }
@@ -162,18 +156,22 @@ namespace DragonTD
             return PlaceHexEntity(hex);
         }
 
+        public void UpgradeTower(Tower.Tower t)
+        {
+            Money -= t.CostToUpgrade;
+            t.Upgrade();
+        }
+
+        public void SellHex(HexEntity hex)
+        {
+            Money += hex.SellPrice;
+            PlaceHexEntity(new HexEntity(Game, this, hex.Position, emptyHexTexture, true));
+        }
+
         // Randomizes Wall Texture
         public void AddWall(Point p)
         {
-            List<Texture2D> WallTextures = new List<Texture2D>();
-            WallTextures.Add(Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile1"));
-            WallTextures.Add(Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile2"));
-            WallTextures.Add(Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile3"));
-            WallTextures.Add(Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile4"));
-            WallTextures.Add(Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile5"));
-            WallTextures.Add(Game.Content.Load<Texture2D>("Textures/BoneTiles/BoneTile6"));
-
-            PlaceHexEntity(new Obstacle(Game, this, p, WallTextures[rand.Next(0, WallTextures.Count - 1)]));
+            PlaceHexEntity(new Obstacle(Game, this, p, Obstacle.ObstacleType.Wall));
         }
 
         public void AddProjectile(Projectile p)
@@ -193,11 +191,14 @@ namespace DragonTD
 
         public override void Update(GameTime gameTime)
         {
-                                                                                    //don't speed up when there is no wave.
-            TimeSpan simSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * ((WM.WaveOngoing)?SimSpeed:1f) ));
+            TimeSpan simSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * SimSpeed ));
             GameTime simTime = new GameTime(gameTime.TotalGameTime, simSpan);
 
             WM.Update(simTime);
+
+            //don't speed up when there is no wave. it makes the animations look weird while building.
+            if (!WM.WaveOngoing)
+                SimSpeed = 1f;
 
             foreach (HexEntity h in Map)
             {
@@ -288,8 +289,7 @@ namespace DragonTD
 
         public override void Draw(GameTime gameTime)
         {
-                                                                                    //don't speed up when there is no wave.
-            TimeSpan simSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * ((WM.WaveOngoing) ? SimSpeed : 1f)));
+            TimeSpan simSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * SimSpeed));
             GameTime simTime = new GameTime(gameTime.TotalGameTime, simSpan);
 
             foreach (AoEEffect e in EffectList)

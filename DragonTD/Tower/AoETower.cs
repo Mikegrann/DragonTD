@@ -15,6 +15,27 @@ namespace DragonTD.Tower
             Texture = GetTowerTexture(game, TType, UpgradeLevel);
         }
 
+        public override List<string> GetTowerStatsStrings(List<string> info)
+        {
+            if (info == null)
+                info = new List<string>();
+
+            base.GetTowerStatsStrings(info);
+            
+            switch(TType)
+            {
+                case TowerType.Lightning:
+                    info.Add(local.Get("lightningDamage") + ": " + ((AoETowerStats)GetTowerStats()).Damage);
+                    break;
+                case TowerType.Freeze:
+                    info.Add(local.Get("slowDebuff") + ": " + ((AoETowerStats)GetTowerStats()).SpeedDebuff);
+                    break;
+                default:
+                    break;
+            }
+            return info;
+        }
+
         /// <summary>
         /// Looks for candidate enemies and shoots a projectile
         /// at the best candidate (if any found).
@@ -65,6 +86,8 @@ namespace DragonTD.Tower
             }
         }
 
+        
+
         public static AoEEffect.EffectType GetEffect(TowerType type)
         {
             switch (type)
@@ -114,8 +137,10 @@ namespace DragonTD.Tower
                 Other.Stats.Health -= ((AoETowerStats)GetTowerStats()).Damage;
             }
 
-            Other.SpeedDebuff = ((AoETowerStats)GetTowerStats()).SpeedDebuff;
-            Other.SpeedDebuffTimer = ((AoETowerStats)GetTowerStats()).SpeedDebuffTime;
+            //if the existing debuff is worse, keep it!
+            Other.SpeedDebuff = Math.Min(((AoETowerStats)GetTowerStats()).SpeedDebuff, Other.SpeedDebuff);
+            //if the existing debuff is longer, keep it!
+            Other.SpeedDebuffTimer = Math.Max(((AoETowerStats)GetTowerStats()).SpeedDebuffTime, Other.SpeedDebuffTimer);
         }
     }
 }

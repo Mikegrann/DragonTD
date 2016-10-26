@@ -37,6 +37,13 @@ namespace DragonTD
         /// </summary>
         public int Cost = 0;
 
+        public int SellPrice { get { return (int)(Cost * SellValueMultiplier); } }
+
+        /// <summary>
+        /// Percentage of the cost returned upon selling a hex.
+        /// </summary>
+        public const float SellValueMultiplier = 0.5f;
+
         public Color Color { get { return Texture.Color; } set { Texture.Color = value; } }
 
         /// <summary>
@@ -64,7 +71,7 @@ namespace DragonTD
             spriteBatch = game.Services.GetService<SpriteBatch>();
             Level = level;
         }
-
+        
         public override string ToString()
         {
             return this.GetType().Name + " " + this.Position.X + ", " + this.Position.Y;

@@ -45,6 +45,7 @@
     <Compile Include="Enemy\FlyingEnemy.cs" />
     <Compile Include="HexEntity.cs" />
     <Compile Include="Level.cs" />
+    <Compile Include="Localization.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Sprite.cs" />
