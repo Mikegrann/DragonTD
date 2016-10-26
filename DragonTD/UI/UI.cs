@@ -43,7 +43,7 @@ namespace DragonTD.UI
             buildWindow = new BuildWindow(game, this, new Rectangle(0, 613, screenSize.X, 107));
             upNextWindow = new UpNextWindow(game, this, new Rectangle(0, 0, screenSize.X, 138));
             speedControlWindow = new SpeedControlsWindow(game, this, new Rectangle(screenSize.X-65, screenSize.Y-69, 64, 66));
-            contextMenu = new TowerContextMenu(game, this, Rectangle.Empty);
+            contextMenu = new TowerContextMenu(game, this);
             speedControlWindow.Enabled = false;
             ViewMatrix = game.ViewMatrix;
             LeftBorder = game.Content.Load<Texture2D>("Textures/UI/Left Border");
@@ -171,6 +171,7 @@ namespace DragonTD.UI
 
         public void DrawRenderTargets(GameTime gameTime)
         {
+            buildWindow.DrawRenderTargets(gameTime);
             contextMenu.DrawRenderTargets(gameTime);
         }
 

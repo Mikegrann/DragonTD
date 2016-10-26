@@ -30,6 +30,11 @@ namespace DragonTD.UI
                     }
             }
 
+            public virtual void DrawRenderTargets(GameTime gameTime)
+            {
+
+            }
+
             public override void Draw(GameTime gameTime)
             {
                 if (Visible)

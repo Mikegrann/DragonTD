@@ -12,8 +12,11 @@ namespace DragonTD.UI
             float ScrollOffscreenSpeed = 256f;
             float ScrollOnscreenSpeed = 512f;
 
+            TowerContextMenu TCM;
+
             public BuildWindow(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
             {
+                TCM = new TowerContextMenu(game, parent);
                 Background = game.Content.Load<Texture2D>("Textures/UI/Bottom Border");
                 Button WallButton           = new Button("wall",            game, this, game.Content.Load<Texture2D>("Textures/UI/TowerIcons/Wall"), null, null, null, new Rectangle(229, 8, 60, 60), null);
                 Button BasicTowerButton     = new Button("basicTower",      game, this, game.Content.Load<Texture2D>("Textures/UI/TowerIcons/Red"), null, null, null, new Rectangle(322, 8, 60, 60), null);
@@ -96,6 +99,7 @@ namespace DragonTD.UI
                             break;
                     }
 
+                    TCM.Update(gameTime);
                     base.Update(gameTime);
                 }
                 else
@@ -109,37 +113,88 @@ namespace DragonTD.UI
                 }
             }
 
+            public override void Draw(GameTime gameTime)
+            {
+                base.Draw(gameTime);
+                TCM.Draw(gameTime);
+            }
+
+            public override void DrawRenderTargets(GameTime gameTime)
+            {
+                TCM.DrawRenderTargets(gameTime);
+            }
+
 
             private void TowerButton_OnLeave(Button sender)
             {
                 Console.WriteLine("button leave " + sender.Name);
+                TCM.Hide();
             }
 
             private void TowerButton_OnClick(Button sender)
             {
                 Console.WriteLine("button click " + sender.Name);
-                if (sender.Name == "basicTower")
-                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Basic);
-                else if (sender.Name == "poisonTower")
-                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Poison);
-                else if (sender.Name == "piercingTower")
-                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Piercing);
-                else if (sender.Name == "sniperTower")
-                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Sniper);
-                else if (sender.Name == "explosiveTower")
-                    ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Explosive);
-                else if (sender.Name == "freezeTower")
-                    ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Freeze);
-                else if (sender.Name == "lightningTower")
-                    ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Lightning);
-                else if (sender.Name == "wall")
-                    ui.level.Building = ui.building = new Obstacle(Game, ui.level, new Point(-100, -100), Obstacle.ObstacleType.Wall);
-
+                switch(sender.Name)
+                {
+                    case "basicTower":
+                        ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Basic);
+                        break;
+                    case "poisonTower": 
+                        ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Poison);
+                        break;
+                    case "piercingTower":
+                        ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Piercing);
+                        break;
+                    case "sniperTower":
+                        ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Sniper);
+                        break;
+                    case "explosiveTower":
+                        ui.level.Building = ui.building = new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Explosive);
+                        break;
+                    case "freezeTower":
+                        ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Freeze);
+                        break;
+                    case "lightningTower":
+                        ui.level.Building = ui.building = new Tower.AoETower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Lightning);
+                        break;
+                    case "wall":
+                        ui.level.Building = ui.building = new Obstacle(Game, ui.level, new Point(-100, -100), Obstacle.ObstacleType.Wall);
+                        break;
+                    default:break;
+                }
             }
 
             private void TowerButton_OnHover(Button sender)
             {
-                Console.WriteLine("buton hobver " + sender.Name);
+                Console.WriteLine("buton hover " + sender.Name);
+                switch (sender.Name)
+                {
+                    case "basicTower":
+                        TCM.Show(new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Basic), sender.Bounds.Center - new Point(TCM.Size.X/2, TCM.Size.Y), TowerContextMenu.TargetPositionRelative.Center, true);
+                        break;
+                    case "poisonTower":
+                        TCM.Show(new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Poison), sender.Bounds.Center - new Point(TCM.Size.X / 2, TCM.Size.Y), TowerContextMenu.TargetPositionRelative.Center, true);
+                        break;
+                    case "piercingTower":
+                        TCM.Show(new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Piercing), sender.Bounds.Center - new Point(TCM.Size.X / 2, TCM.Size.Y), TowerContextMenu.TargetPositionRelative.Center, true);
+                        break;
+                    case "sniperTower":
+                        TCM.Show(new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Sniper), sender.Bounds.Center - new Point(TCM.Size.X / 2, TCM.Size.Y), TowerContextMenu.TargetPositionRelative.Center, true);
+                        break;
+                    case "explosiveTower":
+                        TCM.Show(new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Explosive), sender.Bounds.Center - new Point(TCM.Size.X / 2, TCM.Size.Y), TowerContextMenu.TargetPositionRelative.Center, true);
+                        break;
+                    case "freezeTower":
+                        TCM.Show(new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Freeze), sender.Bounds.Center - new Point(TCM.Size.X / 2, TCM.Size.Y), TowerContextMenu.TargetPositionRelative.Center, true);
+                        break;
+                    case "lightningTower":
+                        TCM.Show(new Tower.ProjectileTower(Game, ui.level, new Point(-100, -100), Tower.TowerType.Lightning), sender.Bounds.Center - new Point(TCM.Size.X / 2, TCM.Size.Y), TowerContextMenu.TargetPositionRelative.Center, true);
+                        break;
+                    case "wall":
+                        TCM.Show(new Obstacle(Game, ui.level, new Point(-100, -100), Obstacle.ObstacleType.Wall), sender.Bounds.Center - new Point(TCM.Size.X / 2, TCM.Size.Y), TowerContextMenu.TargetPositionRelative.Center, true);
+                        break;
+                    default: break;
+                }
             }
         }
     }

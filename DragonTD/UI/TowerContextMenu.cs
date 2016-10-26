@@ -17,18 +17,27 @@ namespace DragonTD.UI
             SpriteFont font;
             string[] towerInfo;
             Texture2D backImage;
+            Texture2D pointer;
+
+            public Point Size { get { return rt.Bounds.Size; } } 
+
+            TargetPositionRelative targetPosRel = TargetPositionRelative.Left;
+
+            public enum TargetPositionRelative { Left, Center, Right }
 
             Button UpgradeButton;
             Button SellButton;
 
             
-            public TowerContextMenu(Game game, UI parent, Rectangle bounds) : base(game, parent, bounds)
+            public TowerContextMenu(Game game, UI parent) : base(game, parent, Rectangle.Empty)
             {
-                rt = new RenderTarget2D(game.GraphicsDevice, 300, 300);
+                //<60|240|60>
+                rt = new RenderTarget2D(game.GraphicsDevice, 360, 300);
                 font = game.Content.Load<SpriteFont>("Fonts/Console");
                 Visible = false;
                 //offsetLocation.Y = -rt.Height / 2f;
                 backImage = game.Content.Load<Texture2D>("Textures/UI/ContextMenu/test");
+                pointer = game.Content.Load<Texture2D>("Textures/UI/ContextMenu/pointer");
 
                 UpgradeButton = new Button("upgrade", game, this, game.Content.Load<Texture2D>("Textures/UI/ContextMenu/button"), null, null, null, new Rectangle(82, 151, 200, 35), Color.White, true);
                 SellButton    = new Button("sell",    game, this, game.Content.Load<Texture2D>("Textures/UI/ContextMenu/button"), null, null, null, new Rectangle(82, 191, 200, 35), Color.White, true);
@@ -74,7 +83,7 @@ namespace DragonTD.UI
                 UpdateTowerInfo();
             }
 
-            public void Show(HexEntity target, bool showDescription = false)
+            public void Show(HexEntity target, Point ManualLocation, TargetPositionRelative tpr, bool showDescription = false)
             {
                 //if we clicked on the same target again, close
                 if (Target != null && Target.Position.Equals(target.Position))
@@ -82,17 +91,32 @@ namespace DragonTD.UI
                     Hide();
                     return;
                 }
+                targetPosRel = tpr;
                 Target = target;
                 ShowDescription = showDescription;
                 Enabled = true;
-                bounds.Location = Vector2.Transform(Target.ScreenPosition, ui.ViewMatrix).ToPoint() + offsetLocation.ToPoint() - new Point(0, (int)(rt.Height / 2f));
-                bounds.Size = backImage.Bounds.Size;
+                bounds.Location = ManualLocation;
+                bounds.Size = rt.Bounds.Size;
                 UpdateTowerInfo();
+
+                UpgradeButton.Enabled &= !ShowDescription;
+                UpgradeButton.Visible &= !ShowDescription;
+                SellButton.Enabled &= !ShowDescription;
+                SellButton.Visible &= !ShowDescription;
+            }
+            public void Show(HexEntity target, bool showDescription = false)
+            {
+                Point TargetPos = Vector2.Transform(target.ScreenPosition, ui.ViewMatrix).ToPoint();
+                if(ui.screenSize.X - TargetPos.X < rt.Width)
+                    Show(target, TargetPos - new Point(rt.Width, rt.Height / 2), TargetPositionRelative.Right, showDescription);
+                else
+                    Show(target, TargetPos - new Point(0, rt.Height/2), TargetPositionRelative.Left, showDescription);
             }
 
             void UpdateTowerInfo()
             {
-                Target = ui.level.Map[Target.Position.Y, Target.Position.X];
+                if(!ShowDescription)
+                    Target = ui.level.Map[Target.Position.Y, Target.Position.X];
 
                 if (Target != null && Target.GetType().IsSubclassOf(typeof(Tower.Tower)))
                 {
@@ -102,7 +126,7 @@ namespace DragonTD.UI
                 }
                 else if (Target != null && Target.GetType() == typeof(Obstacle) && ((Obstacle)Target).Type == Obstacle.ObstacleType.Wall)
                 {
-                    towerInfo = new string[] { ui.Localization.Get("wall") };
+                    towerInfo = new string[] { ui.Localization.Get("wall"), ui.Localization.Get("cost") + ": " + Target.Cost };
                     UpgradeButton.Enabled = false;
                     UpgradeButton.Visible = false;
                 }
@@ -120,7 +144,7 @@ namespace DragonTD.UI
             }
 
 
-            public void DrawRenderTargets(GameTime gameTime)
+            public override void DrawRenderTargets(GameTime gameTime)
             {
                 if (Visible && Target != null)
                 {
@@ -128,7 +152,13 @@ namespace DragonTD.UI
                     ui.spriteBatch.Begin();
 
                     ui.spriteBatch.GraphicsDevice.Clear(Color.Transparent);
-                    ui.spriteBatch.Draw(backImage, rt.Bounds, Color.White);
+
+                    if (targetPosRel == TargetPositionRelative.Left)
+                        ui.spriteBatch.Draw(pointer, new Vector2(10, 0), Color.White);
+                    else if (targetPosRel == TargetPositionRelative.Right)
+                        ui.spriteBatch.Draw(pointer, new Vector2(300, 0), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
+
+                    ui.spriteBatch.Draw(backImage, new Vector2(60, 0), Color.White);
 
                     ui.spriteBatch.DrawString(font, towerInfo[0], new Vector2(72, 10), Color.Black);
 
@@ -140,9 +170,10 @@ namespace DragonTD.UI
 
                     base.Draw(gameTime);
 
-                    if(Target.GetType().IsSubclassOf(typeof(Tower.Tower)))
+                    if(UpgradeButton.Visible && Target.GetType().IsSubclassOf(typeof(Tower.Tower)))
                         ui.spriteBatch.DrawString(font, ui.Localization.Get("upgrade") + ": $" + ((Tower.Tower)Target).CostToUpgrade, new Vector2(82, 151), Color.Black);
-                    ui.spriteBatch.DrawString(font, ui.Localization.Get("sell") + ": $" + Target.SellPrice, new Vector2(82, 191), Color.Black);
+                    if(SellButton.Visible)
+                        ui.spriteBatch.DrawString(font, ui.Localization.Get("sell") + ": $" + Target.SellPrice, new Vector2(82, 191), Color.Black);
 
                     ui.spriteBatch.End();
                     ui.Game.GraphicsDevice.SetRenderTarget(null);
