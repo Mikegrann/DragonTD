@@ -30,7 +30,7 @@ namespace DragonTD
 
         public float SimSpeed;
 
-        public int Money = 1000;
+        public int Money = 100000;
 
         public Random rand;
 

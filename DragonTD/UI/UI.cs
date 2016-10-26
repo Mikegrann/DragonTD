@@ -45,7 +45,7 @@ namespace DragonTD.UI
             ViewMatrix = game.ViewMatrix;
             LeftBorder = game.Content.Load<Texture2D>("Textures/UI/Left Border");
             RightBorder = game.Content.Load<Texture2D>("Textures/UI/Right Border");
-            font = game.Content.Load<SpriteFont>("Fonts/console");
+            font = game.Content.Load<SpriteFont>("Fonts/Trajan12");
         }
 
         public override void Update(GameTime gameTime)
@@ -169,7 +169,9 @@ namespace DragonTD.UI
             speedControlWindow.Draw(gameTime);
             contextMenu.Draw(gameTime);
 
-            spriteBatch.DrawString(font, "$" + level.Money.ToString(), new Vector2(1076, 688), Color.Black);
+            string money = String.Format("{0:n0}", level.Money);
+            spriteBatch.DrawString(font, money, new Vector2((screenSize.X-75)-font.MeasureString(money).X, 688), Color.Black);
+            spriteBatch.DrawString(font, "$", new Vector2(1076, 688), Color.Black);
         }
         
 
