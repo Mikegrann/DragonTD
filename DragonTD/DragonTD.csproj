@@ -56,7 +56,15 @@
     <Compile Include="Spawn.cs" />
     <Compile Include="Tower\TowerStats.cs" />
     <Compile Include="Treasure.cs" />
-    <Compile Include="UI.cs" />
+    <Compile Include="UI\BuildWindow.cs" />
+    <Compile Include="UI\Button.cs" />
+    <Compile Include="UI\InputStates.cs" />
+    <Compile Include="UI\SpeedControlsWindow.cs" />
+    <Compile Include="UI\TowerContextMenu.cs" />
+    <Compile Include="UI\UI.cs" />
+    <Compile Include="UI\UIComponent.cs" />
+    <Compile Include="UI\UpNextWindow.cs" />
+    <Compile Include="UI\Window.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Enemy\WalkingEnemy.cs" />
     <Compile Include="Wave.cs" />

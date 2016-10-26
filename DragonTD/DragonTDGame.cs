@@ -13,7 +13,7 @@ namespace DragonTD
         SpriteBatch spriteBatch;
 
         Level level;
-        UI ui;
+        UI.UI ui;
 
         public Matrix ViewMatrix;
 
@@ -52,7 +52,7 @@ namespace DragonTD
             this.Services.AddService<SpriteBatch>(spriteBatch);
 
             level = new Level(this);
-            ui = new UI(this, level);
+            ui = new UI.UI(this, level);
         }
 
         /// <summary>

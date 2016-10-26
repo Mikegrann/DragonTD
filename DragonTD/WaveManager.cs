@@ -12,8 +12,12 @@ namespace DragonTD
         public int WaveNumber { get; private set; }
         public List<Wave> Waves { get; private set; }
 
+        public List<EnemyWave> NextWave { get; private set; }
+
         public Level Level;
         public bool WaveOngoing;
+
+        Random random = new Random();
 
         public WaveManager(Game game, Level level) : base(game)
         {
@@ -29,6 +33,35 @@ namespace DragonTD
             tempWave.AddEnemies(2, Enemy.EnemyType.Flying, 1.5f, 0.8f);
             tempWave.AddEnemies(4, Enemy.EnemyType.Mid, 4.0f, 1.0f);
             Waves.Add(tempWave);
+
+            //Add 10 random waves. For Testing.
+            for (int i = 0; i < 10; i++)
+            {
+                Wave w = new Wave(game);
+                int waveDiff = (i+1) * 10;
+                int c = 0;
+                while (waveDiff > 0 && c < 7)
+                {
+                    int type = c;
+                    Console.WriteLine(c.ToString());
+                    int count = random.Next(0, (100 / (type + 1)) / ((10 - i)+1) );
+                    float sep = (type / 4f) + 0.5f;
+                    if (count > 0)
+                    {
+                        w.AddEnemies(count, (Enemy.EnemyType)type, 2f * c, sep);
+                        waveDiff -= (int)(sep * count);
+                    }
+                    c++;
+
+                    if (c == 7 && w.EnemyDepictions.Count == 0)
+                        c = 0;
+                }
+                Waves.Add(w);
+            }
+
+
+            //make sure we set this so the UpNext UI shows what's up next.
+            NextWave = Waves[WaveNumber].EnemyDepictions;
         }
 
         /// <summary>
@@ -50,6 +83,10 @@ namespace DragonTD
             }
 
             WaveNumber++;
+            if (WaveNumber < Waves.Count)
+                NextWave = Waves[WaveNumber].EnemyDepictions;
+            else
+                NextWave = null;
             WaveOngoing = true;
         }
 

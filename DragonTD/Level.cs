@@ -21,6 +21,10 @@ namespace DragonTD
         public List<AoEEffect> EffectList;
         WaveManager WM;
 
+        public List<EnemyWave> NextWave { get { return WM.NextWave; } }
+        public int CurrentWaveNumber { get { return WM.WaveNumber; } }
+        public int WaveCount { get { return WM.Waves.Count; } }
+
         public float SimSpeed;
 
         public int Money = 1000;

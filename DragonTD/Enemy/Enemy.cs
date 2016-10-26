@@ -105,8 +105,7 @@ namespace DragonTD.Enemy
                         game.Content.Load<Texture2D>(TexDir + "Mounted/Mounted2"),
                         game.Content.Load<Texture2D>(TexDir + "Mounted/Mounted3"),
                         game.Content.Load<Texture2D>(TexDir + "Mounted/Mounted4"),
-                        game.Content.Load<Texture2D>(TexDir + "Mounted/Mounted5"),
-                        game.Content.Load<Texture2D>(TexDir + "Mounted/Mounted6"),
+                        game.Content.Load<Texture2D>(TexDir + "Mounted/Mounted5")
                     }, Color.White, AnimTime);
                 case EnemyType.Mid:
                     return new AnimatedSprite(new Texture2D[]
