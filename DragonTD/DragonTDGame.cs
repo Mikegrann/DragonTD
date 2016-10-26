@@ -15,7 +15,11 @@ namespace DragonTD
         Level level;
         UI.UI ui;
 
+        Rectangle PlayArea = new Rectangle(112, 102, 1056, 518);
+
         public Matrix ViewMatrix;
+
+        Texture2D whiteSquare;
 
         public DragonTDGame()
         {
@@ -51,8 +55,22 @@ namespace DragonTD
             //adds spritebatch to the service list, so that it can be used anywhere.
             this.Services.AddService<SpriteBatch>(spriteBatch);
 
-            level = new Level(this);
+            level = new Level(this, new Point(8, 4));
+
+
+            float scaleW = PlayArea.Width / level.ScreenSize.X;
+            float scaleH = PlayArea.Height / level.ScreenSize.Y;
+
+            float scale = (scaleW < scaleH) ? scaleW : scaleH;
+            
+            Vector2 s = new Vector2(PlayArea.X + (PlayArea.Width / 2f)  - ((level.ScreenSize.X * scale)/2f) + (level.ScreenOffset.X * scale), 
+                                    PlayArea.Y + (PlayArea.Height / 2f) - ((level.ScreenSize.Y * scale)/2f) + (level.ScreenOffset.Y * scale) );
+
+            ViewMatrix = Matrix.CreateScale(scale) * Matrix.CreateTranslation(new Vector3(s.X, s.Y, 0));
+
             ui = new UI.UI(this, level);
+
+            whiteSquare = Content.Load<Texture2D>("Textures/UI/whiteSquare");
         }
 
         /// <summary>

@@ -14,6 +14,9 @@ namespace DragonTD
 
         public List<EnemyWave> NextWave { get; private set; }
 
+        List<Enemy.Enemy> EnemiesToSpawn = new List<Enemy.Enemy>();
+        public bool StillHasEnemiesToSpawn { get { return EnemiesToSpawn.Count > 0; } }
+
         public Level Level;
         public bool WaveOngoing;
 
@@ -70,6 +73,8 @@ namespace DragonTD
         /// <param name="EntityArray"></param>
         public void StartWave(Spawn start, Treasure goal, HexEntity[,] EntityArray)
         {
+            WaveOngoing = true;
+            EnemiesToSpawn.Clear();
             List<HexEntity> Path = CreatePath(start, goal, EntityArray);
 
             foreach (EnemyWave desc in Waves[WaveNumber].EnemyDepictions)
@@ -78,7 +83,9 @@ namespace DragonTD
                 {
                     Enemy.Enemy tmpEnemy = start.CreateEnemy(desc.Type, goal, Path);
                     tmpEnemy.FreezeTime = desc.Delay + desc.Separation * i;
-                    Level.EnemyList.Add(tmpEnemy);
+                    //Level.EnemyList.Add(tmpEnemy);
+                    //instead of applying directly to the forehead, add to a wait list.
+                    EnemiesToSpawn.Add(tmpEnemy);
                 }
             }
 
@@ -87,7 +94,33 @@ namespace DragonTD
                 NextWave = Waves[WaveNumber].EnemyDepictions;
             else
                 NextWave = null;
-            WaveOngoing = true;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if(WaveOngoing)
+            {
+                foreach(Enemy.Enemy e in EnemiesToSpawn)
+                {
+                    e.FreezeTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if(e.FreezeTime <= 0)
+                    {
+                        e.FreezeTime = 0;
+                        Level.EnemyList.Add(e);
+                    }
+                }
+
+                EnemiesToSpawn.RemoveAll(FreezeTimeZero);
+
+            }
+
+            base.Update(gameTime);
+        }
+
+        //serach predicate returns true if enemy has zero freeze time.
+        private static bool FreezeTimeZero(Enemy.Enemy e)
+        {
+            return e.FreezeTime <= 0;
         }
 
         /// <summary>

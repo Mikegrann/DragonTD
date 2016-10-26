@@ -16,6 +16,9 @@ namespace DragonTD
 
         public int Width, Height;
 
+        public Vector2 ScreenSize { get; private set; }
+        public Vector2 ScreenOffset { get; private set; }
+
         public List<Enemy.Enemy> EnemyList;
         public List<Projectile> ProjectileList;
         public List<AoEEffect> EffectList;
@@ -35,8 +38,20 @@ namespace DragonTD
 
         public Level(Game game) : base(game)
         {
-            Width = 16;
-            Height = 9;
+            InitializeLevel(game, new Point(16, 9));
+            InitializeMap();
+        }
+        
+        public Level(Game game, Point mapSize) : base(game)
+        {
+            InitializeLevel(game, mapSize);
+            InitializeMap();
+        }
+
+        private void InitializeLevel(Game game, Point mapSize)
+        {
+            Width = mapSize.X;
+            Height = mapSize.Y;
 
             SimSpeed = 1.0f;
 
@@ -46,8 +61,6 @@ namespace DragonTD
             WM = new WaveManager(game, this);
 
             rand = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-
-            InitializeMap();
         }
 
         // Randomize starting map
@@ -62,6 +75,10 @@ namespace DragonTD
             ObstacleTextures.Add(Game.Content.Load<Texture2D>("Textures/Obstacles/Tree3orTurd1"));
 
             Texture2D testHex = Game.Content.Load<Texture2D>("Textures/UI/outlinehex");
+
+            //calculate screensize of map.
+            ScreenSize = new Vector2 ((testHex.Width * Width) + (testHex.Width / 2f), ((testHex.Height*0.75f)*Height) + (testHex.Height*0.25f));
+            ScreenOffset = new Vector2(testHex.Width / 2f, testHex.Height / 2f);
 
             //create empty map.
             Map = new HexEntity[Height, Width];
@@ -176,8 +193,11 @@ namespace DragonTD
 
         public override void Update(GameTime gameTime)
         {
-            TimeSpan simSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * SimSpeed));
+                                                                                    //don't speed up when there is no wave.
+            TimeSpan simSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * ((WM.WaveOngoing)?SimSpeed:1f) ));
             GameTime simTime = new GameTime(gameTime.TotalGameTime, simSpan);
+
+            WM.Update(simTime);
 
             foreach (HexEntity h in Map)
             {
@@ -219,7 +239,7 @@ namespace DragonTD
             }
 
             // Check for wave end
-            if (EnemyList.Count == 0)
+            if (EnemyList.Count == 0 && !WM.StillHasEnemiesToSpawn)
             {
                 WM.WaveOngoing = false;
             }
@@ -268,7 +288,8 @@ namespace DragonTD
 
         public override void Draw(GameTime gameTime)
         {
-            TimeSpan simSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * SimSpeed));
+                                                                                    //don't speed up when there is no wave.
+            TimeSpan simSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * ((WM.WaveOngoing) ? SimSpeed : 1f)));
             GameTime simTime = new GameTime(gameTime.TotalGameTime, simSpan);
 
             foreach (AoEEffect e in EffectList)
